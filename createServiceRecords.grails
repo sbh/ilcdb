@@ -1,0 +1,17 @@
+int idx=0
+for (Client client : Client.list())
+{
+  try
+  {
+    println((idx++)+" before-client: "+client.toString()+", serviceRecords: "+client.serviceRecords)
+    ServiceRecord serviceRecord = new ServiceRecord('serviceDate':new Date(1230879600000L), 'serviceHours':1.0)
+    client.addToServiceRecords(serviceRecord)
+    client.save()
+    println("saved: "+client.toString()+", serviceRecords: "+client.serviceRecords)
+  }
+  catch (Exception ex)
+  {
+    println("Exception: "+ex)
+    break;
+  }
+}

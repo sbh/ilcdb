@@ -1,0 +1,15 @@
+def client = new Client(client:new Person(firstName:"Bill", 
+                                          lastName:"Smith", 
+                                          address:new Address(street:"1234 Main St.",
+                                                              city:"Boulder",
+                                                              county:"Boulder",
+                                                              country:"USA",
+                                                              postalCode:"12345-0987")),
+                        placeOfBirth:new Address(),
+                        dateOfBirth:new Date())
+
+
+client.addToNotes( new Note(text: 'note1', createDate:new Date()) )
+      .addToNotes( new Note(text: 'note2', createDate:new Date()) )
+
+client.notes.each { println it.text } 

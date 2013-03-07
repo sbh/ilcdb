@@ -1,0 +1,16 @@
+Instructions for setting up PostgreSQL (on Mac OS X) to work with the database
+
+1) Download and install PostgreSQL from: http://www.postgresql.org/download/macosx
+
+2) Open the pgAdmin III application that was installed with the postgres  package.
+ *In the object browser pane on the left, double click on PostgreSQL 9.0 (localhost) 
+ *Type the password
+ *Right click on Login Roles, select New Login Role, and create the user "ilcdb" with password "snuggl3s"
+ *Repeat the above step, but create user "tester" with password "tester"
+ *Right click on Databases and select New Database. Set the name to ilcdb, and set the owner field to ilcdb 
+ *Repeat the above step, but create database "test", and make sure the user "tester" owns it
+
+3) Copy grails-app/conf/DataSource.grovy.postgres to grails-app/conf/DataSource.groovy
+Note: don't check in this change!!
+
+
