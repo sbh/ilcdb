@@ -8,7 +8,7 @@ class Appointment {
     }
     
     static belongsTo = [ client:Client ]
-
+    
     String toString() {
 	return date
     }

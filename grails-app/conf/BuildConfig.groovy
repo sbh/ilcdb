@@ -39,8 +39,9 @@ grails.project.dependency.resolution = {
     plugins {
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.8.3"
-        runtime ":resources:1.1.5"
+        runtime ":resources:1.1.6"
 
         build ":tomcat:$grailsVersion"
+        compile ':jquery-date-time-picker:0.1.0'
     }
 }

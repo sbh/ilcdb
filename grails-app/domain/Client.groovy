@@ -15,12 +15,18 @@ class Client implements Comparable<Client>
     SortedSet serviceRecords
     SortedSet conflicts
     String fileLocation
-    boolean legalPermanentResident
-    Date legalPermanentResidentDate
+    
     boolean citizen
     Date citizenDate
+    boolean legalPermanentResident
+    Date legalPermanentResidentDate
+    boolean daca
+    Date dacaDate
+    boolean tps
+    Date tpsDate
     
-    static hasMany = [notes:Note, cases:ClientCase, appointments:Appointment, sponsorRelations:ClientSponsorRelation, serviceRecords:ServiceRecord, conflicts:Conflict]
+    static hasMany = [notes:Note, cases:ClientCase, appointments:Appointment, sponsorRelations:ClientSponsorRelation,
+                      serviceRecords:ServiceRecord, conflicts:Conflict/*, statiAchieved:StatusAchieved*/]
 
     static mapping =
     {
@@ -36,8 +42,10 @@ class Client implements Comparable<Client>
         householdIncomeLevel(nullable:true)
         numberInHousehold(nullable:true)
         fileLocation(nullable:true)
-        legalPermanentResidentDate(nullable:true)
         citizenDate(nullable:true)
+        legalPermanentResidentDate(nullable:true)
+        dacaDate(nullable:true)
+        tpsDate(nullable:true)
     }
 
     static transients = [ "birthDayString", "firstVisitString", "homeCountry", "shortAddress", "emailAddress", "openCase", "validCases", "attorney", "person" ]

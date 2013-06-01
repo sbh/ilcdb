@@ -6,35 +6,31 @@
 <script language="javascript"> 
 function toggleDatePicker(theCheckBox)
 {
-    if (theCheckBox.checked == true) 
+    var hidden = !theCheckBox.checked
+    
+	if (theCheckBox.id == "legalPermanentResident")
     {
-        if (theCheckBox.id == "legalPermanentResident")
-        {
-            document.clientEdit.legalPermanentResidentDate_day.hidden=false;
-            document.clientEdit.legalPermanentResidentDate_month.hidden=false;
-            document.clientEdit.legalPermanentResidentDate_year.hidden=false;
-        }
-        else
-        {
-            document.clientEdit.citizenDate_day.hidden=false;
-            document.clientEdit.citizenDate_month.hidden=false;
-            document.clientEdit.citizenDate_year.hidden=false;
-        }
+        document.clientEdit.legalPermanentResidentDate_day.hidden=hidden;
+        document.clientEdit.legalPermanentResidentDate_month.hidden=hidden;
+        document.clientEdit.legalPermanentResidentDate_year.hidden=hidden;
     }
-    else
-    { 
-        if (theCheckBox.id == "legalPermanentResident")
-        {
-            document.clientEdit.legalPermanentResidentDate_day.hidden=true;
-            document.clientEdit.legalPermanentResidentDate_month.hidden=true;
-            document.clientEdit.legalPermanentResidentDate_year.hidden=true;
-        }
-        else
-        {
-            document.clientEdit.citizenDate_day.hidden=true;
-            document.clientEdit.citizenDate_month.hidden=true;
-            document.clientEdit.citizenDate_year.hidden=true;
-        }
+    else if (theCheckBox.id == "citizen")
+    {
+        document.clientEdit.citizenDate_day.hidden=hidden;
+        document.clientEdit.citizenDate_month.hidden=hidden;
+        document.clientEdit.citizenDate_year.hidden=hidden
+    }
+    else if (theCheckBox.id == "daca")
+    {
+        document.clientEdit.dacaDate_day.hidden=hidden;
+        document.clientEdit.dacaDate_month.hidden=hidden;
+        document.clientEdit.dacaDate_year.hidden=hidden;
+    }
+    else if (theCheckBox.id == "tps")
+    {
+        document.clientEdit.tpsDate_day.hidden=hidden;
+        document.clientEdit.tpsDate_month.hidden=hidden;
+        document.clientEdit.tpsDate_year.hidden=hidden;
     }
 }
 
@@ -42,6 +38,8 @@ function toggleOnLoad()
 {
     toggleDatePicker(document.clientEdit.legalPermanentResident)
     toggleDatePicker(document.clientEdit.citizen)
+    toggleDatePicker(document.clientEdit.daca)
+    toggleDatePicker(document.clientEdit.tps)
 }
 
 window.onload=toggleOnLoad
@@ -140,7 +138,7 @@ window.onload=toggleOnLoad
                             <g:link controller="note" params="['clientid':client?.id, 'noteType':'client']" action="create">Add Note</g:link>
                           </td>
                         </tr> 
-                        
+<!--
                         <tr class="prop">
                           <td valign="top" class="name">
                             <label for="conflicts">Conflicts:</label>
@@ -169,7 +167,7 @@ window.onload=toggleOnLoad
                             <g:link controller="conflict" params="['clientid':client?.id]" action="create">Add Conflict</g:link>
                           </td>
                         </tr> 
-                        
+ -->
                         <tr class="prop">
                           <td valign="top" class="name">
                             <label for="serviceRecords">Service Records:</label>
@@ -217,6 +215,7 @@ window.onload=toggleOnLoad
                         <td valign="top" class="name">
                           <label for="status">Status:</label>
                         </td>
+
                         <td valign="top" colspan="3" class="value">
                           <table>
                             <tr class="odd">
@@ -236,6 +235,26 @@ window.onload=toggleOnLoad
                               <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'citizen','errors')}">
                                 <g:checkBox name="citizen" id="citizen" value="${client?.citizen}" onclick="toggleDatePicker(document.clientEdit.citizen)" />
                                 &nbsp;<g:datePicker name="citizenDate" id="citizenDate" value="${client?.citizenDate}" precision="day"/>
+                              </td>
+                            </tr>
+
+                            <tr class="odd">
+                              <td valign="top" class="name">
+                                <label for="daca">DACA Status Achieved?:</label>
+                              </td>
+                              <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'daca','errors')}">
+                                <g:checkBox name="daca" id="daca" value="${client?.daca}" onclick="toggleDatePicker(document.clientEdit.daca)" />
+                                &nbsp;<g:datePicker name="dacaDate" id="dacaDate" value="${client?.dacaDate}" precision="day"/>
+                              </td>
+                            </tr> 
+      
+                            <tr class="even">
+                              <td align="right" valign="top" class="name">
+                                <label for="tps">TPS Achieved?:</label>
+                              </td>
+                              <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'tps','errors')}">
+                                <g:checkBox name="tps" id="tps" value="${client?.tps}" onclick="toggleDatePicker(document.clientEdit.tps)" />
+                                &nbsp;<g:datePicker name="tpsDate" id="tpsDate" value="${client?.tpsDate}" precision="day"/>
                               </td>
                             </tr>
                           </table>
