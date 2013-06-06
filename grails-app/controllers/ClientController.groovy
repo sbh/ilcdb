@@ -158,12 +158,13 @@ class ClientController
     {
         //println("ClientController.save params: "+params)
         
-        
         if(params.containsKey('personSource') && params['personSource'] == 'new')
         {
             //For generating a new person
             def client = new Client(params)
             def person = new Person(params.client)
+            person.dateOfBirth = params.client.dateOfBirth
+            //println("person: "+person.toDebugString())
             
             def addressCountry = Country.get(params.client.address.country)
             params.client.address.country = addressCountry
