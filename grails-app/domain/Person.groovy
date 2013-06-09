@@ -16,14 +16,14 @@ class Person implements Comparable<Person>
     String race;
     
     static mapping =
-	{
+    {
         cache true
     }
-	
-	static fetchMode = [address:"eager", placeOfBirth:"eager"]
-	    
-	static List Ethnicities = ['', 'African', 'Asian Pac', 'Latino', 'Native American', 'White'];
-	
+
+    static fetchMode = [address:"eager", placeOfBirth:"eager"]
+
+    static List Ethnicities = ['', 'African', 'Asian Pac', 'Latino', 'Native American', 'White'];
+
     static constraints = 
     {
         firstName(blank:false)

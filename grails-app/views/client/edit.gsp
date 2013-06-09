@@ -8,7 +8,7 @@ function toggleDatePicker(theCheckBox)
 {
     var hidden = !theCheckBox.checked
     
-	if (theCheckBox.id == "legalPermanentResident")
+    if (theCheckBox.id == "legalPermanentResident")
     {
         document.clientEdit.legalPermanentResidentDate_day.hidden=hidden;
         document.clientEdit.legalPermanentResidentDate_month.hidden=hidden;
@@ -56,8 +56,8 @@ window.onload=toggleOnLoad
               <h3><g:message code="general.page.errors" /></h3>
             </div>
             </g:hasErrors>
-            <g:form method="post" name="clientEdit" id="clientEdit">
-                <input type="hidden" name="clientId" value="${client?.id}" />
+            <g:form method="post" name="clientEdit" id="${client.id}">
+                <input type="hidden" name="id" value="${client?.id}" />
                 <div class="dialog">
                     <table>
                         <tbody>

@@ -21,13 +21,13 @@ class ClientController
         if(!params.max) params.max = 10
 
         List clients = new ArrayList()
-        
+
         clients.addAll(Client.findAll( "from Client as c order by upper(c.client.lastName), upper(c.client.firstName)" ))
-        
+
         Collections.sort(clients, new ClientComparator());
         [ clientList:  clients ]
     }
-    
+
     private class ClientComparator implements Comparator<Client>
     {
         int compare(Client c1, Client c2)
@@ -43,7 +43,7 @@ class ClientController
             return val
         }
     }
-    
+
     private class ClientReportElementComparator implements Comparator<ClientReportElement>
     {
         int compare(ClientReportElement c1, ClientReportElement c2)
@@ -59,14 +59,15 @@ class ClientController
             return val
         }
     }
-    
+
     def show =
     {
-        def client = Client.get( params.clientId )
+        //println("ClientController.show params: "+params)
+        def client = Client.get( params.id )
 
         if(!client)
         {
-            flash.message = "Client not found with id ${params.clientId}"
+            flash.message = "Client not found with id ${params.id}"
             redirect(action:list)
         }
         else
@@ -75,24 +76,26 @@ class ClientController
 
     def delete =
     {
-        def client = Client.get( params.clientId )
+        //println("ClientController.delete params: "+params)
+        def client = Client.get( params.id )
         if(client)
         {
             client.delete()
-            flash.message = "Client ${params.clientId} deleted"
+            flash.message = "Client ${params.id} deleted"
             redirect(action:list)
         }
         else
         {
-            flash.message = "Client not found with id ${params.clientId}"
+            flash.message = "Client not found with id ${params.id}"
             redirect(action:list)
         }
     }
 
     def edit =
     {
+        //println("ClientController.edit params: "+params)
         def client = Client.get( params.id )
-        println("client.citizen: "+client.citizen+", client.lpr: "+client.legalPermanentResident)
+        //println("client.citizen: "+client.citizen+", client.lpr: "+client.legalPermanentResident)
 
         if(!client)
         {
@@ -106,12 +109,12 @@ class ClientController
     def update =
     {
         //println("ClientController.update params: "+params)
-        
-        def client = Client.get( params.clientId )
+
+        def client = Client.get( params.id )
         if(client)
         {
             def addressCountry = Country.get(params.client.address.country)
-            
+
             def birthCountry = Country.get(params.client.placeOfBirth.country)
 
             client.properties = params
@@ -127,22 +130,22 @@ class ClientController
             client.clearErrors()
             if(client.validate() && client.save())
             {
-                flash.message = "Client ${params.clientId} updated"
-                redirect(action:list, fragment:params.clientId)
+                flash.message = "Client ${params.id} updated"
+                redirect(action:list, fragment:params.id)
             }
             else
             {
                 println("errors***")
                 client.errors.allErrors.each { println it }
                 println("***errors")
-        
+
                 render(view:'edit',model:[client:client])
             }
         }
         else
         {
-            flash.message = "Client not found with id ${params.clientId}"
-            redirect(action:edit,id:params.clientId)
+            flash.message = "Client not found with id ${params.id}"
+            redirect(action:edit,id:params.id)
         }
     }
 
@@ -157,7 +160,7 @@ class ClientController
     def save =
     {
         //println("ClientController.save params: "+params)
-        
+
         if(params.containsKey('personSource') && params['personSource'] == 'new')
         {
             //For generating a new person
@@ -165,13 +168,13 @@ class ClientController
             def person = new Person(params.client)
             person.dateOfBirth = params.client.dateOfBirth
             //println("person: "+person.toDebugString())
-            
+
             def addressCountry = Country.get(params.client.address.country)
             params.client.address.country = addressCountry
             def address = new Address(params.client.address)
-            
+
             def birthCountry = Country.get(params.client.placeOfBirth.country)
-            params.client.placeOfBirth.country = birthCountry   
+            params.client.placeOfBirth.country = birthCountry
             def placeOfBirth = new BirthPlace(params.client.placeOfBirth)
 
             if (address.validate())
@@ -197,15 +200,15 @@ class ClientController
 
             //Ensure the entire graph is valid before saving anything
             if (client.validate() &&
-                address.validate() && person.validate() &&
-                placeOfBirth.validate())
+            address.validate() && person.validate() &&
+            placeOfBirth.validate())
             {
                 address.save()
                 placeOfBirth.save()
                 person.save()
                 client.client = person
                 client.save()
-                
+
                 flash.message = "Client ${client.id} created"
                 // redirect to the newly created intake so that it can be edited if so desired
                 redirect(controller:"clientCase", action:edit, id:clientCase.id)
@@ -431,13 +434,13 @@ class ClientController
                 counts[intake.caseType] = counts[intake.caseType] + 1;
             }
         }
-        
+
         def returnValue = [ ]
         counts.keySet().each
         { type ->
-            returnValue.add([type, counts[type]])    
+            returnValue.add([type, counts[type]])
         }
-        
+
         return returnValue;
     }
 
@@ -480,13 +483,13 @@ class ClientController
     {
         Client client;
         Set<String> types = new HashSet<String>();
-        
+
         public ClientReportElement(Client client, String type)
         {
             this.client = client;
             this.types.add(type);
         }
-        
+
         public boolean equals(Object other)
         {
             if ( !(other instanceof ClientReportElement) )
@@ -494,18 +497,18 @@ class ClientController
             ClientReportElement otherClientReportElement = (ClientReportElement)other;
             return client.equals(otherClientReportElement.client);
         }
-        
+
         public int hashCode()
         {
             return client.hashCode();
         }
     }
-    
+
     def report =
     {
         //println("report params: "+params)
         def returnValue = [ : ];
-        
+
         if(params.startDate && params.endDate)
         {
             // adjust the endDate to be the end of the day.
@@ -514,14 +517,14 @@ class ClientController
             def newClients = getNewClientsFromMunicipalityForTimePeriod( params );
             def newIntakes = getClientsWithNewIntakesFromMunicipalityForTimePeriod( params );
             def ongoingIntakes = getClientsWithOngoingIntakesFromMunicipalityForTimePeriod( params );
-            
+
             def clients = new HashSet()
             newIntakes.each {
                 client ->
                 def clientReportElement = new ClientReportElement(client, "newIntake")
                 clients.add(clientReportElement);
             }
-            
+
             ongoingIntakes.each {
                 client->
                 def clientReportElement = new ClientReportElement(client, "ongoingIntake")
@@ -535,32 +538,32 @@ class ClientController
 
             // There can be duplicates between the newIntakes and ongoingIntakes. By handling those 2 first, the duplicates
             // can be easily detected. That's why the newClients are added last.
-            newClients.each 
+            newClients.each
             { client ->
                 clients.add( new ClientReportElement(client, "newClient") );
             }
-            
+
             def sortedClients = new ArrayList(clients)
             Collections.sort(sortedClients, new ClientReportElementComparator());
-            
+
             //println "newClients: " + newClients.size();
             //println "newIntakes: " + newIntakes.size();
             //println "ongoingIntakes: " + ongoingIntakes.size();
-            
+
             def clientListCounts = [ : ]
-            
+
             clientListCounts["newClient"] = ["New Client/New Intake", newClients.size(), getNumTotalNewClientsBetween(params.startDate, params.endDate)];
             clientListCounts["newIntake"] = ["Existing Clients with New Intakes", newIntakes.size(), getNumTotalNewIntakesBetween(params.startDate, params.endDate)];
             clientListCounts["ongoingIntake"] = ["Existing Clients with Ongoing Intakes", ongoingIntakes.size(), getNumTotalOngoingIntakesBetween(params.startDate, params.endDate)];
-            
+
             returnValue["startDate"] = params.startDate
-            returnValue["endDate"] = params.endDate    
+            returnValue["endDate"] = params.endDate
             returnValue["municipality"] = params.municipality;
             returnValue["munType"] = params.munType
             returnValue["attorney"] = params.attorney
             returnValue["displayIntakesCheckBox"] = params.displayIntakesCheckBox == "on" || params.displayIntakesCheckBox == "true"? "true" : "false"
             returnValue["intakeState"] = params.intakeState
-            
+
             returnValue["report"] = true;
             returnValue["ClientListCounts"] = clientListCounts;
             returnValue["TotalFromMun"] = clientListCounts["newClient"][1] + clientListCounts["newIntake"][1] + clientListCounts["ongoingIntake"][1]
@@ -570,15 +573,15 @@ class ClientController
 
         return returnValue;
     }
-    
+
     Collection getNewClientsFromMunicipalityForTimePeriod( def params )
-    { 
+    {
         def query = getNewClientsQueryForMunicipalityType( params.munType, params.attorney, params.intakeState )
         def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
-        
+
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
-        
+
         //println "namedParams: "+namedParams
         def newClients = Client.executeQuery(query, namedParams );
         return newClients;
@@ -605,12 +608,12 @@ class ClientController
         //println "New clients query: " + newClientsQueryString;
         return newClientsQueryString;
     }
-    
+
     Collection getClientsWithNewIntakesFromMunicipalityForTimePeriod( def params )
     {
         def query = getClientsWithNewIntakesQueryForMunicipalityType( params.munType, params.attorney, params.intakeState )
         def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
-        
+
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
 
@@ -618,14 +621,14 @@ class ClientController
         def newIntakeClients = Client.executeQuery( query, namedParams )
         return newIntakeClients;
     }
-    
+
     String getAttorneySubQuery(String attorney)
     {
         if (attorney != null && !"".equals(attorney) && "Any".equals(attorney))
             return ""
         return " and intake.attorney = '"+attorney+"'"
     }
-    
+
     String getMunicipalitySubQuery(String municipalityType)
     {
         String subQuery = ""
@@ -638,7 +641,7 @@ class ClientController
 
         return subQuery
     }
-    
+
     String getClientsWithNewIntakesQueryForMunicipalityType( String municipalityType, String attorney, String intakeState )
     {
         //println "Getting new intakes query for " + municipalityType
@@ -664,21 +667,21 @@ class ClientController
         //println "New intakes query: " + newIntakesQueryString;
         return newIntakesQueryString;
     }
-    
+
     Collection getClientsWithOngoingIntakesFromMunicipalityForTimePeriod( def params )
     {
         //println "Getting clients with ongoing intakes : " + params
         def query = getClientsWithOngoingIntakesQueryForMunicipalityType( params.munType, params.attorney, params.intakeState )
         def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
-        
+
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
-        
+
         //println "namedParams: "+namedParams
         def ongoingIntakeClients = Client.executeQuery( query, namedParams )
         return ongoingIntakeClients
     }
-    
+
     String getClientsWithOngoingIntakesQueryForMunicipalityType( String municipalityType, String attorney, String intakeState )
     {
         //println "getting ongoing intakes for " + municipalityType
@@ -703,13 +706,13 @@ class ClientController
         queryString += " order by person.lastName"
 
         //println "Ongoing intakes query: " + queryString
-        return queryString;    
+        return queryString;
     }
 
     private int getNumTotalNewClientsBetween(Date startDate, Date endDate)
     {
-        def queryString = 
-        """
+        def queryString =
+                """
         from Client as client
         inner join fetch client.client as person
         where client.firstVisit between :startDate and :endDate
@@ -717,11 +720,11 @@ class ClientController
         def numClients = Client.executeQuery(queryString, [startDate:startDate, endDate:endDate])
         return numClients.size()
     }
-    
+
     private int getNumTotalNewIntakesBetween(Date startDate, Date endDate)
     {
-        def queryString = 
-        """
+        def queryString =
+                """
          select distinct client
             from Client as client
                inner join fetch client.client as person
@@ -733,11 +736,11 @@ class ClientController
         def numClients = Client.executeQuery(queryString, [startDate:startDate, endDate:endDate])
         return numClients.size()
     }
-    
+
     private int getNumTotalOngoingIntakesBetween(Date startDate, Date endDate)
     {
         def queryString =
-        """
+                """
         select distinct client
             from Client as client
                inner join fetch client.client as person
