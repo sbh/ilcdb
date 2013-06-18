@@ -240,6 +240,25 @@ window.onload = reporting.windowLoaded
                             </td>
                         </tr>
 
+                        <tr class="prop">
+                            <td valign="top" for="statusAchieved"><label>Status Achieved</label> </td>
+                            <td name="statusAchieved" valign="top">
+                            <table style="width:auto">
+                                <tr class="prop">
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="lpr" checked="${'lpr'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;LPR<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="citizenship" checked="${'citizenship'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Citizenship<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="daca" checked="${'daca'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;DACA<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="tps" checked="${'tps'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;TPS<br></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="any" checked="${'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Any<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="none" checked="${'none'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;None<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n/a" checked="${statusAchieved == null || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N/A<br></td>
+                                </tr>
+                            </table>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td valign="bottom"><span class="button"><g:actionSubmit class="save" value="Generate Report" action="report" /> </span></td>
                         </tr>

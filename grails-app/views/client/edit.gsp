@@ -250,7 +250,7 @@ window.onload=toggleOnLoad
       
                             <tr class="even">
                               <td align="right" valign="top" class="name">
-                                <label for="tps">TPS Achieved?:</label>
+                                <label for="tps">TPS Re-registered?:</label>
                               </td>
                               <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'tps','errors')}">
                                 <g:checkBox name="tps" id="tps" value="${client?.tps}" onclick="toggleDatePicker(document.clientEdit.tps)" />

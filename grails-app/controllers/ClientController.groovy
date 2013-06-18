@@ -15,7 +15,7 @@ class ClientController
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list =
+    def list()
     {
         //select client.id from client, person where client.client_id=person.id order by person.last_name;
         if(!params.max) params.max = 10
@@ -60,7 +60,7 @@ class ClientController
         }
     }
 
-    def show =
+    def show()
     {
         //println("ClientController.show params: "+params)
         def client = Client.get( params.id )
@@ -74,7 +74,7 @@ class ClientController
             return [ client : client ]
     }
 
-    def delete =
+    def delete()
     {
         //println("ClientController.delete params: "+params)
         def client = Client.get( params.id )
@@ -91,7 +91,7 @@ class ClientController
         }
     }
 
-    def edit =
+    def edit()
     {
         //println("ClientController.edit params: "+params)
         def client = Client.get( params.id )
@@ -106,7 +106,7 @@ class ClientController
             return [ client : client ]
     }
 
-    def update =
+    def update()
     {
         //println("ClientController.update params: "+params)
 
@@ -149,7 +149,7 @@ class ClientController
         }
     }
 
-    def create =
+    def create()
     {
         def client = new Client()
         client.properties = params
@@ -157,7 +157,7 @@ class ClientController
         return ['client':client]
     }
 
-    def save =
+    def save()
     {
         //println("ClientController.save params: "+params)
 
@@ -260,7 +260,7 @@ class ClientController
         }
     }
 
-    def search =
+    def search()
     {
         //println("ClientController.search params: "+params)
 
@@ -504,7 +504,7 @@ class ClientController
         }
     }
 
-    def report =
+    def report()
     {
         //println("report params: "+params)
         def returnValue = [ : ];
@@ -563,6 +563,7 @@ class ClientController
             returnValue["attorney"] = params.attorney
             returnValue["displayIntakesCheckBox"] = params.displayIntakesCheckBox == "on" || params.displayIntakesCheckBox == "true"? "true" : "false"
             returnValue["intakeState"] = params.intakeState
+            returnValue["statusAchieved"] = params.statusAchieved
 
             returnValue["report"] = true;
             returnValue["ClientListCounts"] = clientListCounts;
@@ -576,7 +577,7 @@ class ClientController
 
     Collection getNewClientsFromMunicipalityForTimePeriod( def params )
     {
-        def query = getNewClientsQueryForMunicipalityType( params.munType, params.attorney, params.intakeState )
+        def query = getNewClientsQueryForMunicipalityType( params.munType, params.attorney, params.intakeState, params.statusAchieved )
         def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
 
         if ("State".equals(params.munType))
@@ -587,7 +588,7 @@ class ClientController
         return newClients;
     }
 
-    String getNewClientsQueryForMunicipalityType ( String municipalityType, String attorney, String intakeState )
+    String getNewClientsQueryForMunicipalityType ( String municipalityType, String attorney, String intakeState, String statusAchieved )
     {
         //println "Getting new clients query for " + municipalityType
         def newClientsQueryString = """
@@ -599,6 +600,8 @@ class ClientController
         """
         newClientsQueryString += getMunicipalitySubQuery(municipalityType)
         newClientsQueryString += getAttorneySubQuery(attorney)
+        newClientsQueryString += getStatusAchievedSubQuery(statusAchieved)
+
         if ("open".equals(intakeState))
             newClientsQueryString += " and intake.completionDate is null"
         else if ("closed".equals(intakeState))
@@ -611,7 +614,7 @@ class ClientController
 
     Collection getClientsWithNewIntakesFromMunicipalityForTimePeriod( def params )
     {
-        def query = getClientsWithNewIntakesQueryForMunicipalityType( params.munType, params.attorney, params.intakeState )
+        def query = getClientsWithNewIntakesQueryForMunicipalityType( params.munType, params.attorney, params.intakeState, params.statusAchieved )
         def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
 
         if ("State".equals(params.munType))
@@ -628,6 +631,32 @@ class ClientController
             return ""
         return " and intake.attorney = '"+attorney+"'"
     }
+    
+    String getStatusAchievedSubQuery(String whichStatus)
+    {
+        if ("lpr".equals(whichStatus))
+            return " and client.legalPermanentResident=1"
+
+        if ("citizenship".equals(whichStatus))
+            return " and client.citizen=1"
+
+        if ("daca".equals(whichStatus))
+            return " and client.daca=1"
+
+        if ("tps".equals(whichStatus))
+            return " and client.tps=1"
+
+        if ("none".equals(whichStatus))
+            return " and (client.legalPermanentResident=0 and client.citizen=0 and client.daca=0 and client.tps=0)"
+        
+        if ("any".equals(whichStatus))
+            return " and (client.legalPermanentResident=1 or client.citizen=1 or client.daca=1 or client.tps=1)"
+        
+        if ("n/a".equals(whichStatus))
+            return ""
+        
+        return ""
+    }
 
     String getMunicipalitySubQuery(String municipalityType)
     {
@@ -642,7 +671,7 @@ class ClientController
         return subQuery
     }
 
-    String getClientsWithNewIntakesQueryForMunicipalityType( String municipalityType, String attorney, String intakeState )
+    String getClientsWithNewIntakesQueryForMunicipalityType( String municipalityType, String attorney, String intakeState, String statusAchieved )
     {
         //println "Getting new intakes query for " + municipalityType
         def newIntakesQueryString = """
@@ -658,6 +687,8 @@ class ClientController
                and (intake.startDate between :startDate and :endDate )
         """
         newIntakesQueryString += getAttorneySubQuery(attorney)
+        newIntakesQueryString += getStatusAchievedSubQuery(statusAchieved)
+
         if ("open".equals(intakeState))
             newIntakesQueryString += " and intake.completionDate is null"
         else if ("closed".equals(intakeState))
@@ -671,7 +702,7 @@ class ClientController
     Collection getClientsWithOngoingIntakesFromMunicipalityForTimePeriod( def params )
     {
         //println "Getting clients with ongoing intakes : " + params
-        def query = getClientsWithOngoingIntakesQueryForMunicipalityType( params.munType, params.attorney, params.intakeState )
+        def query = getClientsWithOngoingIntakesQueryForMunicipalityType( params.munType, params.attorney, params.intakeState, params.statusAchieved )
         def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
 
         if ("State".equals(params.munType))
@@ -682,7 +713,7 @@ class ClientController
         return ongoingIntakeClients
     }
 
-    String getClientsWithOngoingIntakesQueryForMunicipalityType( String municipalityType, String attorney, String intakeState )
+    String getClientsWithOngoingIntakesQueryForMunicipalityType( String municipalityType, String attorney, String intakeState, String statusAchieved )
     {
         //println "getting ongoing intakes for " + municipalityType
         def queryString = """
@@ -699,6 +730,8 @@ class ClientController
                and ( intake.completionDate is null or intake.completionDate > :endDate )
         """
         queryString += getAttorneySubQuery(attorney)
+        queryString += getStatusAchievedSubQuery(statusAchieved)
+
         if ("open".equals(intakeState))
             queryString += " and intake.completionDate is null"
         else if ("closed".equals(intakeState))
