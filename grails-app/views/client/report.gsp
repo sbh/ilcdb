@@ -135,13 +135,13 @@ var reporting =
             intakeRows.item(i).style.display = (expand ? "" : "none")
     },
 
-    expandRow : function(row)
+    expand : function(row)
     {
         row.alt = "Collapse"
         row.src = "${createLinkTo(dir: 'images', file: 'collapse.gif')}"
     },
 
-    collapseRow : function(row)
+    collapse : function(row)
     {
         row.alt = "Expand"
         row.src = "${createLinkTo(dir: 'images', file: 'expand.gif')}"
@@ -151,31 +151,47 @@ var reporting =
     {
         if (row.alt == "Expand")
         {
-            reporting.expandRow(row)
+            reporting.expand(row)
             reporting.resetIntakeRowVisibility(true)
         }
         else
         {
-            reporting.collapseRow(row)
+            reporting.collapse(row)
             reporting.resetIntakeRowVisibility(false)
         }
     },
 
     setExpandCollapseIntakeRow : function(row, index)
     {
-        var intakeRows = document.getElementsByClassName("intakeRow-"+index);
         var intakeRow = document.getElementsByClassName("intakeRow-"+index)[0];
         if (row.alt == "Expand")
         {
-            reporting.expandRow(row)
+            reporting.expand(row)
             intakeRow.style.display = ""
         }
         else
         {
-            reporting.collapseRow(row)
+            reporting.collapse(row)
             intakeRow.style.display = "none"
         }
-    }
+    },
+    onVisibleClick : function( image, elemName, elemLabelName )
+    {
+        var elem = document.getElementById(elemName)
+        var elemLabel = document.getElementById(elemLabelName)
+        if (image.alt == "Expand")
+        {
+            reporting.expand(image);  
+            elem.style.display = ""
+            elemLabel.innerHTML = "Status Achieved"
+        }
+        else
+        {
+            reporting.collapse(image)
+            elem.style.display = "none"
+            elemLabel.innerHTML = "Advanced"
+        }
+    } 
 }    
 
 window.onload = reporting.windowLoaded
@@ -239,10 +255,15 @@ window.onload = reporting.windowLoaded
                                 <g:select id="attorney" name="attorney" from="${attorneys}" value="${attorney}" />
                             </td>
                         </tr>
-
-                        <tr class="prop">
-                            <td valign="top" for="statusAchieved"><label>Status Achieved</label> </td>
-                            <td name="statusAchieved" valign="top">
+                        <tr class="prop" >
+                            <td valign="top" for="statusAchieved">
+                                <g:img dir="images" file="expand.gif" alt="Expand" onclick="reporting.onVisibleClick(this, 'advanced', 'advancedLabel')" />
+                                <label id="advancedLabel" name="advancedLabel">Advanced</label> 
+                            </td>
+                            
+                            <td name="advanced" id="advanced" valign="top" style="display:none">
+                            
+                            <label></label>
                             <table style="width:auto">
                                 <tr class="prop">
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="lpr" checked="${'lpr'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;LPR<br></td>
@@ -273,7 +294,7 @@ window.onload = reporting.windowLoaded
                     <table style="width:auto">
                         <thead>
                             <th width="20" halign="left">Display</th>
-                            <th width="20" halign="left">Client Type</th>
+                            <th width="200" halign="left">Client Type</th>
                             <th width="50" halign="left">Number</th>
                             <th width="50" halign="left">Intake Total</th>
                         </thead>

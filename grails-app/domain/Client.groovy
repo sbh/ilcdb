@@ -2,6 +2,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import net.skytrail.StatusAchieved
 
 class Client implements Comparable<Client>
 {
@@ -26,12 +27,13 @@ class Client implements Comparable<Client>
     Date tpsDate
     
     static hasMany = [notes:Note, cases:ClientCase, appointments:Appointment, sponsorRelations:ClientSponsorRelation,
-                      serviceRecords:ServiceRecord, conflicts:Conflict/*, statiAchieved:StatusAchieved*/]
+                      serviceRecords:ServiceRecord, conflicts:Conflict]//, statiAchieved:StatusAchieved]
 
     static mapping =
     {
         cache true
         cases sort:"startDate"
+        //statiAchieved sort:"date"
     }
 
     static fetchMode = [client:"eager", notes:"eager", cases:"eager",serviceRecords:"eager", conflicts:"eager"]

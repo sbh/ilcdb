@@ -552,7 +552,8 @@ class ClientController
 
             def clientListCounts = [ : ]
 
-            clientListCounts["newClient"] = ["New Client/New Intake", newClients.size(), getNumTotalNewClientsBetween(params.startDate, params.endDate)];
+            clientListCounts["newClient"] = ["New Clients with New Intakes", newClients.size(), getNumTotalNewClientsBetween(params.startDate, params.endDate)];
+            //println "Client data: " + clientListCounts["newClient"]
             clientListCounts["newIntake"] = ["Existing Clients with New Intakes", newIntakes.size(), getNumTotalNewIntakesBetween(params.startDate, params.endDate)];
             clientListCounts["ongoingIntake"] = ["Existing Clients with Ongoing Intakes", ongoingIntakes.size(), getNumTotalOngoingIntakesBetween(params.startDate, params.endDate)];
 
@@ -578,7 +579,8 @@ class ClientController
     Collection getNewClientsFromMunicipalityForTimePeriod( def params )
     {
         def query = getNewClientsQueryForMunicipalityType( params.munType, params.attorney, params.intakeState, params.statusAchieved )
-        def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
+        //println "Query Sring: " + query
+        def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate] 
 
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
@@ -592,7 +594,8 @@ class ClientController
     {
         //println "Getting new clients query for " + municipalityType
         def newClientsQueryString = """
-        from Client as client
+        select distinct client from
+           Client as client
            inner join fetch client.client as person
            inner join fetch person.address as address
            inner join fetch client.cases as intake
@@ -746,10 +749,12 @@ class ClientController
     {
         def queryString =
                 """
+        select distinct client
         from Client as client
         inner join fetch client.client as person
         where client.firstVisit between :startDate and :endDate
         """
+        //println "Query String: " + queryString
         def numClients = Client.executeQuery(queryString, [startDate:startDate, endDate:endDate])
         return numClients.size()
     }
