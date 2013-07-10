@@ -10,7 +10,7 @@ import net.skytrail.util.USStates
 class ClientController
 {
     def usStates = new USStates()
-    def index = { redirect(action:list,params:params) }
+    def index = { redirect(action:"list",params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -68,7 +68,7 @@ class ClientController
         if(!client)
         {
             flash.message = "Client not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else
             return [ client : client ]
@@ -82,12 +82,12 @@ class ClientController
         {
             client.delete()
             flash.message = "Client ${params.id} deleted"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else
         {
             flash.message = "Client not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
     }
 
@@ -100,7 +100,7 @@ class ClientController
         if(!client)
         {
             flash.message = "Client not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else
             return [ client : client ]
@@ -131,7 +131,7 @@ class ClientController
             if(client.validate() && client.save())
             {
                 flash.message = "Client ${params.id} updated"
-                redirect(action:list, fragment:params.id)
+                redirect(action:"list", fragment:params.id)
             }
             else
             {
@@ -145,7 +145,7 @@ class ClientController
         else
         {
             flash.message = "Client not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action:"edit", id:params.id)
         }
     }
 
@@ -211,7 +211,7 @@ class ClientController
 
                 flash.message = "Client ${client.id} created"
                 // redirect to the newly created intake so that it can be edited if so desired
-                redirect(controller:"clientCase", action:edit, id:clientCase.id)
+                redirect(controller:"clientCase", action:"edit", id:clientCase.id)
             }
             else
             {
@@ -226,7 +226,7 @@ class ClientController
                     placeOfBirth.errors.allErrors.each { println "placeOfBirth error: "+it }
                 person.address = address
                 client.client = person
-                render(view:'create',model:[client:client])
+                render(view:'create', model:[client:client])
             }
         }
         else if(params.containsKey('personSource') && params['personSource'] == 'existing')
@@ -240,16 +240,16 @@ class ClientController
                 person.placeOfBirth = placeOfBirth
 
             if (!client.hasErrors() && placeOfBirth.validate() &&
-            client.validate())
+                client.validate())
             {
                 placeOfBirth.save()
                 client.save()
 
                 flash.message = "Client ${client.id} created"
-                redirect(action:list)
+                redirect(action:"list")
             }
             else
-                render(view:'create',model:[client:client])
+                render(view:'create', model:[client:client])
         }
         else
         {
