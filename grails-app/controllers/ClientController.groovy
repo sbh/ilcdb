@@ -17,15 +17,38 @@ class ClientController
 
     def list()
     {
-        //select client.id from client, person where client.client_id=person.id order by person.last_name;
-        if(!params.max) params.max = 10
-
+        long t1 = System.currentTimeMillis()
         List clients = new ArrayList()
 
         clients.addAll(Client.findAll( "from Client as c order by upper(c.client.lastName), upper(c.client.firstName)" ))
-
+        def t2 = System.currentTimeMillis()
+        println(clients.size()+" loaded in "+(t2-t1)+" ms.")
+        
         Collections.sort(clients, new ClientComparator());
-        [ clientList:  clients ]
+        println(clients.size()+" sorted in "+(System.currentTimeMillis()-t2)+" ms.")
+        
+        def clientMaps = []
+        t1 = System.currentTimeMillis()
+        for (client in clients)
+        {
+            def clientMap = new HashMap()
+            clientMap['id'] = client.id
+            clientMap['person'] = client.client?.encodeAsHTML()
+            clientMap['phoneNumber'] = client.client?.phoneNumber?.encodeAsHTML()
+            clientMap['householeIncomeLevel'] = client.householdIncomeLevel
+            clientMap['numberInHousehold'] = client.numberInHousehold
+            clientMap['age'] = client.client?.age
+            clientMap['race'] = client.client?.race?.encodeAsHTML()
+            clientMap['homeCountry'] = client.homeCountry?.encodeAsHTML()
+            clientMap['shortAddress'] = client.shortAddress?.encodeAsHTML()
+            clientMap['fileLocation'] = client.fileLocation
+            clientMap['attorney'] = client.attorney
+            clientMap['validCases'] = (!client.validCases ? " **" : "")
+            clientMaps.add(clientMap)
+        }
+        println(clients.size()+" resolved "+(System.currentTimeMillis()-t1)+" ms.")
+
+        [ clientList:  clientMaps ]
     }
 
     private class ClientComparator implements Comparator<Client>

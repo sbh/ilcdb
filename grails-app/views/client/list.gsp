@@ -29,23 +29,21 @@
                     <tbody>
                         <g:each in="${clientList}" status="i" var="client">
                             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                <td><g:link action="edit" id="${client.id}">${client.client?.encodeAsHTML()}<a name="${client?.id}"/></g:link></td>
-                                <td><g:link action="edit" id="${client.id}">${client.client?.phoneNumber?.encodeAsHTML()}</g:link></td>
-                                <td><g:link action="edit" id="${client.id}">${client.householdIncomeLevel}</g:link></td>
-                                <td><g:link action="edit" id="${client.id}">${client.numberInHousehold}</g:link></td>
-                                <td><g:link action="edit" id="${client.id}">${client.client?.age}</g:link></td>
-                                <td><g:link action="edit" id="${client.id}">${client.client?.race?.encodeAsHTML()}</g:link></td>
-                                <td><g:link action="edit" id="${client.id}">${client.homeCountry?.encodeAsHTML()}</g:link></td>
-                                <td><g:link action="edit" id="${client.id}">${client.shortAddress?.encodeAsHTML()}</g:link></td>
-                                <td><g:link action="edit" id="${client.id}">${client.fileLocation}</g:link></td>
-                                <td><g:link action="edit" id="${client.id}">${client.attorney}</g:link>
-                                    <g:if test="${!client.validCases}"> **</g:if>
-                                </td>
+                                <td><g:link action="edit" id="${client['id']}">${client['person']}<a name="${client?.id}"/></g:link></td>
+                                <td><g:link action="edit" id="${client['id']}">${client['phoneNumber']}</g:link></td>
+                                <td><g:link action="edit" id="${client['id']}">${client['householdIncomeLevel']}</g:link></td>
+                                <td><g:link action="edit" id="${client['id']}">${client['numberInHousehold']}</g:link></td>
+                                <td><g:link action="edit" id="${client['id']}">${client['age']}</g:link></td>
+                                <td><g:link action="edit" id="${client['id']}">${client['race']}</g:link></td>
+                                <td><g:link action="edit" id="${client['id']}">${client['homeCountry']}</g:link></td>
+                                <td><g:link action="edit" id="${client['id']}">${client['shortAddress']}</g:link></td>
+                                <td><g:link action="edit" id="${client['id']}">${client['fileLocation']}</g:link></td>
+                                <td><g:link action="edit" id="${client['id']}">${client['attorney']}</g:link>${!client['validCases']}</td>
                             </tr>
                         </g:each>
                     </tbody>
                 </table>
-            </div>
+                        </div>
         </div>
     </body>
 </html>
