@@ -1,9 +1,13 @@
-import java.util.Date;
+class StatusAchieved
+ {
+     static belongsTo = [ client:Client ]
 
-public class StatusAchieved
-{
-    StatusType statusType
-    Date dateAchieved
-    
-    static belongsTo = [ client:Client ]
+     enum Type { Citizenship, LPR, DACA, TPS }
+     
+     Type type
+     Date date
+
+    static constraints =
+    {
+    }
 }

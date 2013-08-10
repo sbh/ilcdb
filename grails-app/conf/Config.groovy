@@ -100,7 +100,7 @@ grails.war.java5.dependencies = [
 
 
 // The following properties have been added by the Upgrade process...
-grails.views.default.codec="none" // none, html, base64
+grails.views.default.codec="html" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
 
 //log4j.logger.org.springframework.security='off,stdout'
@@ -117,6 +117,8 @@ grails.plugins.springsecurity.authority.className = 'Role'
 grails.plugins.springsecurity.password.algorithm = 'bcrypt'
 grails.plugins.springsecurity.failureHandler.exceptionMappings = [ 'org.springframework.security.authentication.CredentialsExpiredException': '/user/passwordExpired' ]
 grails.plugins.springsecurity.roleHierarchy = 'ROLE_ADMIN > ROLE_ATTORNEY > ROLE_STAFF > ROLE_VOLUNTEER > ROLE_INTERN'
+
+grails.plugins.springsecurity.ui.register.postResetUrl = '/reset'
 
 rememberMe.tokenValiditySeconds = 43200 // 12 hours
 
