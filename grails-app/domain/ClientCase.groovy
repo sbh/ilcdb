@@ -4,7 +4,8 @@ class ClientCase implements Comparable<ClientCase>
 {
     public static final String STAFF_ADVISE = "Staff Advise"
     public static final String STAFF_REPRESENTATION = "Staff Representation"
-    
+
+    //Can we make this configuratble?
     public static final List ATTORNEYS = ["Laurel", "Laurel/Melissa", "Mary", "Mary/Melissa", "----", "Diego"]
     static belongsTo = [ client:Client ]
     static hasMany = [ notes : Note ]

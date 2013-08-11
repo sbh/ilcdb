@@ -19,7 +19,6 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-
                         <tr class="prop">
                             <td valign="top" class="name">
                                 <label for="firstVisit">Date of First Visit:</label>

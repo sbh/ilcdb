@@ -61,7 +61,6 @@ window.onload=toggleOnLoad
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
                         <tr class="prop">
                           <td valign="top" class="name">
                             <label for="firstVisit">Date of First Visit:</label>
@@ -210,11 +209,27 @@ window.onload=toggleOnLoad
                           <g:link controller="clientSponsorRelation" params="['client.id':client?.id]" action="create">Add Sponsor</g:link>
                         </td>
                       </tr>
-                
+
                       <tr class="prop">
+                          <td valign="top" class="name">
+                            <label for="statiAchieved">Achieved Statuses:</label>
+                          </td>
+                          <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'statiAchieved','errors')}">
+
+                            <ul>
+                              <g:each var="statusAchieved" in="${client?.statiAchieved?}">
+                                <li><g:link controller="statusAchieved" action="edit" id="${statusAchieved.id}">${statusAchieved?.encodeAsHTML()}</g:link></li>
+                              </g:each>
+                            </ul>
+                            <g:link controller="statusAchieved" params="['client.id':client?.id]" action="create">Add Status Achieved</g:link>
+                          </td>
+                      </tr>
+
+                      <!--<tr class="prop">
                         <td valign="top" class="name">
                           <label for="status">Status:</label>
                         </td>
+                        <td></td>
 
                         <td valign="top" colspan="3" class="value">
                           <table>
@@ -259,7 +274,7 @@ window.onload=toggleOnLoad
                             </tr>
                           </table>
                         </td>
-                      </tr>
+                      </tr> -->
 
                       <tr class="prop">
                         <td valign="top" class="name">

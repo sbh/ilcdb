@@ -24,7 +24,7 @@ class Client implements Comparable<Client>
     Date dacaDate
     boolean tps
     Date tpsDate
-    
+
     static hasMany = [notes:Note, cases:ClientCase, appointments:Appointment, sponsorRelations:ClientSponsorRelation,
                       serviceRecords:ServiceRecord, conflicts:Conflict, statiAchieved:StatusAchieved]
 
@@ -199,5 +199,15 @@ class Client implements Comparable<Client>
     public int compareTo(Client other)
     {
         return client.compareTo(other.client)
+    }
+
+    public boolean hasAchievedCitizenship()
+    {
+        for(StatusAchieved status : statiAchieved) {
+            if(status.type == StatusAchieved.Type.Citizenship){
+                return true;
+            }
+        }
+        return false;
     }
 }
