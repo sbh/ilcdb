@@ -4,8 +4,23 @@ class StatusAchieved
  {
      static belongsTo = [ client:Client ]
 
-     enum Type { Citizenship, LPR, DACA, TPS }
-     
+     enum Type {
+         Citizenship,
+         LPR,
+         DACA,
+         TPS,
+         LPRConditionsRemoved{
+             public String toString(){
+                 return "LPR Conditions Removed"
+             }
+         },
+         LPRCardRenewed{
+             public String toString(){
+                 return "LPR Card Renewed"
+             }
+         };
+     }
+
      Type type
      Date date
 

@@ -6,7 +6,7 @@
     </head>
     <body>
         <div class="body" style="width: 80%;">
-            <h1>Status Achieved</h1>
+            <h1>Status Achieved: ${statusAchieved.client}</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
@@ -19,15 +19,6 @@
                 <div class="dialog">
             <table>
                         <tbody>
-
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="client">Status Achieved:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:statusAchieved,field:'client','errors')}">
-                                    <g:select optionKey="id" from="${Client.list()}" name="client.id" value="${statusAchieved?.client?.id}" ></g:select>
-                                </td>
-                            </tr>
 
                             <tr class="prop">
                                 <td valign="top" class="name">
