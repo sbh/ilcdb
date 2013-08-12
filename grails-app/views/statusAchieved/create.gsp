@@ -44,6 +44,7 @@
                 <div class="buttons">
                     <span class="button"><input class="save" type="submit" value="Create" /></span>
                 </div>
+                <g:hiddenField name="client.id" value="${statusAchieved?.client?.id}" />
             </g:form>
         </div>
     </body>
