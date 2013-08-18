@@ -49,3 +49,7 @@ update address set country_id=(select id from country where address.country = co
 update birth_place set country_id=(select id from country where birth_place.country = country.name);
 alter table address drop country;
 alter table birth_place drop country;
+
+
+alter table status_achieved drop date_achieved;
+alter table status_achieved drop status_type;

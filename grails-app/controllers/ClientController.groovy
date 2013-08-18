@@ -43,7 +43,7 @@ class ClientController
             clientMap['shortAddress'] = client.shortAddress?.encodeAsHTML()
             clientMap['fileLocation'] = client.fileLocation
             clientMap['attorney'] = client.attorney
-            clientMap['validCases'] = (!client.validCases ? " **" : "")
+            clientMap['validCases'] = (client.validCases ? "" : "**") 
             clientMaps.add(clientMap)
         }
         println(clients.size()+" resolved "+(System.currentTimeMillis()-t1)+" ms.")
