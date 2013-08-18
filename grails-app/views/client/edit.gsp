@@ -225,57 +225,6 @@ window.onload=toggleOnLoad
                           </td>
                       </tr>
 
-                      <!--<tr class="prop">
-                        <td valign="top" class="name">
-                          <label for="status">Status:</label>
-                        </td>
-                        <td></td>
-
-                        <td valign="top" colspan="3" class="value">
-                          <table>
-                            <tr class="odd">
-                              <td valign="top" class="name">
-                                <label for="legalPermanentResident">LPR Status Achieved?:</label>
-                              </td>
-                              <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'legalPermanentResident','errors')}">
-                                <g:checkBox name="legalPermanentResident" id="legalPermanentResident" value="${client?.legalPermanentResident}" onclick="toggleDatePicker(document.clientEdit.legalPermanentResident)" />
-                                &nbsp;<g:datePicker name="legalPermanentResidentDate" id="legalPermanentResidentDate" value="${client?.legalPermanentResidentDate}" precision="day"/>
-                              </td>
-                            </tr> 
-      
-                            <tr class="even">
-                              <td align="right" valign="top" class="name">
-                                <label for="citizen">Citizenship Achieved?:</label>
-                              </td>
-                              <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'citizen','errors')}">
-                                <g:checkBox name="citizen" id="citizen" value="${client?.citizen}" onclick="toggleDatePicker(document.clientEdit.citizen)" />
-                                &nbsp;<g:datePicker name="citizenDate" id="citizenDate" value="${client?.citizenDate}" precision="day"/>
-                              </td>
-                            </tr>
-
-                            <tr class="odd">
-                              <td valign="top" class="name">
-                                <label for="daca">DACA Status Achieved?:</label>
-                              </td>
-                              <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'daca','errors')}">
-                                <g:checkBox name="daca" id="daca" value="${client?.daca}" onclick="toggleDatePicker(document.clientEdit.daca)" />
-                                &nbsp;<g:datePicker name="dacaDate" id="dacaDate" value="${client?.dacaDate}" precision="day"/>
-                              </td>
-                            </tr> 
-      
-                            <tr class="even">
-                              <td align="right" valign="top" class="name">
-                                <label for="tps">TPS Re-registered?:</label>
-                              </td>
-                              <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'tps','errors')}">
-                                <g:checkBox name="tps" id="tps" value="${client?.tps}" onclick="toggleDatePicker(document.clientEdit.tps)" />
-                                &nbsp;<g:datePicker name="tpsDate" id="tpsDate" value="${client?.tpsDate}" precision="day"/>
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr> -->
-
                       <tr class="prop">
                         <td valign="top" class="name">
                           <label for="client">Client:</label>
