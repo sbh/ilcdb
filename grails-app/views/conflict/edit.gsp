@@ -6,7 +6,7 @@
     </head>
     <body>
         <div class="body">
-            <h1>Edit Conflict</h1>
+            <h1>Edit Conflict for ${conflict?.client.encodeAsHTML()}</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
@@ -20,16 +20,24 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="client">Client:</label>
+                                    <label for="firstName">Conflict First Name:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:conflict,field:'client','errors')}">
-                                    <g:select optionKey="id" from="${Client.list()}" name="client.id" value="${conflict?.client?.id}" ></g:select>
+                                <td valign="top" class="value ${hasErrors(bean:conflict,field:'firstName','errors')}">
+                                    <input type="text" id="firstName" name="firstName" value="${fieldValue(bean:conflict,field:'firstName')}"/>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="lastName">Conflict Last Name:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:conflict,field:'lastName','errors')}">
+                                    <input type="text" id="lastName" name="lastName" value="${fieldValue(bean:conflict,field:'lastName')}"/>
+                                </td>
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="createDate">Date:</label>
@@ -41,10 +49,10 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="note">Note:</label>
+                                    <label for="reason">Reason:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:conflict,field:'note','errors')}">
-                                    <input type="text" id="note" name="note" value="${fieldValue(bean:conflict,field:'note')}"/>
+                                <td valign="top" class="value ${hasErrors(bean:conflict,field:'reason','errors')}">
+                                    <input type="text" id="reason" name="reason" value="${fieldValue(bean:conflict,field:'reason')}"/>
                                 </td>
                             </tr> 
                         
@@ -55,6 +63,7 @@
                     <span class="button"><g:actionSubmit class="save" value="Update" /></span>
                     <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete" /></span>
                 </div>
+                <g:hiddenField name="client.id" value="${conflict?.client?.id}" />
             </g:form>
         </div>
     </body>

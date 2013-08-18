@@ -137,36 +137,6 @@ window.onload=toggleOnLoad
                             <g:link controller="note" params="['clientid':client?.id, 'noteType':'client']" action="create">Add Note</g:link>
                           </td>
                         </tr> 
-<!--
-                        <tr class="prop">
-                          <td valign="top" class="name">
-                            <label for="conflicts">Conflicts:</label>
-                          </td>
-                          <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'conflicts','errors')}">
-                            <g:if test="${client.conflicts.size() > 0}">
-                              <table>
-                                <thead>
-                                  <th>Create Date</th>
-                                  <th>Conflict</th>
-                                </thead>
-                                <tbody>
-                                  <g:each var="aConflict" in="${client?.conflicts?}" status="i">
-                                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                                      <td>
-                                        ${aConflict?.formattedDate}
-                                      </td>
-                                      <td>
-                                        <g:link controller="conflict" action="edit" id="${aConflict.id}" params="['clientid':client.id]">${aConflict?.encodeAsHTML().replaceAll("\n", "<br>")}</g:link>
-                                      </td>
-                                    </tr>
-                                  </g:each>
-                                </tbody>
-                              </table>
-                            </g:if>
-                            <g:link controller="conflict" params="['clientid':client?.id]" action="create">Add Conflict</g:link>
-                          </td>
-                        </tr> 
- -->
                         <tr class="prop">
                           <td valign="top" class="name">
                             <label for="serviceRecords">Service Records:</label>
@@ -207,6 +177,20 @@ window.onload=toggleOnLoad
                             </g:each>
                           </ul>
                           <g:link controller="clientSponsorRelation" params="['client.id':client?.id]" action="create">Add Sponsor</g:link>
+                        </td>
+                      </tr>
+
+                      <tr class="prop">
+                        <td valign="top" class="name">
+                          <label for="conflicts">Conflicts:</label>
+                       </td>
+                        <td valign="top" colspan="3" class="value ">
+                          <ul>
+                            <g:each var="conf" in="${client.conflicts}">
+                              <li><g:link controller="conflict" action="show" id="${conf.id}">${conf.lastName},${conf.firstName}</g:link></li>
+                            </g:each>
+                          </ul>
+                          <g:link controller="conflict" params="['client.id':client?.id]" action="create">Add Conflict</g:link>
                         </td>
                       </tr>
 

@@ -18,20 +18,19 @@
                             <td valign="top" class="name">Client:</td>
                             
                             <td valign="top" class="value"><g:link controller="client" action="show" id="${conflict?.client?.id}">${conflict?.client?.encodeAsHTML()}</g:link></td>
-                            
                         </tr>
-                    
+                        <tr class="prop">
+                            <td valign="top" class="name">Conflicting Person:</td>
+                            <td valign="top" class="value">${conflict?.lastName}, ${conflict?.firstName}</td>
+                        </tr>
                         <tr class="prop">
                             <td valign="top" class="name">Date:</td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean:conflict, field:'date')}</td>
-                            
+                            <td valign="top" class="value">${fieldValue(bean:conflict, field:'createDate')}</td>
                         </tr>
-                    
                         <tr class="prop">
-                            <td valign="top" class="name">Note:</td>
+                            <td valign="top" class="name">Reason:</td>
                             
-                            <td valign="top" class="value">${fieldValue(bean:conflict, field:'note')}</td>
+                            <td valign="top" class="value">${fieldValue(bean:conflict, field:'reason')}</td>
                             
                         </tr>
                     

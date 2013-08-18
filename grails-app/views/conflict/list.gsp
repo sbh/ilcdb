@@ -16,27 +16,27 @@
                         <tr>
                         
                    	        <th>Client</th>
-                   	    
-                   	        <g:sortableColumn property="createDate" title="Date" />
-                        
-                   	        <g:sortableColumn property="note" title="Note" />
 
-				<th>&nbsp;</th>
+                            <g:sortableColumn property="lastName" title="Last Name" />
+
+                            <g:sortableColumn property="firstName" title="First Name" />
+
+				            <th>&nbsp;</th>
                         
                         </tr>
                     </thead>
                     <tbody>
-                    <g:each in="${conflict}" status="i" var="conflict">
+                    <g:each in="${conflictList}" status="i" var="conflict">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td>${fieldValue(bean:conflict, field:'client')}</td>
-                        
-                            <td>${fieldValue(bean:conflict, field:'createDate')}</td>
-                        
-                            <td>${fieldValue(bean:conflict, field:'note')}</td>
+                            <td>${conflict.client.encodeAsHTML()}</td>
 
-			    <td><g:link action="show" id="${conflict.id}">Show</g:link></td>
-                        
+                            <td>${conflict.lastName}</td>
+
+                            <td>${conflict.firstName}</td>
+
+             			    <td><g:link action="show" id="${conflict.id}">Show</g:link></td>
+
                         </tr>
                     </g:each>
                     </tbody>

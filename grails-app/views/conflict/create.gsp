@@ -6,7 +6,7 @@
     </head>
     <body>
         <div class="body">
-            <h1>Create Conflict</h1>
+            <h1>Create Conflict for ${conflict?.client}</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
@@ -19,16 +19,24 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="client">Client:</label>
+                                    <label for="firstName">Conflict First Name:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:conflict,field:'client','errors')}">
-                                    <g:select optionKey="id" from="${Client.list()}" name="client.id" value="${conflict?.client?.id}" ></g:select>
+                                <td valign="top" class="value ${hasErrors(bean:conflict,field:'firstName','errors')}">
+                                    <input type="text" id="firstName" name="firstName" value="${fieldValue(bean:conflict,field:'firstName')}"/>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="lastName">Conflict Last Name:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:conflict,field:'lastName','errors')}">
+                                    <input type="text" id="lastName" name="lastName" value="${fieldValue(bean:conflict,field:'lastName')}"/>
+                                </td>
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="createDate">Date:</label>
@@ -53,6 +61,7 @@
                 <div class="buttons">
                     <span class="button"><input class="save" type="submit" value="Create" /></span>
                 </div>
+                <g:hiddenField name="client.id" value="${conflict?.client?.id}" />
             </g:form>
         </div>
     </body>

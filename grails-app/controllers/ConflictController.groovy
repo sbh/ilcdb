@@ -32,14 +32,15 @@ class ConflictController
     def delete =
     {
         def conflict= Conflict.get( params.id )
+        def client = conflict.client
         if(conflict)
         {
             conflict.delete()
             flash.message = "Conflict ${params.id} deleted"
+            redirect(controller:'client', action:edit, id:client.id)
         }
         else
             flash.message = "Conflict not found with id ${params.id}"
-
     }
 
     def edit =
@@ -53,7 +54,7 @@ class ConflictController
         }
         else
         {
-            return [ conflict : conflict, clientid:params['clientid'] ]
+            return [ conflict : conflict ]
         }
     }
 
@@ -67,7 +68,7 @@ class ConflictController
             if(!conflict.hasErrors() && conflict.save())
             {
                 flash.message = "Conflict ${params.id} updated"
-                redirect(controller:'client', action:edit, id:params.clientid)
+                redirect(controller:'client', action:edit, id:params.client.id)
             }
             else
                 render(view:'edit',model:[conflict:conflict])
@@ -83,20 +84,17 @@ class ConflictController
     {
         def conflict= new Conflict()
         conflict.properties = params
-        def returnValue = ['conflict' : conflict ]
-        return [clientid : params.clientid]
+        return ['conflict' : conflict]
     }
 
     def save =
     {
-        params.client = Client.get(params.clientid)    
-        
         def conflict= new Conflict(params)
-        
+
         if(!conflict.hasErrors() && conflict.save())
         {
             flash.message = "Conflict ${conflict.id} created"
-            redirect(controller:'client', action:edit, id:params.clientid)
+            redirect(controller:'client', action:edit, id:params.client.id)
         }
         else
             render(view:'create',model:[conflict:conflict])

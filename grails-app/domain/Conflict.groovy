@@ -1,4 +1,4 @@
-class Conflict
+class Conflict implements Comparable<Conflict>
 {
     static mapping = 
     {
@@ -6,8 +6,9 @@ class Conflict
     }
     
     static belongsTo = [ client:Client ]
-    
-    Person person
+
+    String firstName
+    String lastName
     Date createDate
     String reason
 
@@ -15,5 +16,9 @@ class Conflict
     {
     }
 
-    String toString() { return person.toString() }
+    String toString() { return lastName + ", " + firstName }
+
+    int compareTo(Conflict o) {
+        return toString().compareTo(o.toString())
+    }
 }
