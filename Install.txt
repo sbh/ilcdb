@@ -53,3 +53,4 @@ alter table birth_place drop country;
 
 alter table status_achieved drop date_achieved;
 alter table status_achieved drop status_type;
+alter table conflict drop person_id;

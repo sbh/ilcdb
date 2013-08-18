@@ -83,7 +83,7 @@
                 </table>
             </div>
             <div class="buttons">
-                <span class="button"><g:actionSubmit class="save" onclick="return confirm('Are you sure this client is not a conflict?');" value="Create" /></span>
+                <span class="button"><g:actionSubmit class="save" onclick="return confirm('Are you sure this client is not a conflict?');" value="Create" action="save" /></span>
             </div>
         </g:form>
     <br />
