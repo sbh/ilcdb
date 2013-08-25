@@ -34,7 +34,7 @@
                                     <label for="text">Status Achieved:</label>
                                 </td>
                                 <td valign="top"><!-- class="value ${hasErrors(bean:statusAchieved,field:'type','errors')}"> -->
-                                    <g:select name="type" from="${StatusAchieved.Type.values()}"
+                                    <g:select name="type" from="${StatusAchieved.Type.list()}"
                                               noSelection="['':'-Choose Status Achieved-']"/>
                                 </td>
                             </tr>
