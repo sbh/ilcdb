@@ -76,7 +76,7 @@ class StatusAchievedController
     }
 
     def save = {
-        //params['type'] = StatusAchieved.Type.fromValue(params['type'])
+        params['type'] = StatusAchieved.Type.fromValue(params['type'])
         println("SatusAchievedController.save params: "+params)
         def statusAchieved = new StatusAchieved(params)
         def client = Client.get(statusAchieved.client.id)

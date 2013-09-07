@@ -51,6 +51,9 @@ alter table address drop country;
 alter table birth_place drop country;
 
 
-alter table status_achieved drop date_achieved;
-alter table status_achieved drop status_type;
-alter table conflict drop person_id;
+echo "alter table status_achieved drop date_achieved" | mysql -u ilcdb -psnuggl3s  ilcdb
+echo "alter table status_achieved drop status_type" | mysql -u ilcdb -psnuggl3s  ilcdb
+echo "alter table conflict drop person_id" | mysql -u ilcdb -psnuggl3s  ilcdb
+for i in tps tps_date citizen citizen_date daca daca_date legal_permanent_resident legal_permanent_resident_date;do
+echo "alter table client drop $i" | mysql -u ilcdb -psnuggl3s  ilcdb
+done
