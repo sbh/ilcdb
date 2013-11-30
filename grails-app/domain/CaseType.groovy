@@ -3,6 +3,7 @@ class CaseType
 {
     String type;
     boolean deprecated = false;
+    String associatedStatus;
 
     public boolean equals(Object other)
     {

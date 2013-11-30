@@ -1,20 +1,20 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class AddressController {
     
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list = {
+    def list() {
         if(!params.max) params.max = 10
         [ addressList: Address.list( params ) ]
     }
 
-    def show = {
+    def show() {
         def address = Address.get( params.id )
 
         if(!address) {
@@ -24,7 +24,7 @@ class AddressController {
         else { return [ address : address ] }
     }
 
-    def delete = {
+    def delete() {
         def address = Address.get( params.id )
         if(address) {
             address.delete()
@@ -37,7 +37,7 @@ class AddressController {
         }
     }
 
-    def edit = {
+    def edit() {
         def address = Address.get( params.id )
 
         if(!address) {
@@ -49,7 +49,7 @@ class AddressController {
         }
     }
 
-    def update = {
+    def update() {
         def address = Address.get( params.id )
         if(address) {
             address.properties = params
@@ -67,13 +67,13 @@ class AddressController {
         }
     }
 
-    def create = {
+    def create() {
         def address = new Address()
         address.properties = params
         return ['address':address]
     }
 
-    def save = {
+    def save() {
         def address = new Address(params)
         if(!address.hasErrors() && address.save()) {
             flash.message = "Address ${address.id} created"

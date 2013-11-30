@@ -1,20 +1,20 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class ClientSponsorRelationController {
     
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list = {
+    def list() {
         if(!params.max) params.max = 10
         [ clientSponsorRelationList: ClientSponsorRelation.list( params ) ]
     }
 
-    def show = {
+    def show() {
         def clientSponsorRelation = ClientSponsorRelation.get( params.id )
 
         if(!clientSponsorRelation) {
@@ -24,7 +24,7 @@ class ClientSponsorRelationController {
         else { return [ clientSponsorRelation : clientSponsorRelation ] }
     }
 
-    def delete = {
+    def delete() {
         def clientSponsorRelation = ClientSponsorRelation.get( params.id )
         if(clientSponsorRelation) {
             clientSponsorRelation.delete()
@@ -37,7 +37,7 @@ class ClientSponsorRelationController {
         }
     }
 
-    def edit = {
+    def edit() {
         def clientSponsorRelation = ClientSponsorRelation.get( params.id )
 
         if(!clientSponsorRelation) {
@@ -49,7 +49,7 @@ class ClientSponsorRelationController {
         }
     }
 
-    def update = {
+    def update() {
         def clientSponsorRelation = ClientSponsorRelation.get( params.id )
         if(clientSponsorRelation) {
             clientSponsorRelation.properties = params
@@ -67,13 +67,13 @@ class ClientSponsorRelationController {
         }
     }
 
-    def create = {
+    def create() {
         def clientSponsorRelation = new ClientSponsorRelation()
         clientSponsorRelation.properties = params
         return ['clientSponsorRelation':clientSponsorRelation]
     }
 
-    def save = {
+    def save() {
         def clientSponsorRelation = new ClientSponsorRelation(params)
         if(!clientSponsorRelation.hasErrors() && clientSponsorRelation.save()) {
             flash.message = "ClientSponsorRelation ${clientSponsorRelation.id} created"

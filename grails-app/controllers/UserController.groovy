@@ -4,24 +4,24 @@ class UserController
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def index =
+    def index()
     {
         redirect(action: "list", params: params)
     }
 
-    def list =
+    def list()
     {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [userInstanceList: User.list(params), userInstanceTotal: User.count()]
     }
 
-    def create =
+    def create()
     {
         def userInstance = new User(params)
         return [userInstance: userInstance]
     }
 
-    def save =
+    def save()
     {
         def role = Role.findByAuthority(params.role)
         def userInstance = new User(params)
@@ -36,7 +36,7 @@ class UserController
             render(view: "create", model: [userInstance: userInstance])
     }
 
-    def show =
+    def show()
     {
         def userInstance = User.get(params.id)
         if (!userInstance)
@@ -50,12 +50,12 @@ class UserController
         }
     }
     
-    def passwordExpired =
+    def passwordExpired()
     {
         [username: session['SPRING_SECURITY_LAST_USERNAME']]
     }
 
-    def updatePassword =
+    def updatePassword()
     {
         String username = session['SPRING_SECURITY_LAST_USERNAME']
         if (!username)
@@ -77,14 +77,14 @@ class UserController
          }
      
          User user = User.findByUsername(username)
-         if (!springSecurityService.passwordEncoder.isPasswordValid(user.password, password, user.getSalt()))
+         if (!springSecurityService.passwordEncoder.isPasswordValid(user.password, password))
          {
              flash.message = 'Current password is incorrect'
              render view: 'passwordExpired', model: [username: session['SPRING_SECURITY_LAST_USERNAME']]
              return
          }
      
-         if (springSecurityService.passwordEncoder.isPasswordValid(user.password, newPassword, null /*salt*/))
+         if (springSecurityService.passwordEncoder.isPasswordValid(user.password, newPassword))
          {
              flash.message = 'Please choose a different password from your current one'
              render view: 'passwordExpired', model: [username: session['SPRING_SECURITY_LAST_USERNAME']]
@@ -98,7 +98,7 @@ class UserController
         redirect controller: 'login', action: 'auth'
     }
 
-    def edit =
+    def edit()
     {
         def userInstance = User.get(params.id)
         if (!userInstance)
@@ -112,7 +112,7 @@ class UserController
         }
     }
 
-    def update =
+    def update()
     {
         def userInstance = User.get(params.id)
         if (userInstance)
@@ -157,7 +157,7 @@ class UserController
         }
     }
 
-    def delete =
+    def delete()
     {
         def userInstance = User.get(params.id)
         if (userInstance)

@@ -6,6 +6,8 @@ grails.project.target.level = 1.6
 grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
+grails.project.dependency.resolver = "maven"
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
@@ -21,6 +23,7 @@ grails.project.dependency.resolution = {
         grailsHome()
         grailsCentral()
         mavenCentral()
+        mavenRepo "http://repo.spring.io/milestone/"
 
         // uncomment these to enable remote dependency resolution from public Maven repositories
         //mavenCentral()
@@ -37,11 +40,17 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        runtime ":hibernate:$grailsVersion"
-        runtime ":jquery:1.8.3"
-        runtime ":resources:1.2"
+        runtime ":hibernate:3.6.10.4"
+        runtime ":jquery:1.10.2.2"
+        runtime ":resources:1.2.1"
 
-        build ":tomcat:$grailsVersion"
+        build ":tomcat:7.0.47"
+
+        compile ":jquery:1.10.2.2"
         compile ':jquery-date-time-picker:0.1.0'
+        compile ":spring-security-core:2.0-RC2"
+        compile ":spring-security-ui:1.0-RC1"
+        compile ":resources:1.2.1"
+        compile ":bcrypt:1.0"
     }
 }

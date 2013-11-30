@@ -1,20 +1,20 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class SponsorController {
     
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list = {
+    def list() {
         if(!params.max) params.max = 10
         [ sponsorList: Sponsor.list( params ) ]
     }
 
-    def show = {
+    def show() {
         def sponsor = Sponsor.get( params.id )
 
         if(!sponsor) {
@@ -24,7 +24,7 @@ class SponsorController {
         else { return [ sponsor : sponsor ] }
     }
 
-    def delete = {
+    def delete() {
         def sponsor = Sponsor.get( params.id )
         if(sponsor) {
             sponsor.delete()
@@ -37,7 +37,7 @@ class SponsorController {
         }
     }
 
-    def edit = {
+    def edit() {
         def sponsor = Sponsor.get( params.id )
 
         if(!sponsor) {
@@ -49,7 +49,7 @@ class SponsorController {
         }
     }
 
-    def update = {
+    def update() {
         def sponsor = Sponsor.get( params.id )
         if(sponsor) {
             sponsor.properties = params
@@ -67,13 +67,13 @@ class SponsorController {
         }
     }
 
-    def create = {
+    def create() {
         def sponsor = new Sponsor()
         sponsor.properties = params
         return ['sponsor':sponsor]
     }
 
-    def save = {
+    def save() {
 	if(params.containsKey('personSource') && params['personSource'] == 'new') {
 	    //For generating a new person
 	    def sponsor = new Sponsor(params)

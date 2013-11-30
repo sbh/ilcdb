@@ -1,20 +1,20 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class BirthPlaceController {
     
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list = {
+    def list() {
         if(!params.max) params.max = 10
         [ birthPlaceList: BirthPlace.list( params ) ]
     }
 
-    def show = {
+    def show() {
         def birthPlace = BirthPlace.get( params.id )
 
         if(!birthPlace) {
@@ -24,7 +24,7 @@ class BirthPlaceController {
         else { return [ birthPlace : birthPlace ] }
     }
 
-    def delete = {
+    def delete() {
         def birthPlace = BirthPlace.get( params.id )
         if(birthPlace) {
             birthPlace.delete()
@@ -37,7 +37,7 @@ class BirthPlaceController {
         }
     }
 
-    def edit = {
+    def edit() {
         def birthPlace = BirthPlace.get( params.id )
 
         if(!birthPlace) {
@@ -49,7 +49,7 @@ class BirthPlaceController {
         }
     }
 
-    def update = {
+    def update() {
         def birthPlace = BirthPlace.get( params.id )
         if(birthPlace) {
             birthPlace.properties = params
@@ -67,13 +67,13 @@ class BirthPlaceController {
         }
     }
 
-    def create = {
+    def create() {
         def birthPlace = new BirthPlace()
         birthPlace.properties = params
         return ['birthPlace':birthPlace]
     }
 
-    def save = {
+    def save() {
         def birthPlace = new BirthPlace(params)
         if(!birthPlace.hasErrors() && birthPlace.save()) {
             flash.message = "BirthPlace ${birthPlace.id} created"

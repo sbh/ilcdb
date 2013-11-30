@@ -1,20 +1,20 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class ServiceRecordController 
 {
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list = {
+    def list() {
         if(!params.max) params.max = 10
         [ serviceRecords: ServiceRecord.list( params ) ]
     }
 
-    def show = {
+    def show() {
         def serviceRecord = ServiceRecord.get( params.id )
 
         if(!serviceRecord) {
@@ -24,7 +24,7 @@ class ServiceRecordController
         else { return [ serviceRecord : serviceRecord ] }
     }
 
-    def delete = {
+    def delete() {
         def serviceRecord = ServiceRecord.get( params.id )
         if(serviceRecord) {
             serviceRecord.delete()
@@ -37,7 +37,7 @@ class ServiceRecordController
         }
     }
 
-    def edit = {
+    def edit() {
         def serviceRecord = ServiceRecord.get( params.id )
 
         if(!serviceRecord) {
@@ -49,7 +49,7 @@ class ServiceRecordController
         }
     }
 
-    def update = {
+    def update() {
         def serviceRecord = ServiceRecord.get( params.id )
         if(serviceRecord) {
             serviceRecord.properties = params
@@ -67,13 +67,13 @@ class ServiceRecordController
         }
     }
 
-    def create = {
+    def create() {
         def serviceRecord = new ServiceRecord()
         serviceRecord.properties = params
         return ['serviceRecord':serviceRecord]
     }
 
-    def save = {
+    def save() {
         def serviceRecord = new ServiceRecord(params)
         if(!serviceRecord.hasErrors() && serviceRecord.save()) {
             flash.message = "Service Record ${serviceRecord.id} created"

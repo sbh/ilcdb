@@ -1,20 +1,20 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class PersonController {
     
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list = {
+    def list() {
         if(!params.max) params.max = 10
         [ personList: Person.list( params ) ]
     }
 
-    def show = {
+    def show() {
         def person = Person.get( params.id )
 
         if(!person) {
@@ -24,7 +24,7 @@ class PersonController {
         else { return [ person : person ] }
     }
 
-    def delete = {
+    def delete() {
         def person = Person.get( params.id )
         if(person) {
             person.delete()
@@ -37,7 +37,7 @@ class PersonController {
         }
     }
 
-    def edit = {
+    def edit() {
         def person = Person.get( params.id )
 
         if(!person) {
@@ -49,7 +49,7 @@ class PersonController {
         }
     }
 
-    def update = {
+    def update() {
         def person = Person.get( params.id )
         if(person) {
             person.properties = params
@@ -67,13 +67,13 @@ class PersonController {
         }
     }
 
-    def create = {
+    def create() {
         def person = new Person()
         person.properties = params
         return ['person':person]
     }
 
-    def save = {
+    def save() {
 
         def person = new Person()
 	

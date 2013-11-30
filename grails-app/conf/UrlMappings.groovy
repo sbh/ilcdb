@@ -5,5 +5,7 @@ class UrlMappings {
                 // apply constraints here
             }
         }
-    }	
+        "/" { controller = "client" }
+        "500" (view: '/error')
+    }
 }

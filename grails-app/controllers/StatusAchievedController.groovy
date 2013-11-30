@@ -1,20 +1,20 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class StatusAchievedController
 {
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list = {
+    def list() {
         if(!params.max) params.max = 10
         [ statiAchieved: StatusAchieved.list( params ) ]
     }
 
-    def show = {
+    def show() {
         def statusAchieved = StatusAchieved.get( params.id )
 
         if(!statusAchieved) {
@@ -24,7 +24,7 @@ class StatusAchievedController
         else { return [ statusAchieved: statusAchieved] }
     }
 
-    def delete = {
+    def delete() {
         def statusAvhieved = StatusAchieved.get( params.id )
         if(statusAvhieved) {
             def clientId = statusAvhieved.client.id;
@@ -38,7 +38,7 @@ class StatusAchievedController
         }
     }
 
-    def edit = {
+    def edit() {
         def statusAchieved = StatusAchieved.get( params.id )
 
         if(!statusAchieved) {
@@ -50,7 +50,7 @@ class StatusAchievedController
         }
     }
 
-    def update = {
+    def update() {
         def statusAchieved = StatusAchieved.get( params.id )
         if(statusAchieved) {
             statusAchieved.properties = params
@@ -69,13 +69,13 @@ class StatusAchievedController
         }
     }
 
-    def create = {
+    def create() {
         def statusAchieved = new StatusAchieved()
         statusAchieved.properties = params
         return ['statusAchieved':statusAchieved]
     }
 
-    def save = {
+    def save() {
         params['type'] = StatusAchieved.Type.fromValue(params['type'])
         println("SatusAchievedController.save params: "+params)
         def statusAchieved = new StatusAchieved(params)

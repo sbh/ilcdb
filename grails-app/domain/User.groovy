@@ -23,7 +23,7 @@ class User
         table 'database_user'
     }
 
-    static transients = [ "salt", "roleDisplayName", "roleAux" ]
+    static transients = [ "roleDisplayName", "roleAux" ]
 
     Set<Role> getAuthorities()
     {
@@ -52,13 +52,13 @@ class User
             encodePassword()
     }
 
-    def getSalt()
+    /*def getSalt()
     {
         return username+"::ilcdb"
-    }
+    }*/
 
     protected void encodePassword()
     {
-        password = springSecurityService.encodePassword(password, getSalt())
+        password = springSecurityService.encodePassword(password)
     }
 }

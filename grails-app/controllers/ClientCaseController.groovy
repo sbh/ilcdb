@@ -1,16 +1,16 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class ClientCaseController
 {
     
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list =
+    def list()
     {
         if(!params.max) params.max = 10
 
@@ -33,7 +33,7 @@ class ClientCaseController
         return [ clientCaseList: casesList ]
     }
 
-    def show =
+    def show()
     {
         def clientCase = ClientCase.get( params.id )
 
@@ -45,7 +45,7 @@ class ClientCaseController
         else { return [ clientCase : clientCase ] }
     }
 
-    def delete =
+    def delete()
     {
         def clientCase = ClientCase.get( params.id )
         if(clientCase)
@@ -61,7 +61,7 @@ class ClientCaseController
         }
     }
 
-    def edit =
+    def edit()
     {
         //println("ClientCaseController edit params: "+params)
         
@@ -89,7 +89,7 @@ class ClientCaseController
         }
     }
 
-    def update =
+    def update()
     {
         //println("ClientCaseController update params: "+params)
 
@@ -145,14 +145,14 @@ class ClientCaseController
         }
     }
 
-    def create =
+    def create()
     {
         def clientCase = new ClientCase()
         clientCase.properties = params
         return ['clientCase':clientCase]
     }
 
-    def save =
+    def save()
     {
         //println("ClientCaseController save params: "+params)
 

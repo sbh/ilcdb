@@ -1,5 +1,3 @@
-import grails.plugins.springsecurity.SecurityConfigType
-
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -111,15 +109,27 @@ grails.views.gsp.encoding="UTF-8"
 //log4j.logger.org.springframework.security='off,stdout'
 
 // Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'User'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'UserRole'
-grails.plugins.springsecurity.authority.className = 'Role'
-grails.plugins.springsecurity.password.algorithm = 'bcrypt'
-grails.plugins.springsecurity.failureHandler.exceptionMappings = [ 'org.springframework.security.authentication.CredentialsExpiredException': '/user/passwordExpired' ]
-grails.plugins.springsecurity.roleHierarchy = 'ROLE_ADMIN > ROLE_ATTORNEY > ROLE_STAFF > ROLE_VOLUNTEER > ROLE_INTERN'
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'User'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'UserRole'
+grails.plugin.springsecurity.authority.className = 'Role'
+grails.plugin.springsecurity.password.algorithm = 'bcrypt'
+grails.plugin.springsecurity.failureHandler.exceptionMappings = [ 'org.springframework.security.authentication.CredentialsExpiredException': '/user/passwordExpired' ]
+grails.plugin.springsecurity.roleHierarchy = 'ROLE_ADMIN > ROLE_ATTORNEY > ROLE_STAFF > ROLE_VOLUNTEER > ROLE_INTERN'
 
-grails.plugins.springsecurity.ui.register.postResetUrl = '/reset'
-
+grails.plugin.springsecurity.ui.register.postResetUrl = '/reset'
+//grails.plugin.springsecurity.dao.reflectionSaltSourceProperty = 'username'
+grails.plugin.springsecurity.rejectIfNoRule = false
+grails.plugin.springsecurity.fii.rejectPublicInvocations = true
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+    '/':               ['permitAll'],
+    '/index':          ['permitAll'],
+    '/index.gsp':      ['permitAll'],
+    '/**/js/**':       ['permitAll'],
+    '/**/css/**':      ['permitAll'],
+    '/**/images/**':   ['permitAll'],
+    '/**/favicon.ico': ['permitAll']
+ ]
+ 
 rememberMe.tokenValiditySeconds = 43200 // 12 hours
 
 grails {
@@ -148,3 +158,27 @@ jqueryDateTimePicker {
     }
 }
 
+
+// Uncomment and edit the following lines to start using Grails encoding & escaping improvements
+
+/* remove this line 
+// GSP settings
+grails {
+    views {
+        gsp {
+            encoding = 'UTF-8'
+            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
+            codecs {
+                expression = 'html' // escapes values inside null
+                scriptlet = 'none' // escapes output from scriptlets in GSPs
+                taglib = 'none' // escapes output from taglibs
+                staticparts = 'none' // escapes output from static template parts
+            }
+        }
+        // escapes all not-encoded output at final stage of outputting
+        filteringCodecForContentType {
+            //'text/html' = 'html'
+        }
+    }
+}
+remove this line */

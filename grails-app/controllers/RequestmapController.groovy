@@ -8,22 +8,22 @@ class RequestmapController {
 	// the delete, save and update actions only accept POST requests
 	static def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
-	def index = {
+	def index() {
 		redirect(action: list, params: params)
 	}
 
-	def list = {
+	def list() {
 		if (!params.max) {
 			params.max = 10
 		}
 		[requestmapList: Requestmap.list(params)]
 	}
 
-	def show = {
+	def show() {
 		[requestmap: Requestmap.get(params.id)]
 	}
 
-	def delete = {
+	def delete() {
 		def requestmap = Requestmap.get(params.id)
 		if (!requestmap) {
 			flash.message = "Requestmap not found with id ${params.id}"
@@ -36,7 +36,7 @@ class RequestmapController {
 		redirect(action: list)
 	}
 
-	def edit = {
+	def edit() {
 		def requestmap = Requestmap.get(params.id)
 		if (!requestmap) {
 			flash.message = "Requestmap not found with id ${params.id}"
@@ -50,7 +50,7 @@ class RequestmapController {
 	/**
 	 * Update action, called when an existing Requestmap is updated.
 	 */
-	def update = {
+	def update() {
 
 		def requestmap = Requestmap.get(params.id)
 		if (!requestmap) {
@@ -68,7 +68,7 @@ class RequestmapController {
 		}
 	}
 
-	def create = {
+	def create() {
 		def requestmap = new Requestmap()
 		requestmap.properties = params
 		[requestmap: requestmap]
@@ -77,7 +77,7 @@ class RequestmapController {
 	/**
 	 * Save action, called when a new Requestmap is created.
 	 */
-	def save = {
+	def save() {
 
 		def requestmap = new Requestmap()
 		updateFromParams(requestmap)

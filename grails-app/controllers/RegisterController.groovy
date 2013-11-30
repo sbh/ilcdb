@@ -1,24 +1,12 @@
-import org.codehaus.groovy.grails.plugins.springsecurity.NullSaltSource
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.plugins.springsecurity.ui.RegistrationCode
+import org.junit.After;
 
-public class RegisterController extends grails.plugins.springsecurity.ui.RegisterController
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.ui.RegistrationCode
+
+public class RegisterController extends grails.plugin.springsecurity.ui.RegisterController
 {
-    static final passwordValidator = { String password, command ->
-
-        if (command.username && command.username.equals(password))
-            return 'command.password.error.username'
-
-        if (password && password.length() >= 8 && password.length() <= 64 &&
-        (!password.matches('^.*\\p{Alpha}.*$') ||
-        !password.matches('^.*\\p{Digit}.*$') ||
-        !password.matches('^.*[!@#$%^&].*$')))
-        {
-            return 'command.password.error.strength'
-        }
-    }
-
-    def resetPassword = { ResetPasswordCommand command ->
+    def resetPassword() {
+        def command = new ResetPasswordCommand(params)
 
         String token = params.t
         
@@ -39,7 +27,6 @@ public class RegisterController extends grails.plugins.springsecurity.ui.Registe
         if (command.hasErrors())
             return [token: token, command: command]
         
-        String salt = saltSource instanceof NullSaltSource ? null : registrationCode.username
         RegistrationCode.withTransaction { status ->
             def user = lookupUserClass().findByUsername(registrationCode.username)
             user.password = command.password

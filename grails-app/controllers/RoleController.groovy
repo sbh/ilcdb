@@ -2,22 +2,22 @@ class RoleController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def index = {
+    def index() {
         redirect(action: "list", params: params)
     }
 
-    def list = {
+    def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [roleInstanceList: Role.list(params), roleInstanceTotal: Role.count()]
     }
 
-    def create = {
+    def create() {
         def roleInstance = new Role()
         roleInstance.properties = params
         return [roleInstance: roleInstance]
     }
 
-    def save = {
+    def save() {
         def roleInstance = new Role(params)
         if (roleInstance.save(flush: true)) {
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'role.label', default: 'Role'), roleInstance.id])}"
@@ -28,7 +28,7 @@ class RoleController {
         }
     }
 
-    def show = {
+    def show() {
         def roleInstance = Role.get(params.id)
         if (!roleInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'role.label', default: 'Role'), params.id])}"
@@ -39,7 +39,7 @@ class RoleController {
         }
     }
 
-    def edit = {
+    def edit() {
         def roleInstance = Role.get(params.id)
         if (!roleInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'role.label', default: 'Role'), params.id])}"
@@ -50,7 +50,7 @@ class RoleController {
         }
     }
 
-    def update = {
+    def update() {
         def roleInstance = Role.get(params.id)
         if (roleInstance) {
             if (params.version) {
@@ -77,7 +77,7 @@ class RoleController {
         }
     }
 
-    def delete = {
+    def delete() {
         def roleInstance = Role.get(params.id)
         if (roleInstance) {
             try {

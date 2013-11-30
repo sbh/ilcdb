@@ -1,20 +1,23 @@
 import java.sql.ClientInfoStatus;
 
-import grails.plugins.springsecurity.Secured;
+import grails.plugin.springsecurity.annotation.Secured
 import java.util.Calendar;
 import java.util.Date;
 import net.skytrail.util.USStates
 
-@Secured(['IS_AUTHENTICATED_FULLY'])
-//@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+
+//@Secured(['IS_AUTHENTICATED_FULLY'])
+@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class ClientController
 {
     def usStates = new USStates()
-    def index = { redirect(action:"list",params:params) }
+
+    def index() { redirect(action:"list",params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
+    @Secured(['ROLE_ADMIN', 'ROLE_ATTORNEY'])
     def list()
     {
         long t1 = System.currentTimeMillis()

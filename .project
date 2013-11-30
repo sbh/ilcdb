@@ -26,7 +26,27 @@
 		<link>
 			<name>.link_to_grails_plugins</name>
 			<type>2</type>
-			<locationURI>GRAILS_ROOT/2.2.3/projects/ilcdb/plugins</locationURI>
+			<locationURI>GRAILS_ROOT/2.3.3/projects/ilcdb/plugins</locationURI>
+		</link>
+		<link>
+			<name>3.2.0.RC1</name>
+			<type>2</type>
+			<location>/Users/sbh/.m2/repository/org/springframework/security/spring-security-core/3.2.0.RC1</location>
+		</link>
+		<link>
+			<name>plugins</name>
+			<type>2</type>
+			<location>/Users/sbh/.grails/2.3.3/projects/ilcdb/plugins</location>
+		</link>
+		<link>
+			<name>spring-security-core-2.0-RC2</name>
+			<type>2</type>
+			<location>/Users/sbh/.grails/2.3.3/projects/ilcdb/plugins/spring-security-core-2.0-RC2</location>
+		</link>
+		<link>
+			<name>spring-security-ui-1.0-RC1</name>
+			<type>2</type>
+			<location>/Users/sbh/.grails/2.3.3/projects/ilcdb/plugins/spring-security-ui-1.0-RC1</location>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -1,22 +1,22 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class NoteController
 {
     
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list =
+    def list()
     {
         if(!params.max) params.max = 10
         [ noteList: Note.list( params ) ]
     }
 
-    def show =
+    def show()
     {
         def note = Note.get( params.id )
 
@@ -36,7 +36,7 @@ class NoteController
         }
     }
 
-    def delete =
+    def delete()
     {
         def note = Note.get( params.id )
         if(note)
@@ -53,7 +53,7 @@ class NoteController
             redirect(controller:'client', action:edit, id:params.clientid)
     }
 
-    def edit =
+    def edit()
     {
         def note = Note.get( params.id )
 
@@ -71,7 +71,7 @@ class NoteController
         }
     }
 
-    def update =
+    def update()
     {
         def note = Note.get( params.id )
         note.type = params.noteType
@@ -97,7 +97,7 @@ class NoteController
         }
     }
 
-    def create =
+    def create()
     {
         def note = new Note()
         note.properties = params
@@ -108,7 +108,7 @@ class NoteController
             return [clientid : params.clientid, noteType : 'client']
     }
 
-    def save =
+    def save()
     {
         if(params.noteType == "clientCase")
             params.intake = ClientCase.get(params.clientcaseid);

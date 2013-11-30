@@ -1,22 +1,22 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class ConflictController
 {
     
-    def index = { redirect(action:list,params:params) }
+    def index() { redirect(action:list,params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list =
+    def list()
     {
         if(!params.max) params.max = 10
         [ conflictList: Conflict.list( params ) ]
     }
 
-    def show =
+    def show()
     {
         def conflict = Conflict.get( params.id )
 
@@ -29,7 +29,7 @@ class ConflictController
             [ conflict: conflict ]
     }
 
-    def delete =
+    def delete()
     {
         def conflict= Conflict.get( params.id )
         def client = conflict.client
@@ -43,7 +43,7 @@ class ConflictController
             flash.message = "Conflict not found with id ${params.id}"
     }
 
-    def edit =
+    def edit()
     {
         def conflict = Conflict.get( params.id )
 
@@ -58,7 +58,7 @@ class ConflictController
         }
     }
 
-    def update =
+    def update()
     {
         def conflict = Conflict.get( params.id )
 
@@ -80,14 +80,14 @@ class ConflictController
         }
     }
 
-    def create =
+    def create()
     {
         def conflict= new Conflict()
         conflict.properties = params
         return ['conflict' : conflict]
     }
 
-    def save =
+    def save()
     {
         def conflict= new Conflict(params)
 
