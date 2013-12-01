@@ -4,7 +4,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class StatusAchievedController
 {
-    def index() { redirect(action:list,params:params) }
+    def index() { redirect(action:"list", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -19,7 +19,7 @@ class StatusAchievedController
 
         if(!statusAchieved) {
             flash.message = "No Status Achieved found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else { return [ statusAchieved: statusAchieved] }
     }
@@ -34,7 +34,7 @@ class StatusAchievedController
         }
         else {
             flash.message = "No Status Achieve found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
     }
 
@@ -43,7 +43,7 @@ class StatusAchievedController
 
         if(!statusAchieved) {
             flash.message = "No Status Achieved found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else {
             return [ statusAchieved: statusAchieved]
@@ -57,7 +57,7 @@ class StatusAchievedController
 
             if(!statusAchieved.hasErrors() && statusAchieved.save()) {
                 flash.message = "Status Achieved ${params.id} updated"
-                redirect(controller: "client", action:edit, params:[id:statusAchieved.client.id] )
+                redirect(controller: "client", action:"edit", params:[id:statusAchieved.client.id] )
             }
             else {
                 render(view:'edit',model:[statusAchieved:statusAchieved])
@@ -65,7 +65,7 @@ class StatusAchievedController
         }
         else {
             flash.message = "No Status Achieved found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action:"edit", id:params.id)
         }
     }
 
@@ -86,10 +86,10 @@ class StatusAchievedController
         }
         else if(!statusAchieved.hasErrors() && statusAchieved.save()) {
             flash.message = "Status Achieved ${statusAchieved.id} created"
-            redirect(controller: "client", action:edit, params:[id:statusAchieved.client.id] )
+            redirect(controller: "client", action:"edit", params:[id:statusAchieved.client.id] )
         }
         else {
-            render(view:'create',model:[statusAchieved: statusAchieved])
+            render(view:'create', model:[statusAchieved: statusAchieved])
         }
     }
 }

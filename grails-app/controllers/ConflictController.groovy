@@ -4,8 +4,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class ConflictController
 {
-    
-    def index() { redirect(action:list,params:params) }
+    def index() { redirect(action:"list", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -23,7 +22,7 @@ class ConflictController
         if(!conflict)
         {
             flash.message = "Conflict not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else
             [ conflict: conflict ]
@@ -37,7 +36,7 @@ class ConflictController
         {
             conflict.delete()
             flash.message = "Conflict ${params.id} deleted"
-            redirect(controller:'client', action:edit, id:client.id)
+            redirect(controller:'client', action:"edit", id:client.id)
         }
         else
             flash.message = "Conflict not found with id ${params.id}"
@@ -50,7 +49,7 @@ class ConflictController
         if(!conflict)
         {
             flash.message = "Conflict not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else
         {
@@ -68,7 +67,7 @@ class ConflictController
             if(!conflict.hasErrors() && conflict.save())
             {
                 flash.message = "Conflict ${params.id} updated"
-                redirect(controller:'client', action:edit, id:params.client.id)
+                redirect(controller:'client', action:"edit", id:params.client.id)
             }
             else
                 render(view:'edit',model:[conflict:conflict])
@@ -76,7 +75,7 @@ class ConflictController
         else
         {
             flash.message = "Conflict not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action:"edit", id:params.id)
         }
     }
 
@@ -94,7 +93,7 @@ class ConflictController
         if(!conflict.hasErrors() && conflict.save())
         {
             flash.message = "Conflict ${conflict.id} created"
-            redirect(controller:'client', action:edit, id:params.client.id)
+            redirect(controller:'client', action:"edit", id:params.client.id)
         }
         else
             render(view:'create',model:[conflict:conflict])

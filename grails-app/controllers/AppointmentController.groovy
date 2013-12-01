@@ -5,7 +5,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class AppointmentController {
     
-    def index() { redirect(action:list,params:params) }
+    def index() { redirect(action:"list", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -20,7 +20,7 @@ class AppointmentController {
 
         if(!appointment) {
             flash.message = "Appointment not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else { return [ appointment : appointment ] }
     }
@@ -30,11 +30,11 @@ class AppointmentController {
         if(appointment) {
             appointment.delete()
             flash.message = "Appointment ${params.id} deleted"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else {
             flash.message = "Appointment not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
     }
 
@@ -43,7 +43,7 @@ class AppointmentController {
 
         if(!appointment) {
             flash.message = "Appointment not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else {
             return [ appointment : appointment ]
@@ -56,15 +56,15 @@ class AppointmentController {
             appointment.properties = params
             if(!appointment.hasErrors() && appointment.save()) {
                 flash.message = "Appointment ${params.id} updated"
-                redirect(action:show,id:appointment.id)
+                redirect(action:"show", id:appointment.id)
             }
             else {
-                render(view:'edit',model:[appointment:appointment])
+                render(view:'edit', model:[appointment:appointment])
             }
         }
         else {
             flash.message = "Appointment not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action:"edit", id:params.id)
         }
     }
 
@@ -78,10 +78,10 @@ class AppointmentController {
         def appointment = new Appointment(params)
         if(!appointment.hasErrors() && appointment.save()) {
             flash.message = "Appointment ${appointment.id} created"
-            redirect(action:show,id:appointment.id)
+            redirect(action:"show", id:appointment.id)
         }
         else {
-            render(view:'create',model:[appointment:appointment])
+            render(view:'create', model:[appointment:appointment])
         }
     }
 

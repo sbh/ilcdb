@@ -4,7 +4,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class PersonController {
     
-    def index() { redirect(action:list,params:params) }
+    def index() { redirect(action:"list", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -19,7 +19,7 @@ class PersonController {
 
         if(!person) {
             flash.message = "Person not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else { return [ person : person ] }
     }
@@ -29,11 +29,11 @@ class PersonController {
         if(person) {
             person.delete()
             flash.message = "Person ${params.id} deleted"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else {
             flash.message = "Person not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
     }
 
@@ -42,7 +42,7 @@ class PersonController {
 
         if(!person) {
             flash.message = "Person not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else {
             return [ person : person ]
@@ -55,15 +55,15 @@ class PersonController {
             person.properties = params
             if(!person.hasErrors() && person.save()) {
                 flash.message = "Person ${params.id} updated"
-                redirect(action:show,id:person.id)
+                redirect(action:"show", id:person.id)
             }
             else {
-                render(view:'edit',model:[person:person])
+                render(view:'edit', model:[person:person])
             }
         }
         else {
             flash.message = "Person not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action:"edit", id:params.id)
         }
     }
 
@@ -82,10 +82,10 @@ class PersonController {
         if(!person.hasErrors() && person.save()) {
 	    
 	    flash.message = "Person ${person.id} created"
-            redirect(action:show,id:person.id)
+            redirect(action:"show", id:person.id)
         }
         else {
-            render(view:'create',model:[person:person])
+            render(view:'create', model:[person:person])
         }
     }
 }

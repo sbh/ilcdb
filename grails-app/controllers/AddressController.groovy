@@ -4,7 +4,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class AddressController {
     
-    def index() { redirect(action:list,params:params) }
+    def index() { redirect(action:"list", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -19,7 +19,7 @@ class AddressController {
 
         if(!address) {
             flash.message = "Address not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else { return [ address : address ] }
     }
@@ -29,11 +29,11 @@ class AddressController {
         if(address) {
             address.delete()
             flash.message = "Address ${params.id} deleted"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else {
             flash.message = "Address not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
     }
 
@@ -42,7 +42,7 @@ class AddressController {
 
         if(!address) {
             flash.message = "Address not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else {
             return [ address : address ]
@@ -55,15 +55,15 @@ class AddressController {
             address.properties = params
             if(!address.hasErrors() && address.save()) {
                 flash.message = "Address ${params.id} updated"
-                redirect(action:show,id:address.id)
+                redirect(action:"show", id:address.id)
             }
             else {
-                render(view:'edit',model:[address:address])
+                render(view:'edit', model:[address:address])
             }
         }
         else {
             flash.message = "Address not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action:"edit", id:params.id)
         }
     }
 
@@ -77,10 +77,10 @@ class AddressController {
         def address = new Address(params)
         if(!address.hasErrors() && address.save()) {
             flash.message = "Address ${address.id} created"
-            redirect(action:show,id:address.id)
+            redirect(action:"show", id:address.id)
         }
         else {
-            render(view:'create',model:[address:address])
+            render(view:'create', model:[address:address])
         }
     }
 }

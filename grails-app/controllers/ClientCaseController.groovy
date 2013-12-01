@@ -4,8 +4,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class ClientCaseController
 {
-    
-    def index() { redirect(action:list,params:params) }
+    def index() { redirect(action:"list", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -40,7 +39,7 @@ class ClientCaseController
         if(!clientCase)
         {
             flash.message = "ClientCase not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else { return [ clientCase : clientCase ] }
     }
@@ -52,12 +51,12 @@ class ClientCaseController
         {
             clientCase.delete()
             flash.message = "ClientCase ${params.id} deleted"
-            redirect(controller:"client", action:edit, id:clientCase?.client?.id)
+            redirect(controller:"client", action:"edit", id:clientCase?.client?.id)
         }
         else
         {
             flash.message = "ClientCase not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
     }
 
@@ -70,7 +69,7 @@ class ClientCaseController
         if(!clientCase)
         {
             flash.message = "ClientCase not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else
         {
@@ -131,7 +130,7 @@ class ClientCaseController
             {
                 client.save()
                 flash.message = "ClientCase ${params.id} updated"
-                redirect(controller:"client", action:edit, id:clientCase?.client?.id)
+                redirect(controller:"client", action:"edit", id:clientCase?.client?.id)
             }
             else
             {
@@ -141,7 +140,7 @@ class ClientCaseController
         else
         {
             flash.message = "ClientCase not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action:"edit", id:params.id)
         }
     }
 
@@ -192,7 +191,7 @@ class ClientCaseController
         {
             client.save()
             flash.message = "ClientCase ${clientCase.id} created"
-            redirect(controller:"client", action:edit, id:client.id)
+            redirect(controller:"client", action:"edit", id:client.id)
         }
         else
             render(view:'create',model:[clientCase:clientCase])

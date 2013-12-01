@@ -4,7 +4,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class BirthPlaceController {
     
-    def index() { redirect(action:list,params:params) }
+    def index() { redirect(action:"list", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -19,7 +19,7 @@ class BirthPlaceController {
 
         if(!birthPlace) {
             flash.message = "BirthPlace not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else { return [ birthPlace : birthPlace ] }
     }
@@ -29,11 +29,11 @@ class BirthPlaceController {
         if(birthPlace) {
             birthPlace.delete()
             flash.message = "BirthPlace ${params.id} deleted"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else {
             flash.message = "BirthPlace not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
     }
 
@@ -42,7 +42,7 @@ class BirthPlaceController {
 
         if(!birthPlace) {
             flash.message = "BirthPlace not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else {
             return [ birthPlace : birthPlace ]
@@ -55,15 +55,15 @@ class BirthPlaceController {
             birthPlace.properties = params
             if(!birthPlace.hasErrors() && birthPlace.save()) {
                 flash.message = "BirthPlace ${params.id} updated"
-                redirect(action:show,id:birthPlace.id)
+                redirect(action:"show", id:birthPlace.id)
             }
             else {
-                render(view:'edit',model:[birthPlace:birthPlace])
+                render(view:'edit', model:[birthPlace:birthPlace])
             }
         }
         else {
             flash.message = "BirthPlace not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action:"edit", id:params.id)
         }
     }
 
@@ -77,10 +77,10 @@ class BirthPlaceController {
         def birthPlace = new BirthPlace(params)
         if(!birthPlace.hasErrors() && birthPlace.save()) {
             flash.message = "BirthPlace ${birthPlace.id} created"
-            redirect(action:show,id:birthPlace.id)
+            redirect(action:"show", id:birthPlace.id)
         }
         else {
-            render(view:'create',model:[birthPlace:birthPlace])
+            render(view:'create', model:[birthPlace:birthPlace])
         }
     }
 }

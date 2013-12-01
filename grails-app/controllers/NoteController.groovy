@@ -5,7 +5,7 @@ import grails.plugin.springsecurity.annotation.Secured
 class NoteController
 {
     
-    def index() { redirect(action:list,params:params) }
+    def index() { redirect(action:"list", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -23,7 +23,7 @@ class NoteController
         if(!note)
         {
             flash.message = "Note not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else
         { 
@@ -48,9 +48,9 @@ class NoteController
             flash.message = "Note not found with id ${params.id}"
 
         if (params.noteType == "clientCase")
-            redirect(controller:'clientCase', action:edit, id:params.clientcaseid)
+            redirect(controller:'clientCase', action:"edit", id:params.clientcaseid)
         else
-            redirect(controller:'client', action:edit, id:params.clientid)
+            redirect(controller:'client', action:"edit", id:params.clientid)
     }
 
     def edit()
@@ -60,7 +60,7 @@ class NoteController
         if(!note)
         {
             flash.message = "Note not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action:"list")
         }
         else
         {
@@ -83,9 +83,9 @@ class NoteController
             {
                 flash.message = "Note ${params.id} updated"
                 if(params.noteType == "clientCase")
-                    redirect(controller:'clientCase', action:edit, id:params.clientcaseid)
+                    redirect(controller:'clientCase', action:"edit", id:params.clientcaseid)
                 else
-                    redirect(controller:'client', action:edit, id:params.clientid)
+                    redirect(controller:'client', action:"edit", id:params.clientid)
             }
             else
                 render(view:'edit',model:[note:note])
@@ -93,7 +93,7 @@ class NoteController
         else
         {
             flash.message = "Note not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action:"edit", id:params.id)
         }
     }
 
@@ -122,9 +122,9 @@ class NoteController
         {
             flash.message = "Note ${note.id} created"
             if(params.noteType == "clientCase")
-                redirect(controller:'clientCase', action:edit, id:params.clientcaseid)
+                redirect(controller:'clientCase', action:"edit", id:params.clientcaseid)
             else
-                redirect(controller:'client', action:edit, id:params.clientid)
+                redirect(controller:'client', action:"edit", id:params.clientid)
         }
         else
             render(view:'create',model:[note:note])
