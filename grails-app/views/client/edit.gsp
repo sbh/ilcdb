@@ -246,9 +246,10 @@ window.onload=toggleOnLoad
                         </td>
                       </tr>
 
+
                       <tr class="prop">
                         <td valign="top" class="name">
-                          <label for="householdIncomeLevel">Household Income Level:</label>
+                          <label for="householdIncomeLevel">Household Income:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:client,field:'householdIncomeLevel','errors')}">
                           <input type="text" name="householdIncomeLevel" value="${client?.householdIncomeLevel}" />
@@ -259,6 +260,21 @@ window.onload=toggleOnLoad
                           </g:hasErrors>
                         </td>
                       </tr>
+
+                      <tr class="prop">
+                        <td valign="top" class="name">
+                          <label for="amiLevel">AMI Level:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:client,field:'amiLevel','errors')}">
+                          <g:select id="amiLevel" name="amiLevel" from="${client.AMI_LEVELS}" value="${fieldValue(bean:client, field:'amiLevel')}" />
+                          <g:hasErrors bean="${client}" field="amiLevel">
+                            <div class="errors">
+                              <g:renderErrors bean="${client}" field="amiLevel" />
+                            </div>
+                          </g:hasErrors>
+                        </td>
+                      </tr>
+
                     </tbody>
                   </table>
                 </div>

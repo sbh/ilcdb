@@ -9,6 +9,7 @@ class Client implements Comparable<Client>
 
     Person client
     Date firstVisit
+    Integer amiLevel // Average Median Income
     Integer householdIncomeLevel
     Integer numberInHousehold
     SortedSet notes
@@ -24,6 +25,8 @@ class Client implements Comparable<Client>
     Date dacaDate
     boolean tps
     Date tpsDate
+    
+    static final List AMI_LEVELS = [0, 1, 2, 3, 4]
 
     static hasMany = [notes:Note, cases:ClientCase, appointments:Appointment, sponsorRelations:ClientSponsorRelation,
                       serviceRecords:ServiceRecord, conflicts:Conflict, statiAchieved:StatusAchieved]

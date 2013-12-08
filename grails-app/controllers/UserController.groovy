@@ -1,3 +1,7 @@
+import grails.plugin.springsecurity.annotation.Secured
+
+@Secured(['IS_AUTHENTICATED_FULLY'])
+
 class UserController
 {
     def springSecurityService // Dependency injection for the springSecurityService.

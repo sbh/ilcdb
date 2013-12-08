@@ -52,5 +52,6 @@ grails.project.dependency.resolution = {
         compile ":spring-security-ui:1.0-RC1"
         compile ":resources:1.2.1"
         compile ":bcrypt:1.0"
+        compile ":scaffolding:2.0.1"
     }
 }
