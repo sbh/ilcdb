@@ -22,3 +22,6 @@ echo "update case_type set associated_status='Citizenship' where type='N-400' or
 echo "update case_type set associated_status='TPS' where type='I-821 (TPS)'" | mysql -u ilcdb -psnuggl3s  ilcdb
 
 echo "update case_type set associated_status='DACA' where type='I-821d' or type='DACA'" | mysql -u ilcdb -psnuggl3s  ilcdb
+
+echo "update client_case set case_result_id=23 where case_result_id=17" | mysql -u ilcdb -psnuggl3s  ilcdb
+echo "delete from case_result where id=17" | mysql -u ilcdb -psnuggl3s  ilcdb
