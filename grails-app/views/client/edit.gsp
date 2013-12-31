@@ -4,45 +4,6 @@
         <meta name="layout" content="main" />
         <title>Edit Client</title>
 <script language="javascript"> 
-function toggleDatePicker(theCheckBox)
-{
-    var hidden = !theCheckBox.checked
-    
-    if (theCheckBox.id == "legalPermanentResident")
-    {
-        document.clientEdit.legalPermanentResidentDate_day.hidden=hidden;
-        document.clientEdit.legalPermanentResidentDate_month.hidden=hidden;
-        document.clientEdit.legalPermanentResidentDate_year.hidden=hidden;
-    }
-    else if (theCheckBox.id == "citizen")
-    {
-        document.clientEdit.citizenDate_day.hidden=hidden;
-        document.clientEdit.citizenDate_month.hidden=hidden;
-        document.clientEdit.citizenDate_year.hidden=hidden
-    }
-    else if (theCheckBox.id == "daca")
-    {
-        document.clientEdit.dacaDate_day.hidden=hidden;
-        document.clientEdit.dacaDate_month.hidden=hidden;
-        document.clientEdit.dacaDate_year.hidden=hidden;
-    }
-    else if (theCheckBox.id == "tps")
-    {
-        document.clientEdit.tpsDate_day.hidden=hidden;
-        document.clientEdit.tpsDate_month.hidden=hidden;
-        document.clientEdit.tpsDate_year.hidden=hidden;
-    }
-}
-
-function toggleOnLoad()
-{
-    toggleDatePicker(document.clientEdit.legalPermanentResident)
-    toggleDatePicker(document.clientEdit.citizen)
-    toggleDatePicker(document.clientEdit.daca)
-    toggleDatePicker(document.clientEdit.tps)
-}
-
-window.onload=toggleOnLoad
 </script> 
     </head>
     <body>
