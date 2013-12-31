@@ -27,7 +27,7 @@
                                     <label for="country">Country:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:address,field:'country','errors')}">
-                                    <g:select id="country" name="country" from="${address.constraints.country.inList}" value="${address.country}" ></g:select>
+                                    <g:select id="country" name="country" from="${address.constraints.country.inList}" value="${address.country}" />
                                 </td>
                             </tr> 
                         

@@ -27,7 +27,7 @@
                                     <label for="client">Client:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:appointment,field:'client','errors')}">
-                                    <g:select optionKey="id" from="${Client.list()}" name="client.id" value="${appointment?.client?.id}" ></g:select>
+                                    <g:select optionKey="id" from="${Client.list()}" name="client.id" value="${appointment?.client?.id}" />
                                 </td>
                             </tr> 
                         

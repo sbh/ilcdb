@@ -119,6 +119,7 @@ class ClientController
         //println("ClientController.edit params: "+params)
         def client = Client.get( params.id )
         //println("client.citizen: "+client.citizen+", client.lpr: "+client.legalPermanentResident)
+        println("client.ami.label: "+client.ami.label)
 
         if(!client)
         {
@@ -131,7 +132,7 @@ class ClientController
 
     def update()
     {
-        //println("ClientController.update params: "+params)
+        println("ClientController.update params: "+params)
 
         def client = Client.get( params.id )
         if(client)
@@ -141,6 +142,7 @@ class ClientController
             def birthCountry = Country.get(params.client.placeOfBirth.country)
 
             client.properties = params
+            client.ami = AMI.get(params.amiId)
 
             if (!client.citizen)
                 client.citizenDate = null

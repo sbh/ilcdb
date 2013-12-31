@@ -48,7 +48,8 @@
                                 <g:select id="attorney" name="attorney"
                                     from="${clientCase.constraints.attorney.inList}"
                                     value="${clientCase.attorney}"
-                                    noSelection="${['':'-Choose-']}"></g:select></td>
+                                    noSelection="${['':'-Choose-']}" />
+                            </td>
                         </tr>
 
                         <tr class="prop">
@@ -58,7 +59,8 @@
                                 <g:select onchange="changeCaseTypeRowDisplay('onchange')"
                                     id="intakeType" name="intakeType"
                                     from="${clientCase.constraints.intakeType.inList}"
-                                    value="${clientCase.intakeType}"></g:select></td>
+                                    value="${clientCase.intakeType}" />
+                            </td>
                         </tr>
  
                         <tr class="prop">
@@ -66,7 +68,7 @@
                                 <label for="intensity">Intensity:</label>
                             </td>
                             <td valign="top" class="value ${hasErrors(bean:clientCase,field:'intensity','errors')}">
-                                <g:select id="intensity" name="intensity" from="${clientCase.constraints.intensity.inList}" value="${clientCase.intensity}" ></g:select>
+                                <g:select id="intensity" name="intensity" from="${clientCase.constraints.intensity.inList}" value="${clientCase.intensity}" />
                            </td>
                         </tr> 
                         
@@ -114,7 +116,8 @@
                                     from="${CaseResult.list(sort:'result')}"
                                     optionKey="id" optionValue="result"
                                     value="${clientCase.caseResult?.id}"
-                                    noSelection="${[null:'-Choose-']}"></g:select></td>
+                                    noSelection="${[null:'-Choose-']}" />
+                             </td>
                         </tr>
 
                         <tr name="completionDateRow" id="completionDateRow" class="prop">

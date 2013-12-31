@@ -1,0 +1,14 @@
+=================
+
+echo "alter table status_achieved drop date_achieved" | mysql -u ilcdb -psnuggl3s  ilcdb
+echo "alter table status_achieved drop status_type" | mysql -u ilcdb -psnuggl3s  ilcdb
+echo "alter table conflict drop person_id" | mysql -u ilcdb -psnuggl3s  ilcdb
+for i in tps tps_date citizen citizen_date daca daca_date legal_permanent_resident legal_permanent_resident_date;do
+echo "alter table client drop $i" | mysql -u ilcdb -psnuggl3s  ilcdb
+done
+
+
+### Add AMI levels ###
+echo 'insert into ami(label, level) values ("UNSPECIFIED", 0), ("Extremely Low Income:  less than or = to 30% of AMI", 1), ( "Very Low Income: 31% to 50% of AMI", 2),  ("Low Income: 50% to 80% of AMI", 3),  ("Median Income: 81% to 100% of AMI", 4)' | mysql -u ilcdb -psnuggl3s  ilcdb
+
+echo 'update client set ami_id=1' | mysql -u ilcdb -psnuggl3s  ilcdb

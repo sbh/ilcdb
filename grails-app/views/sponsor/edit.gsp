@@ -28,7 +28,7 @@
                                     <label for="sponsor">Sponsor:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:sponsor,field:'sponsor','errors')}">
-                                    <g:select optionKey="id" from="${Person.list()}" name="sponsor.id" value="${sponsor?.sponsor?.id}" ></g:select>
+                                    <g:select optionKey="id" from="${Person.list()}" name="sponsor.id" value="${sponsor?.sponsor?.id}" />
                                 </td>
                             </tr> 
 
@@ -50,7 +50,7 @@
                                     <label for="income">Income:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:sponsor,field:'income','errors')}">
-                                    <g:select id="income" name="income" from="${sponsor.constraints.income.inList}" value="${sponsor.income}" ></g:select>
+                                    <g:select id="income" name="income" from="${sponsor.constraints.income.inList}" value="${sponsor.income}" />
 				    <g:hasErrors bean="${sponsor}" field="income">
 				    <div class="errors">
 					<g:renderErrors bean="${sponsor}" field="income" />
