@@ -79,6 +79,11 @@ class ClientCase implements Comparable<ClientCase>
         return completionDate == null;
     }
     
+    public isSuccessful()
+    {
+        return caseResult?.successfulResult
+    }
+    
     public boolean isValid()
     {
         return STAFF_REPRESENTATION.equals(intakeType) || STAFF_ADVISE.equals(intakeType)

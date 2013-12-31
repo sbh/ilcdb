@@ -202,10 +202,9 @@ window.onload=toggleOnLoad
 
                             <ul>
                               <g:each var="statusAchieved" in="${client?.statiAchieved?}">
-                                <li><g:link controller="statusAchieved" action="edit" id="${statusAchieved.id}">${statusAchieved?.encodeAsHTML()}</g:link></li>
+                                <li>${statusAchieved?.encodeAsHTML()}</li>
                               </g:each>
                             </ul>
-                            <g:link controller="statusAchieved" params="['client.id':client?.id]" action="create">Add Status Achieved</g:link>
                           </td>
                       </tr>
 

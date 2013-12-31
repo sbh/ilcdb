@@ -12,3 +12,13 @@ done
 echo 'insert into ami(label, level) values ("UNSPECIFIED", 0), ("Extremely Low Income:  less than or = to 30% of AMI", 1), ( "Very Low Income: 31% to 50% of AMI", 2),  ("Low Income: 50% to 80% of AMI", 3),  ("Median Income: 81% to 100% of AMI", 4)' | mysql -u ilcdb -psnuggl3s  ilcdb
 
 echo 'update client set ami_id=1' | mysql -u ilcdb -psnuggl3s  ilcdb
+
+echo "insert into case_type(type) values ('AOS VAWA'), ('N-336')" | mysql -u ilcdb -psnuggl3s  ilcdb
+
+echo "update case_type set associated_status='LPR' where type='AOS' or type='AOS one-step' or type='AOS T' or type='AOS U' or type='Consular Processing' or type='Consular Processing T' or type='Consular Processing U' or type='I-881 (NACARA)' or type='I-751' or type='AOS VAWA'" | mysql -u ilcdb -psnuggl3s  ilcdb
+
+echo "update case_type set associated_status='Citizenship' where type='N-400' or type='N-600' or type='N-565' or type='N-336'" | mysql -u ilcdb -psnuggl3s  ilcdb
+
+echo "update case_type set associated_status='TPS' where type='I-821 (TPS)'" | mysql -u ilcdb -psnuggl3s  ilcdb
+
+echo "update case_type set associated_status='DACA' where type='I-821d' or type='DACA'" | mysql -u ilcdb -psnuggl3s  ilcdb

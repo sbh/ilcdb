@@ -2,10 +2,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormat;
 
 class Client implements Comparable<Client>
 {
     static final long YEAR_IN_MILLIS = 365L*24L*60L*60L*1000L;
+    private static final DateTimeFormatter briefDateFormat = DateTimeFormat.forPattern("MMM-dd-yyyy");
 
     Person client
     Date firstVisit
@@ -70,7 +73,7 @@ class Client implements Comparable<Client>
     String getFirstVisitString()
     {
         if (firstVisit instanceof Date)
-            return (new SimpleDateFormat("MMM-dd-yyyy").format(firstVisit));
+            return (briefDateFormat.print(firstVisit.getTime()));
         return "";
     }
 
@@ -195,6 +198,19 @@ class Client implements Comparable<Client>
                 return false;
         }
         return true;
+    }
+
+    public List<String> getStatiAchieved()
+    {
+        List<String> achievedList = new ArrayList();
+        
+        for (ClientCase clientCase : cases)
+        {
+            if (clientCase.isSuccessful() && clientCase.caseType.associatedStatus)
+                achievedList.add(clientCase.caseType.associatedStatus + " : " + briefDateFormat.print(clientCase.completionDate.getTime()))
+        }
+        
+        return achievedList
     }
 
     public int compareTo(Client other)
