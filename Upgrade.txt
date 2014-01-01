@@ -1,4 +1,11 @@
-=================
+#####################
+# To upgrade to the 1-1-2014 version:
+# Stop tomcat
+# Install the new war file
+# Start tomcat
+# Run this script to update the database
+# Restart tomcat
+#####################
 
 echo "alter table status_achieved drop date_achieved" | mysql -u ilcdb -psnuggl3s  ilcdb
 echo "alter table status_achieved drop status_type" | mysql -u ilcdb -psnuggl3s  ilcdb
