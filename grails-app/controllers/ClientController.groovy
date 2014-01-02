@@ -142,12 +142,7 @@ class ClientController
 
             client.properties = params
             client.ami = AMI.get(params.amiId)
-
-            if (!client.citizen)
-                client.citizenDate = null
-            if (!client.legalPermanentResident)
-                client.legalPermanentResidentDate = null
-
+            
             client.client.address.country = addressCountry
 
             client.client.placeOfBirth.country = birthCountry
@@ -190,6 +185,8 @@ class ClientController
             //For generating a new person
             def client = new Client(params)
             def person = new Person(params.client)
+            client.ami = AMI.get(params.amiId)
+            
             person.dateOfBirth = params.client.dateOfBirth
             //println("person: "+person.toDebugString())
 

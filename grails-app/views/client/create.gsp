@@ -79,6 +79,20 @@
                             </td>
                         </tr>
 
+                        <tr>
+                          <td valign="top" class="name">
+                            <label for="amiId">AMI Level:</label>
+                          </td>
+                          <td valign="top" class="value ${hasErrors(bean:client,field:'ami','errors')}">
+                              <g:select id="amiId" name="amiId" from="${AMI.list()}" value="${client.ami.id}" optionKey="id" />
+                              <g:hasErrors bean="${client}" field="ami">
+                                <div class="errors">
+                                  <g:renderErrors bean="${client}" field="ami" />
+                                </div>
+                              </g:hasErrors>
+                          </td>
+                        </tr>
+
                     </tbody>
                 </table>
             </div>
