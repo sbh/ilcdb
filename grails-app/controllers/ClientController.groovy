@@ -525,6 +525,7 @@ class ClientController
         }
     }
 
+    @Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
     def report()
     {
         //println("report params: "+params)
