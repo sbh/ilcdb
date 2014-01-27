@@ -21,13 +21,12 @@ class Client implements Comparable<Client>
     String fileLocation
     
     static hasMany = [notes:Note, cases:ClientCase, appointments:Appointment, sponsorRelations:ClientSponsorRelation,
-                      serviceRecords:ServiceRecord, conflicts:Conflict, statiAchieved:StatusAchieved]
+                      serviceRecords:ServiceRecord, conflicts:Conflict]
 
     static mapping =
     {
         cache true
         cases sort:"startDate"
-        statiAchieved sort:"date"
     }
 
     static fetchMode = [client:"eager", notes:"eager", cases:"eager",serviceRecords:"eager", conflicts:"eager"]
@@ -40,7 +39,7 @@ class Client implements Comparable<Client>
         fileLocation(nullable:true)
     }
 
-    static transients = [ "birthDayString", "firstVisitString", "homeCountry", "shortAddress", "emailAddress", "openCase", "validCases", "attorney", "person" ]
+    static transients = [ "statiAchievedStrings", "firstVisitString", "homeCountry", "shortAddress", "emailAddress", "openCase", "validCases", "attorney", "person" ]
 
     String toString()
     {
@@ -204,14 +203,54 @@ class Client implements Comparable<Client>
     {
         return client.compareTo(other.client)
     }
+    
+    boolean hasAchievedStatus(StatusAchieved.Type statusType)
+    {
+        for (ClientCase clientCase : cases)
+        {
+            if (clientCase.isSuccessful() && clientCase.caseType.associatedStatus == String.valueOf(statusType))
+                return true;
+        }
+        return false;
+    }
 
     public boolean hasAchievedCitizenship()
     {
-        for(StatusAchieved status : statiAchieved) {
-            if(status.type == StatusAchieved.Type.Citizenship){
-                return true;
-            }
-        }
-        return false;
+        hasAchievedStatus(StatusAchieved.Type.Citizenship)
+    }
+    
+    public boolean hasAchievedDACA()
+    {
+        hasAchievedStatus(StatusAchieved.Type.DACA)
+    }
+
+    public boolean hasAchievedLPR()
+    {
+        hasAchievedStatus(StatusAchieved.Type.LPR)
+    }
+
+    public boolean hasAchievedLPRConditionsRemoved()
+    {
+        hasAchievedStatus(StatusAchieved.Type.LPRConditionsRemoved)
+    }
+
+    public boolean hasAchievedLPRCardRenewed()
+    {
+        hasAchievedStatus(StatusAchieved.Type.LPRCardRenewed)
+    }
+
+    public boolean hasAchievedTPS()
+    {
+        hasAchievedStatus(StatusAchieved.Type.TPS)
+    }
+    
+    public boolean hasAchievedNoStatus()
+    {
+        return !hasAchievedAnyStatus()
+    }
+    
+    public boolean hasAchievedAnyStatus()
+    {
+        return hasAchievedCitizenship() || hasAchievedDACA() || hasAchievedLPR() || hasAchievedLPRConditionsRemoved() || hasAchievedLPRCardRenewed() || hasAchievedTPS()
     }
 }

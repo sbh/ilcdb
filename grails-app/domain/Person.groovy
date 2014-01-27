@@ -38,7 +38,7 @@ class Person implements Comparable<Person>
         ])
         gender(inList:["female", "male"])
         phoneNumber(blank:false)
-        emailAddress(nullable:true/*, email:true*/)
+        emailAddress(nullable:true, email:true)
         race(inList: Person.Ethnicities)
         placeOfBirth(nullable:true)
         address(nullable:true)

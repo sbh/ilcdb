@@ -8,6 +8,8 @@ import net.skytrail.util.USStates
 @Secured(['IS_AUTHENTICATED_FULLY'])
 class ClientController
 {
+    def clientService
+
     def usStates = new USStates()
 
     def index() { redirect(action:"list",params:params) }
@@ -23,10 +25,10 @@ class ClientController
         clients.addAll(Client.findAll( "from Client as c order by upper(c.client.lastName), upper(c.client.firstName)" ))
         def t2 = System.currentTimeMillis()
         println(clients.size()+" loaded in "+(t2-t1)+" ms.")
-        
+
         Collections.sort(clients, new ClientComparator());
         println(clients.size()+" sorted in "+(System.currentTimeMillis()-t2)+" ms.")
-        
+
         def clientMaps = []
         t1 = System.currentTimeMillis()
         for (client in clients)
@@ -43,7 +45,7 @@ class ClientController
             clientMap['shortAddress'] = client.shortAddress?.encodeAsHTML()
             clientMap['fileLocation'] = client.fileLocation
             clientMap['attorney'] = client.attorney
-            clientMap['validCases'] = (client.validCases ? "" : "**") 
+            clientMap['validCases'] = (client.validCases ? "" : "**")
             clientMaps.add(clientMap)
         }
         println(clients.size()+" resolved "+(System.currentTimeMillis()-t1)+" ms.")
@@ -118,7 +120,6 @@ class ClientController
     {
         //println("ClientController.edit params: "+params)
         def client = Client.get( params.id )
-        //println("client.citizen: "+client.citizen+", client.lpr: "+client.legalPermanentResident)
 
         if(!client)
         {
@@ -142,7 +143,7 @@ class ClientController
 
             client.properties = params
             client.ami = AMI.get(params.amiId)
-            
+
             client.client.address.country = addressCountry
 
             client.client.placeOfBirth.country = birthCountry
@@ -186,7 +187,7 @@ class ClientController
             def client = new Client(params)
             def person = new Person(params.client)
             client.ami = AMI.get(params.amiId)
-            
+
             person.dateOfBirth = params.client.dateOfBirth
             //println("person: "+person.toDebugString())
 
@@ -261,7 +262,7 @@ class ClientController
                 person.placeOfBirth = placeOfBirth
 
             if (!client.hasErrors() && placeOfBirth.validate() &&
-                client.validate())
+            client.validate())
             {
                 placeOfBirth.save()
                 client.save()
@@ -528,7 +529,7 @@ class ClientController
     @Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
     def report()
     {
-        //println("report params: "+params)
+        //println("**** report params: "+params)
         def returnValue = [ : ];
 
         if(params.startDate && params.endDate)
@@ -536,9 +537,9 @@ class ClientController
             // adjust the endDate to be the end of the day.
             params.endDate = new Date(params.endDate.getTime() + 1000L*24L*60L*60L - 1L)
 
-            def newClients = getNewClientsFromMunicipalityForTimePeriod( params );
-            def newIntakes = getClientsWithNewIntakesFromMunicipalityForTimePeriod( params );
-            def ongoingIntakes = getClientsWithOngoingIntakesFromMunicipalityForTimePeriod( params );
+            def newClients = clientService.filterStatus(getNewClientsFromMunicipalityForTimePeriod( params ), params.statusAchieved)
+            def newIntakes = clientService.filterStatus(getClientsWithNewIntakesFromMunicipalityForTimePeriod( params ), params.statusAchieved)
+            def ongoingIntakes = clientService.filterStatus(getClientsWithOngoingIntakesFromMunicipalityForTimePeriod( params ), params.statusAchieved)
 
             def clients = new HashSet()
             newIntakes.each {
@@ -602,7 +603,7 @@ class ClientController
     {
         def query = getNewClientsQueryForMunicipalityType( params.munType, params.attorney, params.intakeState, params.statusAchieved )
         //println "Query Sring: " + query
-        def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate] 
+        def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
 
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
@@ -625,7 +626,6 @@ class ClientController
         """
         newClientsQueryString += getMunicipalitySubQuery(municipalityType)
         newClientsQueryString += getAttorneySubQuery(attorney)
-        newClientsQueryString += getStatusAchievedSubQuery(statusAchieved)
 
         if ("open".equals(intakeState))
             newClientsQueryString += " and intake.completionDate is null"
@@ -655,32 +655,6 @@ class ClientController
         if (attorney != null && !"".equals(attorney) && "Any".equals(attorney))
             return ""
         return " and intake.attorney = '"+attorney+"'"
-    }
-    
-    String getStatusAchievedSubQuery(String whichStatus)
-    {
-        if ("lpr".equals(whichStatus))
-            return " and client.legalPermanentResident=1"
-
-        if ("citizenship".equals(whichStatus))
-            return " and client.citizen=1"
-
-        if ("daca".equals(whichStatus))
-            return " and client.daca=1"
-
-        if ("tps".equals(whichStatus))
-            return " and client.tps=1"
-
-        if ("none".equals(whichStatus))
-            return " and (client.legalPermanentResident=0 and client.citizen=0 and client.daca=0 and client.tps=0)"
-        
-        if ("any".equals(whichStatus))
-            return " and (client.legalPermanentResident=1 or client.citizen=1 or client.daca=1 or client.tps=1)"
-        
-        if ("n/a".equals(whichStatus))
-            return ""
-        
-        return ""
     }
 
     String getMunicipalitySubQuery(String municipalityType)
@@ -712,7 +686,6 @@ class ClientController
                and (intake.startDate between :startDate and :endDate )
         """
         newIntakesQueryString += getAttorneySubQuery(attorney)
-        newIntakesQueryString += getStatusAchievedSubQuery(statusAchieved)
 
         if ("open".equals(intakeState))
             newIntakesQueryString += " and intake.completionDate is null"
@@ -755,7 +728,6 @@ class ClientController
                and ( intake.completionDate is null or intake.completionDate > :endDate )
         """
         queryString += getAttorneySubQuery(attorney)
-        queryString += getStatusAchievedSubQuery(statusAchieved)
 
         if ("open".equals(intakeState))
             queryString += " and intake.completionDate is null"
