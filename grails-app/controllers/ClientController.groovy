@@ -540,6 +540,7 @@ class ClientController
             def newClients = clientService.filterStatus(getNewClientsFromMunicipalityForTimePeriod( params ), params.statusAchieved)
             def newIntakes = clientService.filterStatus(getClientsWithNewIntakesFromMunicipalityForTimePeriod( params ), params.statusAchieved)
             def ongoingIntakes = clientService.filterStatus(getClientsWithOngoingIntakesFromMunicipalityForTimePeriod( params ), params.statusAchieved)
+            def completedIntakes = clientService.filterStatus(getClientsWithCompletedIntakesFromMunicipalityForTimePeriod( params ), params.statusAchieved)
 
             def clients = new HashSet()
             newIntakes.each {
@@ -579,7 +580,8 @@ class ClientController
             //println "Client data: " + clientListCounts["newClient"]
             clientListCounts["newIntake"] = ["Existing Clients with New Intakes", newIntakes.size(), getNumTotalNewIntakesBetween(params.startDate, params.endDate)];
             clientListCounts["ongoingIntake"] = ["Existing Clients with Ongoing Intakes", ongoingIntakes.size(), getNumTotalOngoingIntakesBetween(params.startDate, params.endDate)];
-
+            clientListCounts["completedIntake"] = ["Existing Clients with Completed Intakes", completedIntakes.size(), getNumTotalCompletedIntakesBetween(params.startDate, params.endDate)]
+            
             returnValue["startDate"] = params.startDate
             returnValue["endDate"] = params.endDate
             returnValue["municipality"] = params.municipality;
@@ -710,8 +712,24 @@ class ClientController
         def ongoingIntakeClients = Client.executeQuery( query, namedParams )
         return ongoingIntakeClients
     }
+    
+    Collection getClientsWithCompletedIntakesFromMunicipalityForTimePeriod(def params)
+    {
+        //println "Getting clients with completed intakes : " + params
+        def query = getClientsWithCompletedIntakesQueryForMunicipalityType( params.munType, params.attorney, params.intakeState, params.statusAchieved )
+        //println("completed intakes query: "+query)
 
-    String getClientsWithOngoingIntakesQueryForMunicipalityType( String municipalityType, String attorney, String intakeState, String statusAchieved )
+        def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
+
+        if ("State".equals(params.munType))
+            namedParams += [munAlt:usStates.getAlternates(params.municipality)]
+
+        //println "completed intakes namedParams: "+namedParams
+        def ongoingIntakeClients = Client.executeQuery( query, namedParams )
+        return ongoingIntakeClients
+    }
+
+    String getSQLForClientsWIthIntakeForMunicipality( String municipalityType, String attorney, String intakeState, String statusachieved, String ongoingOrCompleted)
     {
         //println "getting ongoing intakes for " + municipalityType
         def queryString = """
@@ -722,21 +740,40 @@ class ClientController
                inner join fetch client.cases as intake where
         """
         queryString += getMunicipalitySubQuery(municipalityType)
-        queryString += """
-               and client.firstVisit < :startDate
-               and intake.startDate < :startDate
-               and ( intake.completionDate is null or intake.completionDate > :endDate )
-        """
         queryString += getAttorneySubQuery(attorney)
 
         if ("open".equals(intakeState))
             queryString += " and intake.completionDate is null"
         else if ("closed".equals(intakeState))
             queryString += " and intake.completionDate is not null"
+            
+        queryString += ongoingOrCompleted
+
         queryString += " order by person.lastName"
 
         //println "Ongoing intakes query: " + queryString
         return queryString;
+    }
+    
+    private static String ONGOING_CLIENT_SUB_QUERY = """
+               and client.firstVisit < :startDate
+               and intake.startDate < :startDate
+               and ( intake.completionDate is null or intake.completionDate > :endDate )
+"""
+    private static String COMPLETED_CLIENT_SUB_QUERY = """
+               and client.firstVisit < :startDate
+               and intake.completionDate > :startDate
+               and intake.completionDate < :endDate
+"""
+
+    String getClientsWithOngoingIntakesQueryForMunicipalityType( String municipalityType, String attorney, String intakeState, String statusAchieved )
+    {
+        return getSQLForClientsWIthIntakeForMunicipality( municipalityType, attorney, intakeState, statusAchieved, ONGOING_CLIENT_SUB_QUERY )
+    }
+
+    String getClientsWithCompletedIntakesQueryForMunicipalityType( String municipalityType, String attorney, String intakeState, String statusAchieved )
+    {
+        return getSQLForClientsWIthIntakeForMunicipality( municipalityType, attorney, intakeState, statusAchieved, COMPLETED_CLIENT_SUB_QUERY )
     }
 
     private int getNumTotalNewClientsBetween(Date startDate, Date endDate)
@@ -780,6 +817,22 @@ class ClientController
                where client.firstVisit < :startDate
                and intake.startDate < :startDate
                and ( intake.completionDate is null or intake.completionDate > :endDate )
+               order by person.lastName
+        """
+        def numClients = Client.executeQuery(queryString, [startDate:startDate, endDate:endDate])
+        return numClients.size()
+    }
+
+    private int getNumTotalCompletedIntakesBetween(Date startDate, Date endDate)
+    {
+        def queryString =
+                """
+        select distinct client
+            from Client as client
+               inner join fetch client.client as person
+               inner join fetch client.cases as intake
+               where client.firstVisit < :startDate
+               and intake.completionDate > :startDate and intake.completionDate < :endDate 
                order by person.lastName
         """
         def numClients = Client.executeQuery(queryString, [startDate:startDate, endDate:endDate])
