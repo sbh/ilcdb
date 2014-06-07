@@ -122,6 +122,7 @@ grails.plugin.springsecurity.rejectIfNoRule = false
 grails.plugin.springsecurity.fii.rejectPublicInvocations = true
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
     '/':               ['permitAll'],
+    '/register/**':     ['permitAll'],
     '/index':          ['permitAll'],
     '/index.gsp':      ['permitAll'],
     '/**/js/**':       ['permitAll'],

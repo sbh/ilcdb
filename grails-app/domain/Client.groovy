@@ -193,7 +193,7 @@ class Client implements Comparable<Client>
         for (ClientCase clientCase : cases)
         {
             if (clientCase.isSuccessful() && clientCase.caseType.associatedStatus)
-                achievedList.add(clientCase.caseType.associatedStatus + " : " + briefDateFormat.print(clientCase.completionDate.getTime()))
+                achievedList.add(clientCase.caseType.associatedStatus + " : " + briefDateFormat.print(clientCase.completionDate?.getTime()))
         }
         
         return achievedList

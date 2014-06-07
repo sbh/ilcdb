@@ -11,7 +11,7 @@
 <s2ui:form width='350' height='220' elementId='forgotPasswordFormContainer'
            titleCode='spring.security.ui.forgotPassword.header' center='true'>
 
-    <g:form action='forgotPassword' name="forgotPasswordForm" autocomplete='off'>
+    <g:form action='resetPassword' name="forgotPasswordForm" autocomplete='off'>
 
 	<g:if test='${emailSent}'>
 	<br/>
@@ -26,7 +26,7 @@
 	<table>
 		<tr>
 			<td><label for="username"><g:message code='spring.security.ui.forgotPassword.username'/></label></td>
-			<td><g:textField name="username" size="25" /></td>
+			<td><g:textField name="username" size="25" value=""/></td>
 		</tr>
 	</table>
 
