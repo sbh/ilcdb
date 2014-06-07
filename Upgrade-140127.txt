@@ -1,0 +1,2 @@
+# Remove associated_status for I-751.
+update case_type set associated_status = NULL where type='I-751';
