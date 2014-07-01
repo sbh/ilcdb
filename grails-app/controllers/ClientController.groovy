@@ -127,7 +127,9 @@ class ClientController
             redirect(action:"list")
         }
         else
-            return [ client : client ]
+        {
+            return [client: client]
+        }
     }
 
     def update()
@@ -433,9 +435,21 @@ class ClientController
         { intake ->
 
             if( intake.caseResult in CaseResult.successfulResults())
-            {
                 returnValue.add(intake);
-            }
+        }
+
+        return returnValue;
+    }
+
+    private List findStatusAchievedIntakes( List intakes )
+    {
+        def returnValue = [ ]
+
+        intakes.each
+        { intake ->
+
+            if( intake.caseResult in CaseResult.statusWasAchieved())
+                returnValue.add(intake);
         }
 
         return returnValue;

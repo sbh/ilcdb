@@ -1,0 +1,5 @@
+## Update the CaseResult table to differentiate between ILC success and client success
+echo "update case_result set status_was_achieved=true" | mysql -u ilcdb -psnuggl3s  ilcdb
+echo "update case_result set status_was_achieved=false where" id=5 or id=6 or id=11 or id=12 or id=13 or id=14 or id=15 or id=16 or id=18 or id=19 or id=20 or id=21 or id=22 | mysql -u ilcdb -psnuggl3s  ilcdb
+echo "update case_type set associated_status='DACA' where  type='DACA'" | mysql -u ilcdb -psnuggl3s  ilcdb
+

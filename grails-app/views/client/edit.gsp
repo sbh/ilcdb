@@ -160,10 +160,9 @@
                             <label for="statiAchieved">Achieved Statuses:</label>
                           </td>
                           <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'statiAchieved','errors')}">
-
                             <ul>
                               <g:each var="statusAchieved" in="${client?.statiAchieved?}">
-                                <li>${statusAchieved?.encodeAsHTML()}</li>
+                                <li>${statusAchieved}</li>
                               </g:each>
                             </ul>
                           </td>

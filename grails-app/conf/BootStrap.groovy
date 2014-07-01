@@ -1,6 +1,7 @@
 class BootStrap
 {
     def springSecurityService
+    def dataSource
     
     def init = { servletContext ->
         Address.get(-1)

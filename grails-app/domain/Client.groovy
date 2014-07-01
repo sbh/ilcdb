@@ -1,7 +1,4 @@
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormat;
 
@@ -192,7 +189,7 @@ class Client implements Comparable<Client>
         
         for (ClientCase clientCase : cases)
         {
-            if (clientCase.isSuccessful() && clientCase.caseType.associatedStatus)
+            if (clientCase.isStatusAchieved() && clientCase.caseType.associatedStatus)
                 achievedList.add(clientCase.caseType.associatedStatus + " : " + briefDateFormat.print(clientCase.completionDate?.getTime()))
         }
         
@@ -208,7 +205,7 @@ class Client implements Comparable<Client>
     {
         for (ClientCase clientCase : cases)
         {
-            if (clientCase.isSuccessful() && clientCase.caseType.associatedStatus == String.valueOf(statusType))
+            if (clientCase.isStatusAchieved() && clientCase.caseType.associatedStatus == String.valueOf(statusType))
                 return true;
         }
         return false;

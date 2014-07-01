@@ -88,6 +88,7 @@ class Person implements Comparable<Person>
         lastNamePrefixes.add("DEL ");
         lastNamePrefixes.add("DE ");
     }
+
     public String getSortableLastName()
     {
         String sortableLastName = null

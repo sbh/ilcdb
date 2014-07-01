@@ -1,9 +1,12 @@
-import java.text.SimpleDateFormat;
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 class ClientCase implements Comparable<ClientCase>
 {
     public static final String STAFF_ADVISE = "Staff Advise"
     public static final String STAFF_REPRESENTATION = "Staff Representation"
+    private static final DateTimeFormatter briefDateFormat = DateTimeFormat.forPattern("MMM-dd-yyyy");
+
 
     //Can we make this configurable?
     public static final List ATTORNEYS = ["Laurel", "Laurel/Melissa", "Mary", "Mary/Melissa", "----", "Diego"]
@@ -57,16 +60,16 @@ class ClientCase implements Comparable<ClientCase>
     public String getStartDateString()
     {
         if (startDate == null)
-               return "unknown"
+            return "Start date not specified"
         else
-            return (new SimpleDateFormat("MMM-dd-yyyy").format(startDate))
+            return briefDateFormat.print(startDate.getTime())
     }
     
     public String getCompletionDateString()
     {
         if (completionDate == null || "".equals(completionDate))
-            return null;
-        return (new SimpleDateFormat("MMM-dd-yyyy").format(completionDate))
+            return "Completion date not specified";
+        return briefDateFormat.print(completionDate.getTime())
     }
     
     public String getIntensity()
@@ -82,6 +85,11 @@ class ClientCase implements Comparable<ClientCase>
     public isSuccessful()
     {
         return caseResult?.successfulResult
+    }
+
+    public isStatusAchieved()
+    {
+        return caseResult?.statusWasAchieved
     }
     
     public boolean isValid()
