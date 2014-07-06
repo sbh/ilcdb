@@ -562,28 +562,45 @@ class ClientController
                 def clientReportElement = new ClientReportElement(client, "newIntake")
                 clients.add(clientReportElement);
             }
+            
+            //println("clients.size after adding newIntakes="+clients.size())
 
             ongoingIntakes.each {
                 client->
                 def clientReportElement = new ClientReportElement(client, "ongoingIntake")
-                if (clients.contains(clientReportElement))
-                {
+                if (clients.contains(clientReportElement)) {
                     clientReportElement.types.add("newIntake")
                     clients.remove(clientReportElement)
                 }
                 clients.add(clientReportElement)
             }
 
+            //println("clients.size after adding ongoingIntakes="+clients.size())
+
+            completedIntakes.each {
+                client->
+                def clientReportElement = new ClientReportElement(client, "existingIntake")
+                if (clients.contains(clientReportElement)) {
+                    clientReportElement.types.add("newIntake")
+                    clients.remove(clientReportElement)
+                }
+                clients.add(clientReportElement)
+            }
+
+            //println("clients.size after adding completedIntakes="+clients.size())
+
             // There can be duplicates between the newIntakes and ongoingIntakes. By handling those 2 first, the duplicates
             // can be easily detected. That's why the newClients are added last.
-            newClients.each
-            { client ->
+            newClients.each {
+                client ->
                 clients.add( new ClientReportElement(client, "newClient") );
             }
 
+            //println("clients.size after adding newClients="+clients.size())
+            
             def sortedClients = new ArrayList(clients)
             Collections.sort(sortedClients, new ClientReportElementComparator());
-
+            
             //println "newClients: " + newClients.size();
             //println "newIntakes: " + newIntakes.size();
             //println "ongoingIntakes: " + ongoingIntakes.size();
@@ -607,7 +624,7 @@ class ClientController
 
             returnValue["report"] = true;
             returnValue["ClientListCounts"] = clientListCounts;
-            returnValue["TotalFromMun"] = clientListCounts["newClient"][1] + clientListCounts["newIntake"][1] + clientListCounts["ongoingIntake"][1]
+            returnValue["TotalFromMun"] = sortedClients.size()
             returnValue["TotalFromEverywhere"] = clientListCounts["newClient"][2] + clientListCounts["newIntake"][2] + clientListCounts["ongoingIntake"][2]
             returnValue["Clients"] = sortedClients;
         }
@@ -624,7 +641,7 @@ class ClientController
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
 
-        //println "namedParams: "+namedParams
+        //println "getNewClientsFromMuniBetween sql: "+query+", namedParams: "+namedParams
         def newClients = Client.executeQuery(query, namedParams );
         return newClients;
     }
@@ -661,7 +678,7 @@ class ClientController
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
 
-        //println "namedParams: "+namedParams
+        //println "getClientsWithNewIntakeFromMuniBetween sql: "+query+", namedParams: "+namedParams
         def newIntakeClients = Client.executeQuery( query, namedParams )
         return newIntakeClients;
     }
@@ -722,7 +739,7 @@ class ClientController
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
 
-        //println "namedParams: "+namedParams
+        //println "getClientsWithOngoingIntakesFromMuniBetween sql: "+query+", namedParams: "+namedParams
         def ongoingIntakeClients = Client.executeQuery( query, namedParams )
         return ongoingIntakeClients
     }
@@ -738,7 +755,7 @@ class ClientController
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
 
-        //println "completed intakes namedParams: "+namedParams
+        //println "getClientsWithCompletedIntakesFromMuniBetween sql: "+query+", namedParams: "+namedParams
         def ongoingIntakeClients = Client.executeQuery( query, namedParams )
         return ongoingIntakeClients
     }

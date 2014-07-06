@@ -1,7 +1,6 @@
 <html>
 <%
     def municipalityTypes = ["City", "County", "State", "Any"];
-    def intakeTypes = ["newIntake", "newClient", "ongoingIntakes"]
     def attorneys = ["Any"] + ClientCase.constraints.attorney.inList
  %>
 <head>
@@ -9,8 +8,6 @@
 <meta name="layout" content="main" />
 <title>Reporting</title>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-<g:img dir="images" file="expand.gif" alt="Expand" />
-<g:img dir="images" file="collapse.gif" alt="Collapse" />
 </head>
 <body>
 <script type="text/javascript">

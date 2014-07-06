@@ -17,6 +17,31 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="/Users/sbh/.m2/repository/org/springframework/security/spring-security-core/3.2.0.RC1/spring-security-core-3.2.0.RC1.jar"/>
 	<classpathentry kind="var" path="GRAILS_HOME"/>
+	<classpathentry excluding="BuildConfig.groovy|*DataSource.groovy|UrlMappings.groovy|Config.groovy|BootStrap.groovy|spring/resources.groovy" kind="src" path=".link_to_grails_plugins/asset-pipeline-1.9.0/grails-app/conf">
+		<attributes>
+			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path=".link_to_grails_plugins/asset-pipeline-1.9.0/grails-app/controllers">
+		<attributes>
+			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path=".link_to_grails_plugins/asset-pipeline-1.9.0/grails-app/services">
+		<attributes>
+			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path=".link_to_grails_plugins/asset-pipeline-1.9.0/grails-app/taglib">
+		<attributes>
+			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path=".link_to_grails_plugins/asset-pipeline-1.9.0/src/groovy">
+		<attributes>
+			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path=".link_to_grails_plugins/bcrypt-1.0/grails-app/services">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
@@ -37,7 +62,7 @@
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/hibernate-3.6.10.16-SNAPSHOT/src/java">
+	<classpathentry kind="src" path=".link_to_grails_plugins/hibernate-3.6.10.17-SNAPSHOT/src/java">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
@@ -97,67 +122,37 @@
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.6-SNAPSHOT/grails-app/i18n">
+	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.7-SNAPSHOT/grails-app/i18n">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.6-SNAPSHOT/grails-app/services">
+	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.7-SNAPSHOT/grails-app/services">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.6-SNAPSHOT/grails-app/taglib">
+	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.7-SNAPSHOT/grails-app/taglib">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.6-SNAPSHOT/grails-app/views">
+	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.7-SNAPSHOT/grails-app/views">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.6-SNAPSHOT/src/groovy">
+	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.7-SNAPSHOT/src/groovy">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry excluding="BuildConfig.groovy|*DataSource.groovy|UrlMappings.groovy|Config.groovy|BootStrap.groovy|spring/resources.groovy" kind="src" path=".link_to_grails_plugins/resources-1.2.9-SNAPSHOT/grails-app/conf">
+	<classpathentry kind="src" path=".link_to_grails_plugins/scaffolding-2.1.2/src/groovy">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/resources-1.2.9-SNAPSHOT/grails-app/i18n">
-		<attributes>
-			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/resources-1.2.9-SNAPSHOT/grails-app/resourceMappers">
-		<attributes>
-			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/resources-1.2.9-SNAPSHOT/grails-app/taglib">
-		<attributes>
-			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/resources-1.2.9-SNAPSHOT/src/groovy">
-		<attributes>
-			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/resources-1.2.9-SNAPSHOT/src/java">
-		<attributes>
-			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/scaffolding-2.1.1/src/groovy">
-		<attributes>
-			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/scaffolding-2.1.1/src/java">
+	<classpathentry kind="src" path=".link_to_grails_plugins/scaffolding-2.1.2/src/java">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
@@ -237,12 +232,12 @@
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/tomcat-7.0.53/src/groovy">
+	<classpathentry kind="src" path=".link_to_grails_plugins/tomcat-7.0.54/src/groovy">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path=".link_to_grails_plugins/tomcat-7.0.53/src/java">
+	<classpathentry kind="src" path=".link_to_grails_plugins/tomcat-7.0.54/src/java">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
