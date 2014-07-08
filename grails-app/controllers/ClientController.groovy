@@ -571,6 +571,7 @@ class ClientController
                 if (clients.contains(clientReportElement)) {
                     clientReportElement.types.add("newIntake")
                     clients.remove(clientReportElement)
+                    //println("adding newIntake to existing client with ongoingIntake: "+client)
                 }
                 clients.add(clientReportElement)
             }
@@ -579,10 +580,11 @@ class ClientController
 
             completedIntakes.each {
                 client->
-                def clientReportElement = new ClientReportElement(client, "existingIntake")
+                def clientReportElement = new ClientReportElement(client, "completedIntake")
                 if (clients.contains(clientReportElement)) {
                     clientReportElement.types.add("newIntake")
                     clients.remove(clientReportElement)
+                    //println("adding newIntake to existing client with completedIntake: "+client)
                 }
                 clients.add(clientReportElement)
             }
@@ -604,6 +606,7 @@ class ClientController
             //println "newClients: " + newClients.size();
             //println "newIntakes: " + newIntakes.size();
             //println "ongoingIntakes: " + ongoingIntakes.size();
+            //sortedClients.each() { println("$it.client") }
 
             def clientListCounts = [ : ]
 
