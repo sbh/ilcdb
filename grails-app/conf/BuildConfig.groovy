@@ -45,13 +45,13 @@ grails.project.dependency.resolution = {
         build ":tomcat:7.0.54"
 
         compile ":jquery:1.11.1"
-        compile ':jquery-date-time-picker:0.1.1'
+        compile ':jquery-date-time-picker:0.2.0'
         compile ":spring-security-core:2.0-SNAPSHOT"
         compile ":spring-security-ui:1.0-RC2"
-        compile ":asset-pipeline:1.9.0"
+        compile ":asset-pipeline:1.9.9"
         compile ":bcrypt:1.0"
         compile ":scaffolding:2.1.2"
-        compile ":jquery-ui:1.10.3"
-        compile ":mail:1.0.7-SNAPSHOT"
+        compile ":jquery-ui:1.10.4"
+        compile ":mail:1.0.8-SNAPSHOT"
     }
 }
