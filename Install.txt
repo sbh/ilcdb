@@ -9,7 +9,8 @@
 - install any updates to grails and groovy
 - start apache (sudo launchctl load /Library/LaunchDaemons/org.apache.jakarta.tomcat.plist)
 
-
+create database ilcdb;
+grant all on `ilcdb`.* to 'ilcdb'@'localhost' identified by 'snuggl3s';
 
 ### Schema changes
 # Modify the note table to use a text column:
@@ -49,5 +50,3 @@ update address set country_id=(select id from country where address.country = co
 update birth_place set country_id=(select id from country where birth_place.country = country.name);
 alter table address drop country;
 alter table birth_place drop country;
-
-

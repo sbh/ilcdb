@@ -1,8 +1,8 @@
 dataSource {
-	pooled = false
-	driverClassName = "org.hsqldb.jdbcDriver"
-	username = "sa"
-	password = ""
+    pooled = false
+    driverClassName = "org.hsqldb.jdbcDriver"
+    username = "sa"
+    password = ""
 }
 hibernate {
     cache.use_second_level_cache=true
@@ -11,29 +11,30 @@ hibernate {
 }
 // environment specific settings
 environments {
-	development {
-		dataSource {
-			dbCreate = "update"
-                        driverClassName = "com.mysql.jdbc.Driver"
-                        url = "jdbc:mysql://localhost/ilcdb"
-                        username = "ilcdb"
-                        password =  "snuggl3s"
-		}
-	}
-	test {
-		dataSource {
-			dbCreate = "update"
-			url = "jdbc:derby:db"
-			driverClassName = "org.apache.derby.jdbc.EmbeddedDriver"
-		}
-	}
-	production {
-		dataSource {
-			dbCreate = "update"
-                        driverClassName = "com.mysql.jdbc.Driver"
-                        url = "jdbc:mysql://localhost/ilcdb"
-                        username = "ilcdb"
-                        password =  "snuggl3s"
-		}
-	}
+    development {
+        dataSource {
+            dbCreate = "update"
+            driverClassName = "com.mysql.jdbc.Driver"
+            url = "jdbc:mysql://localhost/ilcdb"
+            username = "ilcdb"
+            password =  "snuggl3s"
+            //logSql = true
+        }
+    }
+    test {
+        dataSource {
+            dbCreate = "update"
+            url = "jdbc:derby:db"
+            driverClassName = "org.apache.derby.jdbc.EmbeddedDriver"
+        }
+    }
+    production {
+        dataSource {
+            dbCreate = "update"
+            driverClassName = "com.mysql.jdbc.Driver"
+            url = "jdbc:mysql://localhost/ilcdb"
+            username = "ilcdb"
+            password =  "snuggl3s"
+        }
+    }
 }

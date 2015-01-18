@@ -289,29 +289,33 @@ window.onload = reporting.windowLoaded
                 <h3>Report Results (${Clients.size()} distinct client families)</h3>
                 <div class="dialog">
                     <table style="width:auto">
+                        <caption align="left">Display Information for Time Period</caption>
                         <thead>
-                            <th width="20" halign="left">Display</th>
-                            <th width="200" halign="left">Client Type</th>
-                            <th width="50" halign="left">Number</th>
-                            <th width="50" halign="left">Intake Total</th>
+                            <th width="20" align="left">Display?</th>
+                            <th width="200" align="center"></th>
+                            <th width="70" align="left">Client Total</th>
+                            <th width="75" align="left">Intake Total</th>
+                            <th width="75" align="left">Client Total All Regions</th>
+                            <th width="80" align="left">Intake Total All Regions</th>
                         </thead>
                         <tbody>
                             <g:each status="i" var="listDesc" in="${ClientListCounts.keySet()}">
                                 <%
-                                    def listLabel = ClientListCounts[listDesc][0];
-                                    def listCount = ClientListCounts[listDesc][1];
-                                    def totalCount = ClientListCounts[listDesc][2];
+                                    def label = ClientListCounts[listDesc][0];
+                                    def clientCount = ClientListCounts[listDesc][1];
+                                    def intakeCount = ClientListCounts[listDesc][2];
+                                    def allClientCount = ClientListCounts[listDesc][3];
+                                    def allIntakeCount = ClientListCounts[listDesc][4];
                                  %>
                                 <tr>
                                     <td ><input type="checkbox" name="${listDesc}" checked="true" class="displaySelect"
-                                        onclick="reporting.resetRowVisibility()"/></td>
-                                    <td halign="left">
-                                        <label>${listLabel}</label>
+                                        onclick="reporting.resetRowVisibility()"/>
                                     </td>
-                                    <td>
-                                        <label>${listCount}</label>
-                                    </td>
-                                    <td>${totalCount}</td>
+                                    <td align="right">${label}</td>
+                                    <td align="center">${clientCount}</td>
+                                    <td align="center">${intakeCount}</td>
+                                    <td align="center" style="border-left-style: solid;">${allClientCount}</td>
+                                    <td align="center">${allIntakeCount}</td>
                                 </tr>
                             </g:each>    
                             <tr>

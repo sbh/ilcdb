@@ -60,15 +60,15 @@ class ClientCase implements Comparable<ClientCase>
     public String getStartDateString()
     {
         if (startDate == null)
-            return "Start date not specified"
+            return "Ongoing"
         else
             return briefDateFormat.print(startDate.getTime())
     }
     
     public String getCompletionDateString()
     {
-        if (completionDate == null || "".equals(completionDate))
-            return "Completion date not specified";
+        if (completionDate == null)
+            return "Ongoing";
         return briefDateFormat.print(completionDate.getTime())
     }
     
@@ -105,7 +105,7 @@ class ClientCase implements Comparable<ClientCase>
     String toString()
     {
         String intakeTypeStr = ""
-        if (isSet(intakeType))
+        if (intakeType)
             intakeTypeStr = "Intake Type: ${intakeType}"
         String caseResultStr = ""
         if (caseResult != null)
@@ -114,16 +114,11 @@ class ClientCase implements Comparable<ClientCase>
         if (STAFF_REPRESENTATION.equals(intakeType))
             caseTypeStr = ", Case Type: ${caseType}"
         String coltafNumberStr = ""
-        if (isSet(coltafNumber))
+        if (coltafNumber)
             coltafNumberStr = ", COLTAF Number: ${coltafNumber}"
         String retval = "${intakeTypeStr}${caseTypeStr}${coltafNumberStr}${caseResultStr}".replaceAll(",+", ",").stripMargin(",")
         if (retval.equals(""))
             retval = "unknown"
         return retval
-    }
-    
-    private boolean isSet(String object)
-    {
-        return object != null && !"".equals(object)
     }
 }
