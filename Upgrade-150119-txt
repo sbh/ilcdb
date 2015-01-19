@@ -1,0 +1,2 @@
+insert into case_type (type) values ('2015 WFC');
+update case_result set status_was_achieved=1 where result="CIS Application achieved result" or result="EOIR primary result achieved" or result="Consular Processing achieved outcome";
