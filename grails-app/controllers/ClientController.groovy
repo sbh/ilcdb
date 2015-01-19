@@ -550,18 +550,18 @@ class ClientController
 
             def clientListCounts = [ : ]
 
-            clientListCounts[ClientIntakeType.NewClientOngoingIntake] = ["New Clients with New/Ongoing Intakes", newClientsOngoingIntakes.size(),
-                newClientsOngoingIntakesCount, newClientsOngoingIntakesAnywhere.size(), newClientsOngoingIntakesAnywhereCount]
-            clientListCounts[ClientIntakeType.NewClientCompletedIntake] = ["New Clients with New/Completed Intakes", newClientsCompletedIntakes.size(),
-                newClientsCompletedIntakesCount, newClientsCompletedIntakesAnywhere.size(), newClientsCompletedIntakesAnywhereCount]
-            clientListCounts[ClientIntakeType.ExistingClientNewOngoingIntake] = ["Existing Clients with New/Ongoing Intakes", existingClientsNewOngoingIntakes.size(),
-                existingClientsNewOngoingIntakesCount, existingClientsNewOngoingIntakes.size(), existingClientsNewOngoingIntakesAnywhereCount]
-            clientListCounts[ClientIntakeType.ExistingClientNewCompletedIntake] = ["Existing Clients with New/Completed Intakes", existingClientsNewCompletedIntakes.size(),
-                existingClientsNewCompletedIntakesCount, existingClientsNewCompletedIntakesAnywhere.size(), existingClientsNewCompletedIntakesAnywhereCount]
-            clientListCounts[ClientIntakeType.ExistingClientOngoingIntake] = ["Existing Clients with Existing/Ongoing Intakes", existingClientsExistingOngoingIntakes.size(),
-                existingClientsExistingOngoingIntakesCount, existingClientsExistingOngoingIntakesAnywhere.size(), existingClientsExistingOngoingIntakesCount]
-            clientListCounts[ClientIntakeType.ExistingClientCompletedIntake] = ["Existing Clients with Existing/Completed Intakes", existingClientsExistingCompletedIntakes.size(),
-                existingClientsExistingCompletedIntakesCount, existingClientsExistingCompletedIntakesAnywhere.size(), existingClientsExistingCompletedIntakesAnywhereCount]
+            clientListCounts[ClientIntakeType.NewClientOngoingIntake] = ["New Clients with New/Ongoing Intakes", newClientsOngoingIntakes.size(), newClientsOngoingIntakesCount,
+                                                                         newClientsOngoingIntakesAnywhere.size(), newClientsOngoingIntakesAnywhereCount]
+            clientListCounts[ClientIntakeType.NewClientCompletedIntake] = ["New Clients with New/Completed Intakes", newClientsCompletedIntakes.size(), newClientsCompletedIntakesCount,
+                                                                           newClientsCompletedIntakesAnywhere.size(), newClientsCompletedIntakesAnywhereCount]
+            clientListCounts[ClientIntakeType.ExistingClientNewOngoingIntake] = ["Existing Clients with New/Ongoing Intakes", existingClientsNewOngoingIntakes.size(), existingClientsNewOngoingIntakesCount,
+                                                                                 existingClientsNewOngoingIntakesAnywhere.size(), existingClientsNewOngoingIntakesAnywhereCount]
+            clientListCounts[ClientIntakeType.ExistingClientNewCompletedIntake] = ["Existing Clients with New/Completed Intakes", existingClientsNewCompletedIntakes.size(), existingClientsNewCompletedIntakesCount, 
+                                                                                   existingClientsNewCompletedIntakesAnywhere.size(), existingClientsNewCompletedIntakesAnywhereCount]
+            clientListCounts[ClientIntakeType.ExistingClientOngoingIntake] = ["Existing Clients with Existing/Ongoing Intakes", existingClientsExistingOngoingIntakes.size(), existingClientsExistingOngoingIntakesCount,
+                                                                              existingClientsExistingOngoingIntakesAnywhere.size(), existingClientsExistingOngoingIntakesAnywhereCount]
+            clientListCounts[ClientIntakeType.ExistingClientCompletedIntake] = ["Existing Clients with Existing/Completed Intakes", existingClientsExistingCompletedIntakes.size(), existingClientsExistingCompletedIntakesCount,
+                                                                                existingClientsExistingCompletedIntakesAnywhere.size(), existingClientsExistingCompletedIntakesAnywhereCount]
 
             returnValue["startDate"] = params.startDate
             returnValue["endDate"] = params.endDate
@@ -574,10 +574,14 @@ class ClientController
 
             returnValue["report"] = true;
             returnValue["ClientListCounts"] = clientListCounts;
-            returnValue["TotalFromMun"] = sortedClients.size()
-            returnValue["TotalFromEverywhere"] = clientListCounts[ClientIntakeType.NewClientOngoingIntake][2] +
-                    clientListCounts[ClientIntakeType.ExistingClientNewCompletedIntake][2] +
-                    clientListCounts[ClientIntakeType.ExistingClientOngoingIntake][2]
+            returnValue["ClientTotalFromMun"] = newClientsOngoingIntakes.size() + newClientsCompletedIntakes.size() + existingClientsNewOngoingIntakes.size() +
+                                                existingClientsNewCompletedIntakes.size() + existingClientsExistingOngoingIntakes.size() + existingClientsExistingCompletedIntakes.size()
+            returnValue["IntakeTotalFromMun"] = existingClientsNewCompletedIntakesCount + existingClientsNewOngoingIntakesCount + existingClientsExistingCompletedIntakesCount + 
+                                                existingClientsExistingOngoingIntakesCount + newClientsCompletedIntakesCount + newClientsOngoingIntakesCount
+            returnValue["ClientTotalFromAnywhere"] = newClientsOngoingIntakesAnywhere.size() + newClientsCompletedIntakesAnywhere.size() + existingClientsNewOngoingIntakesAnywhere.size() +
+                                                     existingClientsNewCompletedIntakesAnywhere.size() + existingClientsExistingOngoingIntakesAnywhere.size() + existingClientsExistingCompletedIntakesAnywhere.size()
+            returnValue["IntakeTotalFromAnywhere"] = existingClientsNewCompletedIntakesAnywhereCount + existingClientsNewOngoingIntakesAnywhereCount + existingClientsExistingCompletedIntakesAnywhereCount + 
+                                                     existingClientsExistingOngoingIntakesAnywhereCount + newClientsCompletedIntakesAnywhereCount + newClientsOngoingIntakesAnywhereCount
             returnValue["Clients"] = sortedClients;
         }
 

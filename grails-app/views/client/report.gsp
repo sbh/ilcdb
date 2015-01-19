@@ -321,8 +321,10 @@ window.onload = reporting.windowLoaded
                             <tr>
                                <td>Totals:</td> 
                                <td></td> 
-                               <td>${TotalFromMun}</td> 
-                               <td>${TotalFromEverywhere}</td> 
+                               <td>${ClientTotalFromMun}</td>
+                               <td>${IntakeTotalFromMun}</td>
+                               <td>${ClientTotalFromAnywhere}</td> 
+                               <td>${IntakeTotalFromAnywhere}</td> 
                             </tr>
 
                         </tbody>
