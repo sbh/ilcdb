@@ -38,8 +38,8 @@ log4j = {
     //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
 
-    trace 'org.hibernate.type'
-    debug 'org.hibernate.SQL'
+//    trace 'org.hibernate.type'
+//    debug 'org.hibernate.SQL'
     info   'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
@@ -54,7 +54,7 @@ log4j = {
  }
 
 // WAR dependency config
-grails.war.dependencies = [
+/*grails.war.dependencies = [
     "ant.jar",
     "ant-launcher.jar",
     "hibernate3.jar",
@@ -95,7 +95,7 @@ grails.war.dependencies = [
 grails.war.java5.dependencies = [
     "hibernate-annotations.jar",
     "ejb3-persistence.jar",
-]
+]*/
 
 
 

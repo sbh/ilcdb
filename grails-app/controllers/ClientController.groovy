@@ -484,6 +484,7 @@ class ClientController
             }
             else
                 clientReportElements.add(clientReportElement)
+
             count += client.cases.grep({ aCase -> filterFunc(aCase, startDate, endDate) }).size()
         }
         count
@@ -515,25 +516,32 @@ class ClientController
             def existingClientsExistingCompletedIntakesAnywhere = clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, EXISTING_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
 
             List clients = new ArrayList<ClientReportElement>()
-
             int existingClientsNewCompletedIntakesCount = updateClientReportElements(clients, existingClientsNewCompletedIntakes, ClientIntakeType.ExistingClientNewCompletedIntake,
-                                                                                     params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
-
+                    params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
             int existingClientsNewOngoingIntakesCount = updateClientReportElements(clients, existingClientsNewOngoingIntakes, ClientIntakeType.ExistingClientNewOngoingIntake,
-                                                                                   params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
-
+                    params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
             int existingClientsExistingCompletedIntakesCount = updateClientReportElements(clients, existingClientsExistingCompletedIntakes, ClientIntakeType.ExistingClientCompletedIntake,
-                                                                                          params.startDate, params.endDate, this.&isIntakeExistingAndCompleted)
-
+                    params.startDate, params.endDate, this.&isIntakeExistingAndCompleted)
             int existingClientsExistingOngoingIntakesCount = updateClientReportElements(clients, existingClientsExistingOngoingIntakes, ClientIntakeType.ExistingClientOngoingIntake,
-                                                                                        params.startDate, params.endDate, this.&isIntakeExistingAndOngoing)
-
+                    params.startDate, params.endDate, this.&isIntakeExistingAndOngoing)
             int newClientsCompletedIntakesCount = updateClientReportElements(clients, newClientsCompletedIntakes, ClientIntakeType.NewClientCompletedIntake,
-                                                                             params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
-
+                    params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
             int newClientsOngoingIntakesCount = updateClientReportElements(clients, newClientsOngoingIntakes, ClientIntakeType.NewClientOngoingIntake,
-                                                                           params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
+                    params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
 
+            List anywhereClients = new ArrayList<ClientReportElement>()
+            int existingClientsNewCompletedIntakesAnywhereCount = updateClientReportElements(anywhereClients, existingClientsNewCompletedIntakesAnywhere, ClientIntakeType.ExistingClientNewCompletedIntake,
+                    params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
+            int existingClientsNewOngoingIntakesAnywhereCount = updateClientReportElements(anywhereClients, existingClientsNewOngoingIntakesAnywhere, ClientIntakeType.ExistingClientNewOngoingIntake,
+                    params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
+            int existingClientsExistingCompletedIntakesAnywhereCount = updateClientReportElements(anywhereClients, existingClientsExistingCompletedIntakesAnywhere, ClientIntakeType.ExistingClientCompletedIntake,
+                    params.startDate, params.endDate, this.&isIntakeExistingAndCompleted)
+            int existingClientsExistingOngoingIntakesAnywhereCount = updateClientReportElements(anywhereClients, existingClientsExistingOngoingIntakesAnywhere, ClientIntakeType.ExistingClientOngoingIntake,
+                    params.startDate, params.endDate, this.&isIntakeExistingAndOngoing)
+            int newClientsCompletedIntakesAnywhereCount = updateClientReportElements(anywhereClients, newClientsCompletedIntakesAnywhere, ClientIntakeType.NewClientCompletedIntake,
+                    params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
+            int newClientsOngoingIntakesAnywhereCount = updateClientReportElements(anywhereClients, newClientsOngoingIntakesAnywhere, ClientIntakeType.NewClientOngoingIntake,
+                    params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
             def sortedClients = new ArrayList(clients)
             Collections.sort(sortedClients, new ClientReportElementComparator());
 
@@ -542,18 +550,18 @@ class ClientController
 
             def clientListCounts = [ : ]
 
-            clientListCounts[ClientIntakeType.NewClientOngoingIntake] = ["New Clients with New/Ongoing Intakes", newClientsOngoingIntakes.size(), 
-                                                                         newClientsOngoingIntakesCount, newClientsOngoingIntakesAnywhere.size(), 0]
+            clientListCounts[ClientIntakeType.NewClientOngoingIntake] = ["New Clients with New/Ongoing Intakes", newClientsOngoingIntakes.size(),
+                newClientsOngoingIntakesCount, newClientsOngoingIntakesAnywhere.size(), newClientsOngoingIntakesAnywhereCount]
             clientListCounts[ClientIntakeType.NewClientCompletedIntake] = ["New Clients with New/Completed Intakes", newClientsCompletedIntakes.size(),
-                                                                           newClientsCompletedIntakesCount, newClientsCompletedIntakesAnywhere.size(), 0]
+                newClientsCompletedIntakesCount, newClientsCompletedIntakesAnywhere.size(), newClientsCompletedIntakesAnywhereCount]
             clientListCounts[ClientIntakeType.ExistingClientNewOngoingIntake] = ["Existing Clients with New/Ongoing Intakes", existingClientsNewOngoingIntakes.size(),
-                                                                                 existingClientsNewOngoingIntakesCount, existingClientsNewOngoingIntakes.size(), 0]
+                existingClientsNewOngoingIntakesCount, existingClientsNewOngoingIntakes.size(), existingClientsNewOngoingIntakesAnywhereCount]
             clientListCounts[ClientIntakeType.ExistingClientNewCompletedIntake] = ["Existing Clients with New/Completed Intakes", existingClientsNewCompletedIntakes.size(),
-                                                                                   existingClientsNewCompletedIntakesCount, existingClientsNewCompletedIntakesAnywhere.size(), 0]
+                existingClientsNewCompletedIntakesCount, existingClientsNewCompletedIntakesAnywhere.size(), existingClientsNewCompletedIntakesAnywhereCount]
             clientListCounts[ClientIntakeType.ExistingClientOngoingIntake] = ["Existing Clients with Existing/Ongoing Intakes", existingClientsExistingOngoingIntakes.size(),
-                                                                              existingClientsExistingOngoingIntakesCount, existingClientsExistingOngoingIntakesAnywhere.size(), 0]
+                existingClientsExistingOngoingIntakesCount, existingClientsExistingOngoingIntakesAnywhere.size(), existingClientsExistingOngoingIntakesCount]
             clientListCounts[ClientIntakeType.ExistingClientCompletedIntake] = ["Existing Clients with Existing/Completed Intakes", existingClientsExistingCompletedIntakes.size(),
-                                                                                existingClientsExistingCompletedIntakesCount, existingClientsExistingCompletedIntakesAnywhere.size(), 0]
+                existingClientsExistingCompletedIntakesCount, existingClientsExistingCompletedIntakesAnywhere.size(), existingClientsExistingCompletedIntakesAnywhereCount]
 
             returnValue["startDate"] = params.startDate
             returnValue["endDate"] = params.endDate
