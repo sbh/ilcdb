@@ -245,13 +245,23 @@ window.onload = reporting.windowLoaded
                             </td>
                         </tr>
 
-
                         <tr class="prop">
                             <td valign="top" for="attorney"><label>Attorney</label> </td>
                             <td name="attorney" valign="top">
                                 <g:select id="attorney" name="attorney" from="${attorneys}" value="${attorney}" />
                             </td>
                         </tr>
+
+                        <tr class="prop">
+                            <td valign="top" for="homeCountry"><label>Home Country</label> </td>
+                            <td name="homeCountry" valign="top">
+								<g:select id="homeCountry" name="homeCountry" from="${Country.list(sort:'name')}"
+                                          optionKey="id" optionValue="name" noSelection="${['-1':'Any']}"
+                                          value="${homeCountry}" />
+                                
+                            </td>
+                        </tr>
+
                         <tr class="prop" >
                             <td valign="top" for="statusAchieved">
                                 <g:img dir="images" file="expand.gif" alt="Expand" onclick="reporting.onVisibleClick(this, 'advanced', 'advancedLabel')" />

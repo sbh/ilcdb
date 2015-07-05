@@ -493,14 +493,14 @@ class ClientController
     @Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
     def report()
     {
-        println("**** report params: "+params)
+        //println("**** report params: "+params)
         def returnValue = [ : ];
 
         if(params.startDate && params.endDate)
         {
             // adjust the endDate to be the end of the day.
             params.endDate = new Date(params.endDate.getTime() + 1000L*24L*60L*60L - 1L)
-
+            
             def newClientsOngoingIntakes =                        clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
             def newClientsCompletedIntakes =                      clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
             def existingClientsNewOngoingIntakes =                clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
@@ -571,6 +571,7 @@ class ClientController
             returnValue["displayIntakesCheckBox"] = params.displayIntakesCheckBox == "on" || params.displayIntakesCheckBox == "true"? "true" : "false"
             returnValue["intakeState"] = params.intakeState
             returnValue["statusAchieved"] = params.statusAchieved
+            returnValue["homeCountry"] = params.homeCountry
 
             returnValue["report"] = true;
             returnValue["ClientListCounts"] = clientListCounts;
@@ -593,6 +594,7 @@ class ClientController
              Client as client
                inner join fetch client.client as person
                inner join fetch person.address as address
+               inner join fetch person.placeOfBirth as placeOfBirth
                inner join fetch client.cases as intake where
         """
     private static String NEW_CLIENTS_QUERY = CLIENTS_QUERY + " ( client.firstVisit >= :startDate and client.firstVisit <= :endDate ) "
@@ -609,7 +611,8 @@ class ClientController
     Collection<Client> getClients(String clientIntakeQuery, String munType, def params) {
         String query = clientIntakeQuery +
                 addAnd(getMunicipalitySubQuery(munType)) +
-                addAnd(getAttorneySubQuery(params.attorney))
+                addAnd(getAttorneySubQuery(params.attorney)) +
+                addAnd(getHomeCountrySubQuery(params.homeCountry))
 
         if ("open".equals(params.intakeState))
             query += " and intake.completionDate is null"
@@ -648,5 +651,13 @@ class ClientController
             ":mun = :mun" // So that there is a parameter for the municipality
         else
             "upper(address.${municipalityType.toLowerCase()}) = upper(:mun)"
+    }
+
+    String getHomeCountrySubQuery(String homeCountry)
+    {
+        if (homeCountry == "-1")
+            ""
+        else
+            "(upper(placeOfBirth.country.name) = '${Country.get(homeCountry)}')"
     }
 }

@@ -1,3 +1,4 @@
+- This link describes how to configure tomcat for launchd: https://www.joel.lopes-da-silva.com/2008/05/13/installing-tomcat-on-mac-os-x/
 - stop apache (sudo launchctl unload /Library/LaunchDaemons/org.apache.jakarta.tomcat.plist)
 - dump the database; mysqldump -u ilcdb -p ilcdb > /tmp/dump.out
 - stop mysql (sudo  /usr/local/mysql/support-files/mysql.server stop)
@@ -9,6 +10,7 @@
 - install any updates to grails and groovy
 - start apache (sudo launchctl load /Library/LaunchDaemons/org.apache.jakarta.tomcat.plist)
 
+CREATE USER 'ilcdb'@'localhost' IDENTIFIED BY 'snuggl3s';
 create database ilcdb;
 grant all on `ilcdb`.* to 'ilcdb'@'localhost' identified by 'snuggl3s';
 
