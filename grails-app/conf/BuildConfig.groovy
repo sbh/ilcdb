@@ -40,15 +40,15 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        runtime ":hibernate:3.6.10.17-SNAPSHOT"
+        runtime ":hibernate:3.6.10.20-SNAPSHOT"
 
-        build ":tomcat:7.0.54"
+        build ":tomcat:8.0.22"
 
         compile ":jquery:1.11.1"
         compile ':jquery-date-time-picker:0.2.0'
-        compile ":spring-security-core:2.0-SNAPSHOT"
+        compile ":spring-security-core:2.0-RC5"
         compile ":spring-security-ui:1.0-RC2"
-        compile ":asset-pipeline:1.9.9"
+        compile ":asset-pipeline:2.5.1"
         compile ":bcrypt:1.0"
         compile ":scaffolding:2.1.2"
         compile ":jquery-ui:1.10.4"
