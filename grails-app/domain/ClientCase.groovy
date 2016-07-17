@@ -12,7 +12,7 @@ class ClientCase implements Comparable<ClientCase>
     public static final List ATTORNEYS = ["Laurel", "Mairi", "Mary", "----", "Diego"]
     static belongsTo = [ client:Client ]
     static hasMany = [ notes : Note ]
-    
+
     String coltafNumber = ""
     String caseNumber = ""
     String fileLocation = "Alpha"
@@ -24,12 +24,12 @@ class ClientCase implements Comparable<ClientCase>
     CaseType caseType
     CaseResult caseResult
     String intensity = "1"
-    
+
     static mapping =
     {
         cache true
     }
-    
+
     static constraints =
     {
         attorney(inList: ATTORNEYS)
@@ -44,9 +44,9 @@ class ClientCase implements Comparable<ClientCase>
         caseResult(nullable:true)
         intensity(inList:["-Choose-", "1", "2", "3", "4", "5", "n/a"])
     }
-    
+
     static transients = [ "startDateString", "completionDateString", "open", "valid", "fileLocation" ]
-    
+
     int compareTo(ClientCase otherIntake)
     {
         if (startDate == null || otherIntake.startDate == null)
@@ -56,7 +56,7 @@ class ClientCase implements Comparable<ClientCase>
             return id.compareTo(otherIntake.id)
         return startDate.compareTo(otherIntake.startDate);
     }
-    
+
     public String getStartDateString()
     {
         if (startDate == null)
@@ -64,24 +64,24 @@ class ClientCase implements Comparable<ClientCase>
         else
             return briefDateFormat.print(startDate.getTime())
     }
-    
+
     public String getCompletionDateString()
     {
         if (completionDate == null)
             return "Ongoing";
         return briefDateFormat.print(completionDate.getTime())
     }
-    
+
     public String getIntensity()
     {
         return intensity
     }
-    
+
     public boolean isOpen()
     {
         return completionDate == null;
     }
-    
+
     public isSuccessful()
     {
         return caseResult?.successfulResult
@@ -91,17 +91,17 @@ class ClientCase implements Comparable<ClientCase>
     {
         return caseResult?.statusWasAchieved
     }
-    
+
     public boolean isValid()
     {
         return STAFF_REPRESENTATION.equals(intakeType) || STAFF_ADVISE.equals(intakeType)
     }
-    
+
     String toDebugString()
     {
         return "intake type: "+intakeType+", caseResult: "+caseResult+", coltafNumber: "+coltafNumber+", intensity: "+intensity
     }
-    
+
     String toString()
     {
         String intakeTypeStr = ""

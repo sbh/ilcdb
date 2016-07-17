@@ -14,14 +14,14 @@ class CaseType
 
         return retval
     }
-    
+
     public int hashCode()
     {
         return id
     }
-    
+
     public String toString()
     {
-        return id+":"+type
+        return "${id} : ${type} : ${associatedStatus}"
     }
 }

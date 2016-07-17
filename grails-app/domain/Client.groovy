@@ -16,7 +16,7 @@ class Client implements Comparable<Client>
     SortedSet serviceRecords
     SortedSet conflicts
     String fileLocation
-    
+
     static hasMany = [notes:Note, cases:ClientCase, appointments:Appointment, sponsorRelations:ClientSponsorRelation,
                       serviceRecords:ServiceRecord, conflicts:Conflict]
 
@@ -47,7 +47,7 @@ class Client implements Comparable<Client>
             returnValue = "Client name undefined"
         return returnValue
     }
-    
+
     String toDebugString()
     {
         return "client: $client, firstVisit: $firstVisit, householdIncomeLevel: $householdIncomeLevel, numberInHousehold: $numberInHousehold, address: $client.address";
@@ -126,7 +126,7 @@ class Client implements Comparable<Client>
         }
         return false;
     }
-    
+
     public Person getPerson()
     {
         return client;
@@ -186,13 +186,13 @@ class Client implements Comparable<Client>
     public List<String> getStatiAchieved()
     {
         List<String> achievedList = new ArrayList();
-        
+
         for (ClientCase clientCase : cases)
         {
             if (clientCase.isStatusAchieved() && clientCase.caseType.associatedStatus)
                 achievedList.add(clientCase.caseType.associatedStatus + " : " + briefDateFormat.print(clientCase.completionDate?.getTime()))
         }
-        
+
         return achievedList
     }
 
@@ -200,22 +200,22 @@ class Client implements Comparable<Client>
     {
         return client.compareTo(other.client)
     }
-    
+
     boolean hasAchievedStatus(StatusAchieved.Type statusType)
     {
         for (ClientCase clientCase : cases)
         {
-            if (clientCase.isStatusAchieved() && clientCase.caseType.associatedStatus == String.valueOf(statusType))
-                return true;
+            if (clientCase.isStatusAchieved() && clientCase.caseType.type == String.valueOf(statusType))
+                return true
         }
-        return false;
+        return false
     }
 
     public boolean hasAchievedCitizenship()
     {
         hasAchievedStatus(StatusAchieved.Type.Citizenship)
     }
-    
+
     public boolean hasAchievedDACA()
     {
         hasAchievedStatus(StatusAchieved.Type.DACA)
@@ -240,12 +240,12 @@ class Client implements Comparable<Client>
     {
         hasAchievedStatus(StatusAchieved.Type.TPS)
     }
-    
+
     public boolean hasAchievedNoStatus()
     {
         return !hasAchievedAnyStatus()
     }
-    
+
     public boolean hasAchievedAnyStatus()
     {
         return hasAchievedCitizenship() || hasAchievedDACA() || hasAchievedLPR() || hasAchievedLPRConditionsRemoved() || hasAchievedLPRCardRenewed() || hasAchievedTPS()
