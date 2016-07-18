@@ -3,12 +3,6 @@ import grails.transaction.Transactional
 @Transactional
 class ClientService
 {
-
-    def serviceMethod()
-    {
-
-    }
-
     def filterStatus(Collection clients, String whichStatus)
     {
         def results = []
@@ -45,21 +39,5 @@ class ClientService
         else
             results = clients
         return results
-    }
-
-    def getEm(Date startDate, Date endDate) {
-        def c = Client.createCriteria()
-        c.list {
-            and {
-                gt('firstVisit', startDate)
-                lt('firstVisit', endDate)
-                cases {
-                    and {
-                        between('startDate', startDate, endDate)
-                        gt('completionDate', endDate)
-                    }
-                }
-            }
-        }
     }
 }
