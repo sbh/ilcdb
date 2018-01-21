@@ -16,6 +16,13 @@ class Conflict implements Comparable<Conflict>
     {
     }
 
+    def toMap() {
+        [firstName : firstName,
+         lastName  : lastName,
+         createDate: createDate,
+         reason    : reason]
+    }
+
     String toString() { return lastName + ", " + firstName }
 
     int compareTo(Conflict o) {

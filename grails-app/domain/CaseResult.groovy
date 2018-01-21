@@ -5,6 +5,12 @@ class CaseResult
     boolean successfulResult; // For client or ILCBC.
     boolean statusWasAchieved; // An actual immigration status was successfully achieved.
 
+    def toMap() {
+        [result           : result,
+         successfulResult : successfulResult,
+         statusWasAchieved: statusWasAchieved]
+    }
+
     static Collection<String> successfulResults()
     {
         return findAllWhere(successfulResult:true)

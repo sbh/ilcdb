@@ -1,4 +1,3 @@
-import java.util.Date;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormat;
 
@@ -12,7 +11,7 @@ class Client implements Comparable<Client>
     AMI ami = new AMI("label":"UNSPECIFIED", "level":0)
     Integer householdIncomeLevel
     Integer numberInHousehold
-    SortedSet notes
+    SortedSet<Note> notes
     SortedSet serviceRecords
     SortedSet conflicts
     String fileLocation
@@ -37,6 +36,28 @@ class Client implements Comparable<Client>
     }
 
     static transients = [ "statiAchievedStrings", "firstVisitString", "homeCountry", "shortAddress", "emailAddress", "openCase", "validCases", "attorney", "person" ]
+
+    def toMap() {
+        [firstName           : person.firstName,
+         lastName            : person.lastName,
+         email               : person.emailAddress,
+         dateOfBirth         : person.dateOfBirth,
+         gender              : person.gender,
+         englishProficiency  : person.englishProficiency,
+         phone               : person.phoneNumber,
+         race                : person.race,
+         birthPlace          : person.placeOfBirth.toMap(),
+         address             : person.address.toMap(),
+         fileLocation        : fileLocation,
+         ami                 : ami.toMap(),
+         numberInHousehold   : numberInHousehold,
+         householdIncomeLevel: householdIncomeLevel,
+         cases               : cases.collect { it.toMap() },
+         serviceRecords      : serviceRecords.collect { it.toMap() },
+         conflicts           : conflicts.collect { it.toMap() },
+         //sponsorRelations  : sponsorRelations.collect { it.toMap() },
+         notes               : notes.collect { it.toMap() }]
+    }
 
     String toString()
     {

@@ -25,6 +25,11 @@ class Note implements Comparable<Note>
     String text
     Date createDate
 
+    def toMap() {
+        [text: text,
+         created: createDate]
+    }
+
     String toString() 
     { 
         def regex = (/<(\w|\/\w)[^>]*>/) //Regex to remove tags but leave the contents of tags

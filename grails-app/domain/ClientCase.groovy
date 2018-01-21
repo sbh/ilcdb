@@ -47,6 +47,20 @@ class ClientCase implements Comparable<ClientCase>
 
     static transients = [ "startDateString", "completionDateString", "open", "valid", "fileLocation" ]
 
+    def toMap() {
+        [coltafNumber  : coltafNumber,
+         caseNumber    : caseNumber,
+         fileLocation  : fileLocation,
+         intakeType    : intakeType,
+         startDate     : startDate,
+         completionDate: completionDate,
+         attorney      : attorney,
+         notes         : notes.collect { it.toMap() },
+         caseType      : caseType?.toMap(),
+         caseResult    : caseResult?.toMap(),
+         intensity     : intensity]
+    }
+
     int compareTo(ClientCase otherIntake)
     {
         if (startDate == null || otherIntake.startDate == null)

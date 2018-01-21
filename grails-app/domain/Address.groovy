@@ -20,6 +20,15 @@ class Address
         city(blank:false)
     }
 
+    def toMap() {
+        [street: street,
+         city: city,
+         county: county,
+         state: state,
+         country: country.name,
+         postalCode: postalCode]
+    }
+
     String toShortString()
     {
         def stringList = []

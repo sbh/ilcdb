@@ -1,5 +1,6 @@
 import grails.compiler.GrailsCompileStatic
 import grails.plugin.springsecurity.annotation.Secured
+import groovy.json.JsonOutput
 import net.skytrail.util.USStates
 
 //@GrailsCompileStatic
@@ -21,6 +22,17 @@ class ClientController
         List<Client> clients = new ArrayList()
 
         clients.addAll(Client.findAll( "from Client as c order by upper(c.client.lastName), upper(c.client.firstName)" ))
+
+        def file = new File("/var/tmp/clients.json")
+        file.delete()
+        def id = 1
+        clients.each{
+            file << """{"index":{"_index":"clients-2017-09-16","_type":"client","_id":${id++}}"""
+            file << "\n"
+            file << JsonOutput.toJson(it.toMap())
+            file << "\n"
+        }
+
         def t2 = System.currentTimeMillis()
         println(clients.size()+" loaded in "+(t2-t1)+" ms.")
 

@@ -12,7 +12,13 @@ class BirthPlace
     {
         city(blank:false)
     }
-    
+
+    def toMap() {
+        [city   : city,
+         state  : state,
+         country: country.name]
+    }
+
     String toString() 
     {
         def stringList = []

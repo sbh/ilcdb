@@ -5,6 +5,11 @@ class CaseType
     boolean deprecated = false;
     String associatedStatus;
 
+    def toMap() {
+        [type: type,
+        associatedStatus: associatedStatus]
+    }
+
     public boolean equals(Object other)
     {
         boolean retval = false

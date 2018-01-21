@@ -14,6 +14,11 @@ public class ServiceRecord implements Comparable<ServiceRecord>
 
     static transients = ["serviceDateString"]
 
+    def toMap() {
+        [serviceDate : serviceDate,
+         serviceHours: serviceHours]
+    }
+
     String getServiceDateString()
     {
         if (serviceDate instanceof Date)
