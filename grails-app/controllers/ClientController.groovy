@@ -1,9 +1,7 @@
-import grails.compiler.GrailsCompileStatic
 import grails.plugin.springsecurity.annotation.Secured
 import groovy.json.JsonOutput
 import net.skytrail.util.USStates
 
-//@GrailsCompileStatic
 @Secured(['IS_AUTHENTICATED_FULLY'])
 class ClientController
 {
@@ -27,7 +25,7 @@ class ClientController
         file.delete()
         def id = 1
         clients.each{
-            file << """{"index":{"_index":"clients-2017-09-16","_type":"client","_id":${id++}}"""
+            file << """{"index":{"_index":"clients-2018-01-27","_type":"client","_id":${id++}}"""
             file << "\n"
             file << JsonOutput.toJson(it.toMap())
             file << "\n"
@@ -512,19 +510,28 @@ class ClientController
         {
             // adjust the endDate to be the end of the day.
             params.endDate = new Date(params.endDate.getTime() + 1000L*24L*60L*60L - 1L)
-            
+            //println("*** newClientsOngoingIntakes:")
             def newClientsOngoingIntakes =                        clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
+            //println("*** newClientsCompletedIntakes:")
             def newClientsCompletedIntakes =                      clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
+            //println("*** existingClientsNewOngoingIntakes:")
             def existingClientsNewOngoingIntakes =                clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
             def existingClientsNewCompletedIntakes =              clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, NEW_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
+            //println("*** existingClientsExistingOngoingIntakes:")
             def existingClientsExistingOngoingIntakes =           clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, EXISTING_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
+            //println("*** existingClientsExistingCompletedIntakes:")
             def existingClientsExistingCompletedIntakes =         clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, EXISTING_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
 
+            //println("*** newClientsOngoingIntakesAnywhere:")
             def newClientsOngoingIntakesAnywhere =                clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
+            //println("*** newClientsCompletedIntakesAnywhere:")
             def newClientsCompletedIntakesAnywhere =              clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
+            //println("*** existingClientsNewOngoingIntakesAnywhere:")
             def existingClientsNewOngoingIntakesAnywhere =        clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
+            //println("*** existingClientsNewCompletedIntakesAnywhere:")
             def existingClientsNewCompletedIntakesAnywhere =      clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, NEW_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
             def existingClientsExistingOngoingIntakesAnywhere =   clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, EXISTING_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
+            //println("*** existingClientsExistingCompletedIntakesAnywhere:")
             def existingClientsExistingCompletedIntakesAnywhere = clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, EXISTING_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
 
             List clients = new ArrayList<ClientReportElement>()
@@ -598,6 +605,8 @@ class ClientController
             returnValue["Clients"] = sortedClients;
         }
 
+        //println("**** report returnValue: " + returnValue)
+
         return returnValue;
     }
 
@@ -640,7 +649,9 @@ class ClientController
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
 
         //println "------> executing query: $query, namedParams: $namedParams"
-        Client.executeQuery( query, namedParams )
+        def clients = Client.executeQuery( query, namedParams )
+        //println "\t results count: ${clients.size()}"
+        clients
     }
 
     String addAnd(String query) {

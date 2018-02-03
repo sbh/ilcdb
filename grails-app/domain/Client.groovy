@@ -226,7 +226,7 @@ class Client implements Comparable<Client>
     {
         for (ClientCase clientCase : cases)
         {
-            if (clientCase.isStatusAchieved() && clientCase.caseType.type == String.valueOf(statusType))
+            if (clientCase.isStatusAchieved() && (clientCase.caseType.associatedStatus == String.valueOf(statusType) || clientCase.caseType.type == String.valueOf(statusType)))
                 return true
         }
         return false
