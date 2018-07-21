@@ -102,14 +102,16 @@ var reporting =
                 municipality.value="Colorado"
             municipalityRow.style.display=""
         }
-        else
+        else {
             municipalityRow.style.display="none"
+            municipality.value="Any"
+        }
     },
 
     setEndDateVisibility : function(value)
     {
         var endDateRow = document.getElementById("endDateRow")
-        if ("open" == value)
+        if ("openedxxx" == value)
         {
             endDateRow.style.display = "none"
             var endDate_day = document.getElementById("endDate_day")
@@ -180,7 +182,7 @@ var reporting =
         {
             reporting.expand(image);  
             elem.style.display = ""
-            elemLabel.innerHTML = "Status Achieved"
+            elemLabel.innerHTML = "Status Attempted/Achieved"
         }
         else
         {
@@ -211,7 +213,7 @@ window.onload = reporting.windowLoaded
                             <td valign="top" for="intakeState"><label>Intake State</label> </td>
                             <td name="intakeState" valign="top">
                                 <g:radio id="intakeState" name="intakeState" value="any" checked="${intakeState == null || ''.equals(intakeState) || 'any'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Any<br>
-                                <g:radio id="intakeState" name="intakeState" value="open" checked="${'open'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Open<br>
+                                <g:radio id="intakeState" name="intakeState" value="opened" checked="${'opened'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Opened<br>
                                 <g:radio id="intakeState" name="intakeState" value="closed" checked="${'closed'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Closed<br>
                             </td>
                         </tr>
@@ -283,6 +285,10 @@ window.onload = reporting.windowLoaded
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="none" checked="${'none'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;None<br></td>
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n/a" checked="${statusAchieved == null || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N/A<br></td>
                                 </tr>
+                                <tr>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-advise" checked="${statusAchieved == null || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Advise<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-representation" checked="${statusAchieved == null || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Representation<br></td>
+                                </tr>
                             </table>
                             </td>
                         </tr>
@@ -296,50 +302,7 @@ window.onload = reporting.windowLoaded
             </g:form>
             <br>
             <g:if test="${report}">
-                <h3>Report Results (${Clients.size()} distinct client families)</h3>
-                <div class="dialog">
-                    <table style="width:auto">
-                        <caption align="left">Display Information for Time Period</caption>
-                        <thead>
-                            <th width="20" align="left">Display?</th>
-                            <th width="200" align="center"></th>
-                            <th width="70" align="left">Client Total</th>
-                            <th width="75" align="left">Intake Total</th>
-                            <th width="75" align="left">Client Total All Regions</th>
-                            <th width="80" align="left">Intake Total All Regions</th>
-                        </thead>
-                        <tbody>
-                            <g:each status="i" var="listDesc" in="${ClientListCounts.keySet()}">
-                                <%
-                                    def label = ClientListCounts[listDesc][0];
-                                    def clientCount = ClientListCounts[listDesc][1];
-                                    def intakeCount = ClientListCounts[listDesc][2];
-                                    def allClientCount = ClientListCounts[listDesc][3];
-                                    def allIntakeCount = ClientListCounts[listDesc][4];
-                                 %>
-                                <tr>
-                                    <td ><input type="checkbox" name="${listDesc}" checked="true" class="displaySelect"
-                                        onclick="reporting.resetRowVisibility()"/>
-                                    </td>
-                                    <td align="right">${label}</td>
-                                    <td align="center">${clientCount}</td>
-                                    <td align="center">${intakeCount}</td>
-                                    <td align="center" style="border-left-style: solid;">${allClientCount}</td>
-                                    <td align="center">${allIntakeCount}</td>
-                                </tr>
-                            </g:each>    
-                            <tr>
-                               <td>Totals:</td> 
-                               <td></td> 
-                               <td>${ClientTotalFromMun}</td>
-                               <td>${IntakeTotalFromMun}</td>
-                               <td>${ClientTotalFromAnywhere}</td> 
-                               <td>${IntakeTotalFromAnywhere}</td> 
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
+                <h3>Report Results (${Clients.size()} clients)</h3>
                 <br/>
                 <div class="list">
                     <table style="width:100%">
@@ -355,10 +318,8 @@ window.onload = reporting.windowLoaded
                            <th>File Location</th>
                         </thead>
                         <tbody>
-                            <g:each status="i" var="clientReportElement" in="${Clients}">
-                                <%def client = clientReportElement.client
-                                  def types = clientReportElement.types %>
-                                <tr class="${(i % 2 == 0) ? 'odd' : 'even'} ${types.toString().replaceAll("[\\[\\],]", "")} clientRow" id="client.${i}">
+                            <g:each status="i" var="client" in="${Clients}">
+                                <tr class="${(i % 2 == 0) ? 'odd' : 'even'}" id="client.${i}">
                                     <td>&nbsp;<g:img dir="images" file="expand.gif" alt="Expand" onclick="reporting.setExpandCollapseIntakeRow(this, ${i})" />&nbsp;
                                               <g:link action="edit" id="${client.id}">${client.client?.encodeAsHTML()}</g:link></td>
                                     <td><g:link action="edit" id="${client.id}">${client.client?.phoneNumber?.encodeAsHTML()}</g:link></td>
