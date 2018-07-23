@@ -134,28 +134,19 @@ class Client implements Comparable<Client>
         return id == ((Client)other).id
     }
 
-    public int hashCode()
-    {
+    int hashCode() {
         return id;
     }
 
-    public boolean isOpenCase()
-    {
-        for (ClientCase clientCase : cases)
-        {
-            if (clientCase.isOpen())
-                return true;
-        }
-        return false;
+    boolean isOpenCase() {
+        cases.any{it.isOpen()}
     }
 
-    public Person getPerson()
-    {
+    Person getPerson() {
         return client;
     }
 
-    public String getAttorney()
-    {
+    String getAttorney() {
         String attorneys = ""
         List<ClientCase> openList = new ArrayList<ClientCase>();
         List<ClientCase> closedList = new ArrayList<ClientCase>()
@@ -195,7 +186,7 @@ class Client implements Comparable<Client>
         return attorneys.replaceFirst(", \$", "")
     }
 
-    public boolean isValidCases()
+    boolean isValidCases()
     {
         for (ClientCase clientCase : cases)
         {
@@ -206,15 +197,11 @@ class Client implements Comparable<Client>
     }
 
     // Called from client/edit.gsp
-    public List<String> getStatiAchieved()
+    List<String> getStatiAchieved()
     {
         List<String> achievedList = new ArrayList();
 
-        for (ClientCase clientCase : cases)
-        {
-            if (clientCase.isStatusAchieved())
-                println("id: " + client.toString() + ", status achieved: " + clientCase.caseType.associatedStatus)
-
+        cases.each{ clientCase ->
             if (clientCase.isStatusAchieved() && clientCase.caseType.associatedStatus)
                 achievedList.add(clientCase.caseType.associatedStatus + " : " + briefDateFormat.print(clientCase.completionDate?.getTime()))
         }
@@ -222,7 +209,7 @@ class Client implements Comparable<Client>
         return achievedList
     }
 
-    public int compareTo(Client other)
+    int compareTo(Client other)
     {
         return client.compareTo(other.client)
     }
@@ -244,18 +231,18 @@ class Client implements Comparable<Client>
     }
 
     boolean hasAttemptedStatus(StatusAchieved.Type statusType, Interval interval) {
-        for (ClientCase clientCase : cases)
-        {
-            if (clientCase.isStatusAchieved() &&
+        cases.any{ clientCase ->
                 (clientCase.caseType.associatedStatus == String.valueOf(statusType) || clientCase.caseType.type == String.valueOf(statusType)) &&
-                    interval.contains(clientCase.startDate.getTime())) return true
-
+                 interval.contains(clientCase.startDate.getTime())
         }
-        return false
     }
 
-    boolean hasAchievedStatus(StatusAchieved.Type statusType, Interval interval)
-    {
+    boolean hasAchievedStatus(StatusAchieved.Type statusType, Interval interval) {
+        cases.any{ clientCase ->
+            clientCase.isStatusAchieved() &&
+                    (clientCase.caseType.associatedStatus == String.valueOf(statusType) || clientCase.caseType.type == String.valueOf(statusType)) &&
+                    interval.contains(clientCase.completionDate.getTime())
+        }
         for (ClientCase clientCase : cases)
         {
             if (clientCase.isStatusAchieved() && (clientCase.caseType.associatedStatus == String.valueOf(statusType) || clientCase.caseType.type == String.valueOf(statusType)))
@@ -264,57 +251,49 @@ class Client implements Comparable<Client>
         return false
     }
 
-    public boolean hasAchievedCitizenship(Interval interval) {
-        hasAchievedStatus(StatusAchieved.Type.Citizenship)
-    }
+    public boolean hasAchievedCitizenship(Interval interval) { hasAchievedStatus(StatusAchieved.Type.Citizenship, interval) }
 
-    public boolean hasAttemptedCitizenship(Interval interval) {
-        hasAttemptedStatus(StatusAchieved.Type.Citizenship, interval)
-    }
+    public boolean hasAttemptedCitizenship(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.Citizenship, interval) }
 
-    public boolean hasAchievedDACA(Interval interval) {
-        hasAchievedStatus(StatusAchieved.Type.DACA, interval)
-    }
+    public boolean hasAchievedDACA(Interval interval) { hasAchievedStatus(StatusAchieved.Type.DACA, interval) }
 
-    public boolean hasAttemptedDACA(Interval interval) {
-        hasAttemptedStatus(StatusAchieved.Type.DACA, interval)
-    }
+    public boolean hasAttemptedDACA(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.DACA, interval) }
 
-    public boolean hasAchievedLPR(Interval interval) {
-        hasAchievedStatus(StatusAchieved.Type.LPR, interval)
-    }
+    public boolean hasAchievedLPR(Interval interval) { hasAchievedStatus(StatusAchieved.Type.LPR, interval) }
 
-    public boolean hasAttemptedLPR(Interval interval) {
-        hasAttemptedStatus(StatusAchieved.Type.LPR, interval)
-    }
+    public boolean hasAttemptedLPR(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.LPR, interval) }
 
-    public boolean hasAchievedLPRConditionsRemoved(Interval interval)
-    {
-        hasAchievedStatus(StatusAchieved.Type.LPRConditionsRemoved, interval)
-    }
+    public boolean hasAchievedLPRConditionsRemoved(Interval interval) { hasAchievedStatus(StatusAchieved.Type.LPRConditionsRemoved, interval) }
 
-    public boolean hasAttemptedLPRConditionsRemoved(Interval interval)
-    {
-        hasAttemptedStatus(StatusAchieved.Type.LPRConditionsRemoved, interval)
-    }
+    public boolean hasAttemptedLPRConditionsRemoved(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.LPRConditionsRemoved, interval) }
 
-    public boolean hasAchievedLPRCardRenewed(Interval interval)
-    {
-        hasAchievedStatus(StatusAchieved.Type.LPRCardRenewed, interval)
-    }
+    public boolean hasAchievedLPRCardRenewed(Interval interval) { hasAchievedStatus(StatusAchieved.Type.LPRCardRenewed, interval) }
 
-    public boolean hasAttemptedLPRCardRenewed(Interval interval)
-    {
-        hasAttemptedStatus(StatusAchieved.Type.LPRCardRenewed, interval)
-    }
+    public boolean hasAttemptedLPRCardRenewed(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.LPRCardRenewed, interval) }
 
-    public boolean hasAchievedTPS(Interval interval) {
-        hasAchievedStatus(StatusAchieved.Type.TPS, interval)
-    }
+    public boolean hasAchievedTPS(Interval interval) { hasAchievedStatus(StatusAchieved.Type.TPS, interval) }
 
-    public boolean hasAttemptedTPS(Interval interval) {
-        hasAttemptedStatus(StatusAchieved.Type.TPS, interval)
-    }
+    public boolean hasAttemptedTPS(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.TPS, interval) }
+
+    public boolean hasAchievedI90(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I90, interval) }
+
+    public boolean hasAttemptedI90(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I90, interval) }
+
+    public boolean hasAchievedEOIR(Interval interval) { hasAchievedStatus(StatusAchieved.Type.EOIR, interval) }
+
+    public boolean hasAttemptedEOIR(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.EOIR, interval) }
+
+    public boolean hasAchievedFOIA(Interval interval) { hasAchievedStatus(StatusAchieved.Type.FOIA, interval) }
+
+    public boolean hasAttemptedFOIA(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.FOIA, interval) }
+
+    public boolean hasAchievedI102(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I102, interval) }
+
+    public boolean hasAttemptedI102(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I102, interval) }
+
+    public boolean hasAchievedI129F(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I129F, interval) }
+
+    public boolean hasAttemptedI129F(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I129F, interval) }
 
     public boolean hasAttemptedNoStatus(Interval interval)
     {

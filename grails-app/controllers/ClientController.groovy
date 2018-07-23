@@ -443,7 +443,11 @@ class ClientController
                 qry = CLIENTS_QUERY + " where (" + OPENED_INTAKES_QUERY + " or " + COMPLETED_INTAKES_QUERY + ")"
             }
 
-            def clients = clientService.filterStatus(getClients(qry, params), params.statusAchieved, params.intakeState, new Interval(params.startDate.getTime(), params.endDate.getTime()))
+            def unfilteredClients = getClients(qry, params)
+
+            println("${unfilteredClients.size()} clients found in requested time interval.")
+
+            def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, new Interval(params.startDate.getTime(), params.endDate.getTime()))
             def sortedClients = new ArrayList(clients)
             Collections.sort(sortedClients, new ClientComparator());
 

@@ -265,12 +265,8 @@ window.onload = reporting.windowLoaded
                         </tr>
 
                         <tr class="prop" >
-                            <td valign="top" for="statusAchieved">
-                                <g:img dir="images" file="expand.gif" alt="Expand" onclick="reporting.onVisibleClick(this, 'advanced', 'advancedLabel')" />
-                                <label id="advancedLabel" name="advancedLabel">Advanced</label> 
-                            </td>
-                            
-                            <td name="advanced" id="advanced" valign="top" style="display:none">
+                            <td valign="top" for="statusAchieved"><label>Status</label></td>
+                            <td valign="top">
                             
                             <label></label>
                             <table style="width:auto">
@@ -280,14 +276,50 @@ window.onload = reporting.windowLoaded
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="daca" checked="${'daca'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;DACA<br></td>
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="tps" checked="${'tps'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;TPS<br></td>
                                 </tr>
-                                <tr>
+                                <tr class="prop">
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-90" checked="${'i-90'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-90<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="eoir" checked="${'eoir'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;EOIR<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="foia" checked="${'foia'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;FOIA<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-102" checked="${'i-102'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-102<br></td>
+                                </tr>
+                                <tr class="prop">
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-129f" checked="${'i-129f'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-129F<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-130" checked="${'i-130'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-130<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-131" checked="${'i-131'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-131<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-192" checked="${'i-192'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-192<br></td>
+                                </tr>
+                                <tr class="prop">
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-360" checked="${'i-360'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-360<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-539" checked="${'i-539'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-539<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-601" checked="${'i-601'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-601<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-751" checked="${'i-751'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-751<br></td>
+                                </tr>
+                                <tr class="prop">
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-765" checked="${'i-765'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-765<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-821" checked="${'i-821'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-821<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-824" checked="${'i-824'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-824<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-881" checked="${'i-881'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-881<br></td>
+                                </tr>
+                                <tr class="prop">
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-912" checked="${'i-912'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-912<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-914" checked="${'i-914'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-914<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-918" checked="${'i-918'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-918<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-929" checked="${'i-929'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-929<br></td>
+                                </tr>
+                                <tr class="prop">
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-336" checked="${'n-336'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-336<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-400" checked="${'n-400'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-400<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-565" checked="${'n-565'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-565<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-600" checked="${'n-600'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-600<br></td>
+                                </tr>
+                                <tr class="prop">
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="any" checked="${'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Any<br></td>
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="none" checked="${'none'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;None<br></td>
-                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n/a" checked="${statusAchieved == null || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N/A<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n/a" checked="${statusAchieved == "n/a" ? 'true' : ''}" ></g:radio>&nbsp;N/A<br></td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-advise" checked="${statusAchieved == null || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Advise<br></td>
-                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-representation" checked="${statusAchieved == null || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Representation<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-advise" checked="${statusAchieved == "staff-advise" || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Advise<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-representation" checked="${statusAchieved == "staff-representation" || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Representation<br></td>
                                 </tr>
                             </table>
                             </td>
@@ -363,7 +395,6 @@ window.onload = reporting.windowLoaded
                                         </table>
                                     </td>
                                 </tr>
-                                
                             </g:each>
                         </tbody>
                     </table>
