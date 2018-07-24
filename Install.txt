@@ -13,6 +13,8 @@
 CREATE USER 'ilcdb'@'localhost' IDENTIFIED BY 'snuggl3s';
 create database ilcdb;
 grant all on `ilcdb`.* to 'ilcdb'@'localhost' identified by 'snuggl3s';
+or maybe
+grant all on `ilcdb`.* to 'ilcdb'@'localhost';
 
 ### Schema changes
 # Modify the note table to use a text column:

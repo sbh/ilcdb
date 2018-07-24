@@ -9,7 +9,7 @@ class ClientCase implements Comparable<ClientCase>
 
 
     //Can we make this configurable?
-    public static final List ATTORNEYS = ["Laurel", "Mairi", "Mary", "----", "Diego"]
+    public static final List ATTORNEYS = ["Laurel", "----", "Diego", "Mairi", "Mary"]
     static belongsTo = [ client:Client ]
     static hasMany = [ notes : Note ]
 
@@ -94,6 +94,14 @@ class ClientCase implements Comparable<ClientCase>
     public boolean isOpen()
     {
         return completionDate == null;
+    }
+
+    boolean isStaffAdvise() {
+        return intakeType == STAFF_ADVISE
+    }
+
+    boolean isStaffRepresentation() {
+        return intakeType == STAFF_REPRESENTATION
     }
 
     public isSuccessful()

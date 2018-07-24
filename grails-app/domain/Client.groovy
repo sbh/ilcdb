@@ -1,5 +1,6 @@
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.Interval
 
 class Client implements Comparable<Client>
 {
@@ -133,28 +134,19 @@ class Client implements Comparable<Client>
         return id == ((Client)other).id
     }
 
-    public int hashCode()
-    {
+    int hashCode() {
         return id;
     }
 
-    public boolean isOpenCase()
-    {
-        for (ClientCase clientCase : cases)
-        {
-            if (clientCase.isOpen())
-                return true;
-        }
-        return false;
+    boolean isOpenCase() {
+        cases.any{it.isOpen()}
     }
 
-    public Person getPerson()
-    {
+    Person getPerson() {
         return client;
     }
 
-    public String getAttorney()
-    {
+    String getAttorney() {
         String attorneys = ""
         List<ClientCase> openList = new ArrayList<ClientCase>();
         List<ClientCase> closedList = new ArrayList<ClientCase>()
@@ -194,7 +186,7 @@ class Client implements Comparable<Client>
         return attorneys.replaceFirst(", \$", "")
     }
 
-    public boolean isValidCases()
+    boolean isValidCases()
     {
         for (ClientCase clientCase : cases)
         {
@@ -204,12 +196,12 @@ class Client implements Comparable<Client>
         return true;
     }
 
-    public List<String> getStatiAchieved()
+    // Called from client/edit.gsp
+    List<String> getStatiAchieved()
     {
         List<String> achievedList = new ArrayList();
 
-        for (ClientCase clientCase : cases)
-        {
+        cases.each{ clientCase ->
             if (clientCase.isStatusAchieved() && clientCase.caseType.associatedStatus)
                 achievedList.add(clientCase.caseType.associatedStatus + " : " + briefDateFormat.print(clientCase.completionDate?.getTime()))
         }
@@ -217,13 +209,40 @@ class Client implements Comparable<Client>
         return achievedList
     }
 
-    public int compareTo(Client other)
+    int compareTo(Client other)
     {
         return client.compareTo(other.client)
     }
 
-    boolean hasAchievedStatus(StatusAchieved.Type statusType)
-    {
+    boolean hasStaffAdvise(String intakeState, Interval interval) {
+        cases.any{ it.isStaffAdvise() && (interval.contains(it.startDate.getTime()) || interval.contains(it.endDate.getTime())) }
+    }
+
+    boolean hasStaffRepresentation(String intakeState, Interval interval) {
+        if ("opened" == intakeState) {
+            cases.any { it.isStaffRepresentation() && interval.contains(it.startDate.getTime()) }
+        }
+        else if ("closed" == intakeState) {
+            cases.any { it.isStaffRepresentation() && interval.contains(it.completionDate.getTime()) }
+        }
+        else {
+            cases.any { it.isStaffRepresentation() && (interval.contains(it.startDate.getTime()) || interval.contains(it.completionDate.getTime())) }
+        }
+    }
+
+    boolean hasAttemptedStatus(StatusAchieved.Type statusType, Interval interval) {
+        cases.any{ clientCase ->
+            (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType)) &&
+                    interval.contains(clientCase.startDate.getTime())
+        }
+    }
+
+    boolean hasAchievedStatus(StatusAchieved.Type statusType, Interval interval) {
+        cases.any{ clientCase ->
+            clientCase.isStatusAchieved() &&
+                    (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType)) &&
+                    interval.contains(clientCase.completionDate.getTime())
+        }
         for (ClientCase clientCase : cases)
         {
             if (clientCase.isStatusAchieved() && (clientCase.caseType.associatedStatus == String.valueOf(statusType) || clientCase.caseType.type == String.valueOf(statusType)))
@@ -232,43 +251,124 @@ class Client implements Comparable<Client>
         return false
     }
 
-    public boolean hasAchievedCitizenship()
+    public boolean hasAchievedCitizenship(Interval interval) { hasAchievedStatus(StatusAchieved.Type.Citizenship, interval) }
+    public boolean hasAttemptedCitizenship(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.Citizenship, interval) }
+
+    public boolean hasAchievedDACA(Interval interval) { hasAchievedStatus(StatusAchieved.Type.DACA, interval) }
+    public boolean hasAttemptedDACA(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.DACA, interval) }
+
+    public boolean hasAchievedLPR(Interval interval) { hasAchievedStatus(StatusAchieved.Type.LPR, interval) }
+    public boolean hasAttemptedLPR(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.LPR, interval) }
+
+    public boolean hasAchievedLPRConditionsRemoved(Interval interval) { hasAchievedStatus(StatusAchieved.Type.LPRConditionsRemoved, interval) }
+    public boolean hasAttemptedLPRConditionsRemoved(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.LPRConditionsRemoved, interval) }
+
+    public boolean hasAchievedLPRCardRenewed(Interval interval) { hasAchievedStatus(StatusAchieved.Type.LPRCardRenewed, interval) }
+    public boolean hasAttemptedLPRCardRenewed(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.LPRCardRenewed, interval) }
+
+    public boolean hasAchievedTPS(Interval interval) { hasAchievedStatus(StatusAchieved.Type.TPS, interval) }
+    public boolean hasAttemptedTPS(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.TPS, interval) }
+
+    public boolean hasAchievedI90(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I90, interval) }
+    public boolean hasAttemptedI90(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I90, interval) }
+
+    public boolean hasAchievedEOIR(Interval interval) { hasAchievedStatus(StatusAchieved.Type.EOIR, interval) }
+    public boolean hasAttemptedEOIR(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.EOIR, interval) }
+
+    public boolean hasAchievedFOIA(Interval interval) { hasAchievedStatus(StatusAchieved.Type.FOIA, interval) }
+    public boolean hasAttemptedFOIA(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.FOIA, interval) }
+
+    public boolean hasAchievedI102(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I102, interval) }
+    public boolean hasAttemptedI102(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I102, interval) }
+
+    public boolean hasAchievedI129F(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I129F, interval) }
+    public boolean hasAttemptedI129F(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I129F, interval) }
+
+    public boolean hasAchievedI130(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I130IR, interval) ||
+            hasAchievedStatus(StatusAchieved.Type.I130nonIR, interval)}
+    public boolean hasAttemptedI130(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I130IR, interval) ||
+        hasAttemptedStatus(StatusAchieved.Type.I130nonIR, interval)}
+
+    public boolean hasAchievedI131(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I131, interval) }
+    public boolean hasAttemptedI131(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I131, interval) }
+
+    public boolean hasAchievedI192(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I192, interval) }
+    public boolean hasAttemptedI192(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I192, interval) }
+
+    public boolean hasAchievedI1360(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I360, interval) ||
+            hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval) ||
+            hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval)}
+    public boolean hasAttemptedI1360(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I360, interval) ||
+            hasAchievedStatus(StatusAchieved.Type.I360VAWA, interval) ||
+            hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval) }
+
+    public boolean hasAchievedI539(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I539, interval) ||
+            hasAchievedStatus(StatusAchieved.Type.I539VVisa, interval) }
+    public boolean hasAttemptedI1539(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I539, interval) ||
+            hasAttemptedStatus(StatusAchieved.Type.I539VVisa, interval) }
+
+    public boolean hasAchievedI601(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I601, interval) }
+    public boolean hasAttemptedI601(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I601, interval) }
+
+    public boolean hasAchievedI751(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I751, interval) }
+    public boolean hasAttemptedI751(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I751, interval) }
+
+    public boolean hasAchievedI821(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I821, interval) }
+    public boolean hasAttemptedI821(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I821, interval) }
+
+    public boolean hasAchievedI824(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I824, interval) }
+    public boolean hasAttemptedI824(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I824, interval) }
+
+    public boolean hasAchievedI881(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I881, interval) }
+    public boolean hasAttemptedI881(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I881, interval) }
+
+    public boolean hasAchievedI912(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I912, interval) }
+    public boolean hasAttemptedI912(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I912, interval) }
+
+    public boolean hasAchievedI914(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I914, interval) ||
+            hasAchievedStatus(StatusAchieved.Type.I914SuppA, interval) }
+    public boolean hasAttemptedI914(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I914, interval) ||
+            hasAttemptedStatus(StatusAchieved.Type.I914SuppA, interval) }
+
+    public boolean hasAchievedI918(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I918, interval) ||
+            hasAchievedStatus(StatusAchieved.Type.I918SuppA, interval) ||
+            hasAchievedStatus(StatusAchieved.Type.I918SuppB, interval) }
+    public boolean hasAttemptedI918(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I918, interval) ||
+            hasAttemptedStatus(StatusAchieved.Type.I918SuppA, interval) ||
+            hasAttemptedStatus(StatusAchieved.Type.I918SuppB, interval) }
+
+    public boolean hasAchievedI929(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I929, interval) }
+    public boolean hasAttemptedI929(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I929, interval) }
+
+    public boolean hasAchievedN336(Interval interval) { hasAchievedStatus(StatusAchieved.Type.N336, interval) }
+    public boolean hasAttemptedN336(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.N336, interval) }
+
+    public boolean hasAchievedN400(Interval interval) { hasAchievedStatus(StatusAchieved.Type.N400, interval) }
+    public boolean hasAttemptedN400(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.N400, interval) }
+
+    public boolean hasAchievedN565(Interval interval) { hasAchievedStatus(StatusAchieved.Type.N565, interval) }
+    public boolean hasAttemptedN565(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.N565, interval) }
+
+    public boolean hasAchievedN600(Interval interval) { hasAchievedStatus(StatusAchieved.Type.N600, interval) }
+    public boolean hasAttemptedN600(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.N600, interval) }
+
+    public boolean hasAttemptedNoStatus(Interval interval)
     {
-        hasAchievedStatus(StatusAchieved.Type.Citizenship)
+        return !hasAttemptedAnyStatus(interval)
     }
 
-    public boolean hasAchievedDACA()
+    public boolean hasAchievedNoStatus(Interval interval)
     {
-        hasAchievedStatus(StatusAchieved.Type.DACA)
+        return !hasAchievedAnyStatus(interval)
     }
 
-    public boolean hasAchievedLPR()
+    public boolean hasAchievedAnyStatus(Interval interval)
     {
-        hasAchievedStatus(StatusAchieved.Type.LPR)
+        return hasAchievedCitizenship(interval) || hasAchievedDACA(interval) || hasAchievedLPR(interval) || hasAchievedLPRConditionsRemoved(interval) || hasAchievedLPRCardRenewed(interval) || hasAchievedTPS(interval)
     }
 
-    public boolean hasAchievedLPRConditionsRemoved()
+    public boolean hasAttemptedAnyStatus(Interval interval)
     {
-        hasAchievedStatus(StatusAchieved.Type.LPRConditionsRemoved)
-    }
-
-    public boolean hasAchievedLPRCardRenewed()
-    {
-        hasAchievedStatus(StatusAchieved.Type.LPRCardRenewed)
-    }
-
-    public boolean hasAchievedTPS()
-    {
-        hasAchievedStatus(StatusAchieved.Type.TPS)
-    }
-
-    public boolean hasAchievedNoStatus()
-    {
-        return !hasAchievedAnyStatus()
-    }
-
-    public boolean hasAchievedAnyStatus()
-    {
-        return hasAchievedCitizenship() || hasAchievedDACA() || hasAchievedLPR() || hasAchievedLPRConditionsRemoved() || hasAchievedLPRCardRenewed() || hasAchievedTPS()
+        return hasAttemptedCitizenship(interval) || hasAttemptedDACA(interval) || hasAttemptedLPR(interval) || hasAttemptedLPRConditionsRemoved(interval) || hasAttemptedLPRCardRenewed(interval) || hasAttemptedTPS(interval)
     }
 }

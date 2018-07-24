@@ -12,12 +12,8 @@ class CaseType
 
     public boolean equals(Object other)
     {
-        boolean retval = false
-
-        if (other instanceof CaseType)
-            retval id == ((CaseType)other).id
-
-        return retval
+        if (other instanceof CaseType) return id == ((CaseType)other).id
+        else return false
     }
 
     public int hashCode()

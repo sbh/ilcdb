@@ -1,6 +1,8 @@
 import grails.plugin.springsecurity.annotation.Secured
 import groovy.json.JsonOutput
 import net.skytrail.util.USStates
+import org.joda.time.Interval
+import java.util.List
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 class ClientController
@@ -72,22 +74,6 @@ class ClientController
                 if (val != 0)
                     return val;
                 return c1.client.lastName.toUpperCase().compareTo(c2.client.lastName.toUpperCase())
-            }
-            return val
-        }
-    }
-
-    private class ClientReportElementComparator implements Comparator<ClientReportElement>
-    {
-        int compare(ClientReportElement c1, ClientReportElement c2)
-        {
-            int val = c1.client.person.getSortableLastName().compareTo(c2.client.person.getSortableLastName())
-            if (val == 0)
-            {
-                val = c1.client.person.getSortableFirstName().compareTo(c2.client.person.getSortableFirstName())
-                if (val != 0)
-                    return val;
-                return c1.client.person.lastName.toUpperCase().compareTo(c2.client.person.lastName.toUpperCase())
             }
             return val
         }
@@ -435,74 +421,11 @@ class ClientController
         return [ searchResults:sortedResults, params:params ]
     }
 
-    enum ClientIntakeType { NewClientOngoingIntake, NewClientCompletedIntake, ExistingClientNewOngoingIntake, ExistingClientNewCompletedIntake, ExistingClientOngoingIntake, ExistingClientCompletedIntake }
-
-    class ClientReportElement
-    {
-        Client client;
-        Set<String> types = new HashSet<String>();
-
-        public ClientReportElement(Client client, ClientIntakeType type)
-        {
-            this.client = client;
-            this.types.add(type);
-        }
-
-        public boolean equals(Object other)
-        {
-            if ( !(other instanceof ClientReportElement) )
-                return false;
-            ClientReportElement otherClientReportElement = (ClientReportElement)other;
-            return client.equals(otherClientReportElement.client);
-        }
-
-        public int hashCode()
-        {
-            return client.hashCode();
-        }
-    }
-
-    private boolean isIntakeNewAndOngoing(ClientCase aCase, Date periodStart, Date periodEnd) {
-        ( aCase.startDate?.getTime() >= periodStart.getTime() && aCase.startDate.getTime() <= periodEnd.getTime() ) &&
-                ( aCase.completionDate == null || aCase.completionDate.getTime() > periodEnd.getTime() )
-    }
-
-    private boolean isIntakeNewAndCompleted(ClientCase aCase, Date periodStart, Date periodEnd) {
-        aCase.startDate.getTime() >= periodStart.getTime() &&
-                (aCase.completionDate != null &&aCase.completionDate.getTime() <= periodEnd.getTime())
-    }
-
-    private boolean isIntakeExistingAndOngoing(ClientCase aCase, Date periodStart, Date periodEnd) {
-        aCase.startDate.getTime() < periodStart.getTime() &&
-                ( aCase.completionDate == null || aCase.completionDate.getTime() >= periodEnd.getTime())
-    }
-
-    private boolean isIntakeExistingAndCompleted(ClientCase aCase, Date periodStart, Date periodEnd) {
-        aCase.startDate.getTime() < periodStart.getTime() &&
-                (aCase.completionDate !=null && aCase.completionDate.getTime() <= periodEnd.getTime())
-    }
-
-    private int updateClientReportElements(List<ClientReportElement> clientReportElements, List<Client> clients, ClientIntakeType intakeType, Date startDate, Date endDate, def filterFunc) {
-        int count = 0
-        clients.each {
-            client->
-            def clientReportElement = new ClientReportElement(client, intakeType)
-            int idx = -1
-            if ( (idx = clientReportElements.indexOf(clientReportElement)) >= 0) {
-                clientReportElement = clientReportElements.get(idx)
-                clientReportElement.types.add(intakeType)
-            }
-            else
-                clientReportElements.add(clientReportElement)
-
-            count += client.cases.grep({ aCase -> filterFunc(aCase, startDate, endDate) }).size()
-        }
-        count
-    }
-
     @Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
     def report()
     {
+        println("params: ${params}")
+
         //println("**** report params: "+params)
         def returnValue = [ : ];
 
@@ -510,77 +433,23 @@ class ClientController
         {
             // adjust the endDate to be the end of the day.
             params.endDate = new Date(params.endDate.getTime() + 1000L*24L*60L*60L - 1L)
-            //println("*** newClientsOngoingIntakes:")
-            def newClientsOngoingIntakes =                        clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
-            //println("*** newClientsCompletedIntakes:")
-            def newClientsCompletedIntakes =                      clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
-            //println("*** existingClientsNewOngoingIntakes:")
-            def existingClientsNewOngoingIntakes =                clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
-            def existingClientsNewCompletedIntakes =              clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, NEW_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
-            //println("*** existingClientsExistingOngoingIntakes:")
-            def existingClientsExistingOngoingIntakes =           clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, EXISTING_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
-            //println("*** existingClientsExistingCompletedIntakes:")
-            def existingClientsExistingCompletedIntakes =         clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, EXISTING_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  params.munType, params ), params.statusAchieved )
 
-            //println("*** newClientsOngoingIntakesAnywhere:")
-            def newClientsOngoingIntakesAnywhere =                clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
-            //println("*** newClientsCompletedIntakesAnywhere:")
-            def newClientsCompletedIntakesAnywhere =              clientService.filterStatus( getClients( andEm(NEW_CLIENTS_QUERY, NEW_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
-            //println("*** existingClientsNewOngoingIntakesAnywhere:")
-            def existingClientsNewOngoingIntakesAnywhere =        clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, NEW_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
-            //println("*** existingClientsNewCompletedIntakesAnywhere:")
-            def existingClientsNewCompletedIntakesAnywhere =      clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, NEW_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
-            def existingClientsExistingOngoingIntakesAnywhere =   clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, EXISTING_INTAKES_QUERY, ONGOING_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
-            //println("*** existingClientsExistingCompletedIntakesAnywhere:")
-            def existingClientsExistingCompletedIntakesAnywhere = clientService.filterStatus( getClients( andEm(EXISTING_CLIENTS_QUERY, EXISTING_INTAKES_QUERY, COMPLETED_INTAKES_QUERY),  "Any", params ), params.statusAchieved )
+            String qry = null
+            if (params.intakeState == "opened") {
+                qry = CLIENTS_QUERY + " where " + OPENED_INTAKES_QUERY
+            } else if (params.intakeState == "closed") {
+                qry = CLIENTS_QUERY + " where " + COMPLETED_INTAKES_QUERY
+            } else {
+                qry = CLIENTS_QUERY + " where (" + OPENED_INTAKES_QUERY + " or " + COMPLETED_INTAKES_QUERY + ")"
+            }
 
-            List clients = new ArrayList<ClientReportElement>()
-            int existingClientsNewCompletedIntakesCount = updateClientReportElements(clients, existingClientsNewCompletedIntakes, ClientIntakeType.ExistingClientNewCompletedIntake,
-                    params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
-            int existingClientsNewOngoingIntakesCount = updateClientReportElements(clients, existingClientsNewOngoingIntakes, ClientIntakeType.ExistingClientNewOngoingIntake,
-                    params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
-            int existingClientsExistingCompletedIntakesCount = updateClientReportElements(clients, existingClientsExistingCompletedIntakes, ClientIntakeType.ExistingClientCompletedIntake,
-                    params.startDate, params.endDate, this.&isIntakeExistingAndCompleted)
-            int existingClientsExistingOngoingIntakesCount = updateClientReportElements(clients, existingClientsExistingOngoingIntakes, ClientIntakeType.ExistingClientOngoingIntake,
-                    params.startDate, params.endDate, this.&isIntakeExistingAndOngoing)
-            int newClientsCompletedIntakesCount = updateClientReportElements(clients, newClientsCompletedIntakes, ClientIntakeType.NewClientCompletedIntake,
-                    params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
-            int newClientsOngoingIntakesCount = updateClientReportElements(clients, newClientsOngoingIntakes, ClientIntakeType.NewClientOngoingIntake,
-                    params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
+            def unfilteredClients = getClients(qry, params)
 
-            List anywhereClients = new ArrayList<ClientReportElement>()
-            int existingClientsNewCompletedIntakesAnywhereCount = updateClientReportElements(anywhereClients, existingClientsNewCompletedIntakesAnywhere, ClientIntakeType.ExistingClientNewCompletedIntake,
-                    params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
-            int existingClientsNewOngoingIntakesAnywhereCount = updateClientReportElements(anywhereClients, existingClientsNewOngoingIntakesAnywhere, ClientIntakeType.ExistingClientNewOngoingIntake,
-                    params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
-            int existingClientsExistingCompletedIntakesAnywhereCount = updateClientReportElements(anywhereClients, existingClientsExistingCompletedIntakesAnywhere, ClientIntakeType.ExistingClientCompletedIntake,
-                    params.startDate, params.endDate, this.&isIntakeExistingAndCompleted)
-            int existingClientsExistingOngoingIntakesAnywhereCount = updateClientReportElements(anywhereClients, existingClientsExistingOngoingIntakesAnywhere, ClientIntakeType.ExistingClientOngoingIntake,
-                    params.startDate, params.endDate, this.&isIntakeExistingAndOngoing)
-            int newClientsCompletedIntakesAnywhereCount = updateClientReportElements(anywhereClients, newClientsCompletedIntakesAnywhere, ClientIntakeType.NewClientCompletedIntake,
-                    params.startDate, params.endDate, this.&isIntakeNewAndCompleted)
-            int newClientsOngoingIntakesAnywhereCount = updateClientReportElements(anywhereClients, newClientsOngoingIntakesAnywhere, ClientIntakeType.NewClientOngoingIntake,
-                    params.startDate, params.endDate, this.&isIntakeNewAndOngoing)
+            println("${unfilteredClients.size()} clients found in requested time interval.")
+
+            def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, new Interval(params.startDate.getTime(), params.endDate.getTime()))
             def sortedClients = new ArrayList(clients)
-            Collections.sort(sortedClients, new ClientReportElementComparator());
-
-            //println "newClients: $newClients.size(), newIntakes: $newIntakes.size(), ongoingIntakes: $ongoingIntakes.size()"
-            //sortedClients.each() { println("$it.client") }
-
-            def clientListCounts = [ : ]
-
-            clientListCounts[ClientIntakeType.NewClientOngoingIntake] = ["New Clients with New/Ongoing Intakes", newClientsOngoingIntakes.size(), newClientsOngoingIntakesCount,
-                                                                         newClientsOngoingIntakesAnywhere.size(), newClientsOngoingIntakesAnywhereCount]
-            clientListCounts[ClientIntakeType.NewClientCompletedIntake] = ["New Clients with New/Completed Intakes", newClientsCompletedIntakes.size(), newClientsCompletedIntakesCount,
-                                                                           newClientsCompletedIntakesAnywhere.size(), newClientsCompletedIntakesAnywhereCount]
-            clientListCounts[ClientIntakeType.ExistingClientNewOngoingIntake] = ["Existing Clients with New/Ongoing Intakes", existingClientsNewOngoingIntakes.size(), existingClientsNewOngoingIntakesCount,
-                                                                                 existingClientsNewOngoingIntakesAnywhere.size(), existingClientsNewOngoingIntakesAnywhereCount]
-            clientListCounts[ClientIntakeType.ExistingClientNewCompletedIntake] = ["Existing Clients with New/Completed Intakes", existingClientsNewCompletedIntakes.size(), existingClientsNewCompletedIntakesCount, 
-                                                                                   existingClientsNewCompletedIntakesAnywhere.size(), existingClientsNewCompletedIntakesAnywhereCount]
-            clientListCounts[ClientIntakeType.ExistingClientOngoingIntake] = ["Existing Clients with Existing/Ongoing Intakes", existingClientsExistingOngoingIntakes.size(), existingClientsExistingOngoingIntakesCount,
-                                                                              existingClientsExistingOngoingIntakesAnywhere.size(), existingClientsExistingOngoingIntakesAnywhereCount]
-            clientListCounts[ClientIntakeType.ExistingClientCompletedIntake] = ["Existing Clients with Existing/Completed Intakes", existingClientsExistingCompletedIntakes.size(), existingClientsExistingCompletedIntakesCount,
-                                                                                existingClientsExistingCompletedIntakesAnywhere.size(), existingClientsExistingCompletedIntakesAnywhereCount]
+            Collections.sort(sortedClients, new ClientComparator());
 
             returnValue["startDate"] = params.startDate
             returnValue["endDate"] = params.endDate
@@ -593,15 +462,6 @@ class ClientController
             returnValue["homeCountry"] = params.homeCountry
 
             returnValue["report"] = true;
-            returnValue["ClientListCounts"] = clientListCounts;
-            returnValue["ClientTotalFromMun"] = newClientsOngoingIntakes.size() + newClientsCompletedIntakes.size() + existingClientsNewOngoingIntakes.size() +
-                                                existingClientsNewCompletedIntakes.size() + existingClientsExistingOngoingIntakes.size() + existingClientsExistingCompletedIntakes.size()
-            returnValue["IntakeTotalFromMun"] = existingClientsNewCompletedIntakesCount + existingClientsNewOngoingIntakesCount + existingClientsExistingCompletedIntakesCount + 
-                                                existingClientsExistingOngoingIntakesCount + newClientsCompletedIntakesCount + newClientsOngoingIntakesCount
-            returnValue["ClientTotalFromAnywhere"] = newClientsOngoingIntakesAnywhere.size() + newClientsCompletedIntakesAnywhere.size() + existingClientsNewOngoingIntakesAnywhere.size() +
-                                                     existingClientsNewCompletedIntakesAnywhere.size() + existingClientsExistingOngoingIntakesAnywhere.size() + existingClientsExistingCompletedIntakesAnywhere.size()
-            returnValue["IntakeTotalFromAnywhere"] = existingClientsNewCompletedIntakesAnywhereCount + existingClientsNewOngoingIntakesAnywhereCount + existingClientsExistingCompletedIntakesAnywhereCount + 
-                                                     existingClientsExistingOngoingIntakesAnywhereCount + newClientsCompletedIntakesAnywhereCount + newClientsOngoingIntakesAnywhereCount
             returnValue["Clients"] = sortedClients;
         }
 
@@ -616,71 +476,67 @@ class ClientController
                inner join fetch client.client as person
                inner join fetch person.address as address
                inner join fetch person.placeOfBirth as placeOfBirth
-               inner join fetch client.cases as intake where
+               inner join fetch client.cases as intake
         """
-    private static String NEW_CLIENTS_QUERY = CLIENTS_QUERY + " ( client.firstVisit >= :startDate and client.firstVisit <= :endDate ) "
-    private static String EXISTING_CLIENTS_QUERY = CLIENTS_QUERY + " client.firstVisit < :startDate "
-    private static String NEW_INTAKES_QUERY = " ( intake.startDate >= :startDate and intake.startDate <= :endDate ) "
-    private static String EXISTING_INTAKES_QUERY = " ( intake.startDate < :startDate )"
     private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate and intake.completionDate <= :endDate ) "
-    private static String ONGOING_INTAKES_QUERY = " ( intake.completionDate is null or intake.completionDate > :endDate )"
+    private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate and intake.startDate <= :endDate )"
 
-    private String andEm(String[] queries) {
-        queries.join(" and ")
-    }
+    Collection<Client> getClients(String clientIntakeQuery, def params) {
+        def queries = [getMunicipalitySubQuery(params.munType), getAttorneySubQuery(params.attorney), getHomeCountrySubQuery(params.homeCountry)]
 
-    Collection<Client> getClients(String clientIntakeQuery, String munType, def params) {
-        String query = clientIntakeQuery +
-                addAnd(getMunicipalitySubQuery(munType)) +
-                addAnd(getAttorneySubQuery(params.attorney)) +
-                addAnd(getHomeCountrySubQuery(params.homeCountry))
+        String query = clientIntakeQuery
+        queries.each{ aQuery ->
+            if (aQuery != "") {
+                String joiner = null
+                if (query.contains("where")) joiner = " and "
+                else joiner = " where "
 
-        if ("open".equals(params.intakeState))
-            query += " and intake.completionDate is null"
-        else if ("closed".equals(params.intakeState))
-            query += " and intake.completionDate is not null"
+                query = query + joiner + aQuery
+            }
+        }
+
         doit( query, params )
     }
 
     Collection<Client> doit( String query, def params) {
-        def namedParams = [mun:params.municipality, startDate:params.startDate, endDate:params.endDate]
+        println("params2: " + params)
+        def namedParams = [startDate:params.startDate, endDate:params.endDate]
+        if (query.contains(":mun")) namedParams += [mun:params.municipality]
+        if (query.contains(":homeCountry")) namedParams += [homeCountry:params.homeCountry]
+        if (query.contains(":attorney")) namedParams += [attorney:params.attorney]
 
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
 
-        //println "------> executing query: $query, namedParams: $namedParams"
+        println "------> executing query: $query, namedParams: $namedParams"
         def clients = Client.executeQuery( query, namedParams )
-        //println "\t results count: ${clients.size()}"
+        println "\t results count: ${clients.size()}"
         clients
-    }
-
-    String addAnd(String query) {
-        if (query) return " and " + query
-        else return ""
     }
 
     String getAttorneySubQuery(String attorney)
     {
         if ("Any".equals(attorney))
             return ""
-        return "intake.attorney = '"+attorney+"'"
+        return "intake.attorney = '" + attorney + "'"
     }
 
     String getMunicipalitySubQuery(String municipalityType)
     {
         if ("State".equals(municipalityType))
-            "(upper(address.state) = upper(:mun) or upper(address.state) = upper(:munAlt))"
+            return "(upper(address.state) = upper(:mun) or upper(address.state) = upper(:munAlt))"
         else if ("Any".equals(municipalityType))
-            ":mun = :mun" // So that there is a parameter for the municipality
+            return ""
         else
-            "upper(address.${municipalityType.toLowerCase()}) = upper(:mun)"
+            return "upper(address.${municipalityType.toLowerCase()}) = upper(:mun)"
     }
 
     String getHomeCountrySubQuery(String homeCountry)
     {
-        if (homeCountry == "-1")
-            ""
+        if (homeCountry == "-1") {
+            return ""
+        }
         else
-            "(upper(placeOfBirth.country.name) = '${Country.get(homeCountry)}')"
+            return "(upper(placeOfBirth.country.name) = '${Country.get(homeCountry)}')"
     }
 }
