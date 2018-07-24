@@ -318,8 +318,8 @@ window.onload = reporting.windowLoaded
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n/a" checked="${statusAchieved == "n/a" ? 'true' : ''}" ></g:radio>&nbsp;N/A<br></td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-advise" checked="${statusAchieved == "staff-advise" || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Advise<br></td>
-                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-representation" checked="${statusAchieved == "staff-representation" || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Representation<br></td>
+                                    <td colspan=2 valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-advise" checked="${statusAchieved == "staff-advise" || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Advise<br></td>
+                                    <td colspan=2 valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="staff-representation" checked="${statusAchieved == "staff-representation" || ''.equals(statusAchieved) || 'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Staff Representation<br></td>
                                 </tr>
                             </table>
                             </td>
