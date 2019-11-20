@@ -6,13 +6,13 @@
 - backup the current ilcdb-0.1.war file (cd /usr/local/apache-tomcat; mv ilcdb-0.1.war ilcdb-0.1.war_%date; rm -rf ilcdb-.01)
 - remove the ilcdb-0.1 directory
 - restart mysql (sudo  /usr/local/mysql/support-files/mysql.server start)
-- perform any necessary db modifications (mysql -u ilcdb -p ilcdb #snuggl3s; alter table or whatever)
+- perform any necessary db modifications (mysql -u ilcdb -p ilcdb #********; alter table or whatever)
 - install any updates to grails and groovy
 - start apache (sudo launchctl load /Library/LaunchDaemons/org.apache.jakarta.tomcat.plist)
 
-CREATE USER 'ilcdb'@'localhost' IDENTIFIED BY 'snuggl3s';
+CREATE USER 'ilcdb'@'localhost' IDENTIFIED BY '*******';
 create database ilcdb;
-grant all on `ilcdb`.* to 'ilcdb'@'localhost' identified by 'snuggl3s';
+grant all on `ilcdb`.* to 'ilcdb'@'localhost' identified by '*******';
 or maybe
 grant all on `ilcdb`.* to 'ilcdb'@'localhost';
 
