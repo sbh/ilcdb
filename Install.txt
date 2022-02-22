@@ -10,9 +10,9 @@
 - install any updates to grails and groovy
 - start apache (sudo launchctl load /Library/LaunchDaemons/org.apache.jakarta.tomcat.plist)
 
-CREATE USER 'ilcdb'@'localhost' IDENTIFIED BY '*******';
+CREATE USER 'ilcdb'@'localhost' IDENTIFIED BY 'snuggl3s';
 create database ilcdb;
-grant all on `ilcdb`.* to 'ilcdb'@'localhost' identified by '*******';
+grant all on `ilcdb`.* to 'ilcdb'@'localhost' identified by 'snuggl3s';
 or maybe
 grant all on `ilcdb`.* to 'ilcdb'@'localhost';
 
