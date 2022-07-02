@@ -10,7 +10,7 @@ class UserController
 
     def index()
     {
-        redirect(action: "list", params: params)
+        redirect(action: "search", params: params)
     }
 
     def list()
@@ -46,7 +46,7 @@ class UserController
         if (!userInstance)
         {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            redirect(action: "list")
+            redirect(action: "search")
         }
         else
         {
@@ -108,7 +108,7 @@ class UserController
         if (!userInstance)
         {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            redirect(action: "list")
+            redirect(action: "search")
         }
         else
         {
@@ -157,7 +157,7 @@ class UserController
         else
         {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            redirect(action: "list")
+            redirect(action: "search")
         }
     }
 
@@ -171,7 +171,7 @@ class UserController
                 UserRole.remove(userInstance, userInstance.roleAux)
                 userInstance.delete(flush: true)
                 flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-                redirect(action: "list")
+                redirect(action: "search")
             }
             catch (org.springframework.dao.DataIntegrityViolationException e)
             {
@@ -182,7 +182,7 @@ class UserController
         else
         {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            redirect(action: "list")
+            redirect(action: "search")
         }
     }
 }
