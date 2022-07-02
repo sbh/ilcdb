@@ -232,8 +232,7 @@ class Client implements Comparable<Client>
 
     boolean hasAttemptedStatus(StatusAchieved.Type statusType, Interval interval) {
         cases.any{ clientCase ->
-            (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType)) &&
-                    interval.contains(clientCase.startDate.getTime())
+            (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType))
         }
     }
 
