@@ -11,7 +11,7 @@ class ClientController
 
     def usStates = new USStates()
 
-    def index() { redirect(action:"list",params:params) }
+    def index() { redirect(action:"search",params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -87,7 +87,7 @@ class ClientController
         if(!client)
         {
             flash.message = "Client not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else
             return [ client : client ]
@@ -101,12 +101,12 @@ class ClientController
         {
             client.delete()
             flash.message = "Client ${params.id} deleted"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else
         {
             flash.message = "Client not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
     }
 
@@ -118,7 +118,7 @@ class ClientController
         if(!client)
         {
             flash.message = "Client not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else
         {
@@ -147,7 +147,7 @@ class ClientController
             if(client.validate() && client.save())
             {
                 flash.message = "Client ${params.id} updated"
-                redirect(action:"list", fragment:params.id)
+                redirect(action:"search", fragment:params.id)
             }
             else
             {
@@ -264,7 +264,7 @@ class ClientController
                 client.save()
 
                 flash.message = "Client ${client.id} created"
-                redirect(action:"list")
+                redirect(action:"search")
             }
             else
                 render(view:'create', model:[client:client])

@@ -41,7 +41,7 @@
                         </tr>
 
                         <tr class="prop">
-                            <td valign="top" class="name"><label for="attorney">Attorney:</label>
+                            <td valign="top" class="name"><label for="attorney">Representative:</label>
                             </td>
                             <td valign="top"
                                 class="value ${hasErrors(bean:clientCase,field:'attorney','errors')}">

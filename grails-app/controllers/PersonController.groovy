@@ -19,7 +19,7 @@ class PersonController {
 
         if(!person) {
             flash.message = "Person not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else { return [ person : person ] }
     }
@@ -29,11 +29,11 @@ class PersonController {
         if(person) {
             person.delete()
             flash.message = "Person ${params.id} deleted"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else {
             flash.message = "Person not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
     }
 
@@ -42,7 +42,7 @@ class PersonController {
 
         if(!person) {
             flash.message = "Person not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else {
             return [ person : person ]
