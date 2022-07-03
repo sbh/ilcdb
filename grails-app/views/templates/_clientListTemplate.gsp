@@ -10,7 +10,7 @@
                             <th>Birth Country</th>
                             <th>City, County, State</th>
                             <th>File Location</th>
-                            <th>Attorney</th>
+                            <th>Representative</th>
                         </tr>
                     </thead>
                     <tbody>

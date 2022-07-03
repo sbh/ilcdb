@@ -4,7 +4,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class SponsorController {
 
-    def index() { redirect(action:"list", params:params) }
+    def index() { redirect(action:"search", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -19,7 +19,7 @@ class SponsorController {
 
         if(!sponsor) {
             flash.message = "Sponsor not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else { return [ sponsor : sponsor ] }
     }
@@ -29,11 +29,11 @@ class SponsorController {
         if(sponsor) {
             sponsor.delete()
             flash.message = "Sponsor ${params.id} deleted"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else {
             flash.message = "Sponsor not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
     }
 
@@ -42,7 +42,7 @@ class SponsorController {
 
         if(!sponsor) {
             flash.message = "Sponsor not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else {
             return [ sponsor : sponsor ]

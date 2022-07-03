@@ -5,7 +5,7 @@ import grails.plugin.springsecurity.annotation.Secured
 class NoteController
 {
     
-    def index() { redirect(action:"list", params:params) }
+    def index() { redirect(action:"search", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -23,7 +23,7 @@ class NoteController
         if(!note)
         {
             flash.message = "Note not found with id ${params.id}"
-            redirect(action:"list")
+            redirect(action:"search")
         }
         else
         { 

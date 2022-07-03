@@ -46,7 +46,7 @@
                                             <th>Intake Type</th>
                                             <th>Intensity</th>
                                             <th>Case Type</th>
-                                            <th>Attorney</th>
+                                            <th>Representative</th>
                                             <th>Result</th>
                                         </tr>
                                     </thead>
