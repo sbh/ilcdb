@@ -11,6 +11,7 @@
                             <th>City, County, State</th>
                             <th>File Location</th>
                             <th>Representative</th>
+                            <th>Intakes</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,6 +28,7 @@
                                 <td><g:link action="edit" id="${client['id']}">${client['shortAddress']}</g:link></td>
                                 <td><g:link action="edit" id="${client['id']}">${client['fileLocation']}</g:link></td>
                                 <td><g:link action="edit" id="${client['id']}">${client['attorney']}</g:link> ${client['validCases']}</td>
+                                <td><g:link action="edit" id="${client['id']}">${client['intakes']}</g:link></td>
                             </tr>
                         </g:each>
 

@@ -47,8 +47,22 @@
                                 <td valign="top" class="value ${hasErrors(bean:address,field:'county','errors')}">
                                     <input type="text" id="county" name="county" value="${fieldValue(bean:address,field:'county')}"/>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="countyList">CountyList:</label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean:address,field:'countyList','errors')}">
+                                    <g:field list="people" name="userId" type="search" value="${this.isUsersTakingInkInstance?.userId}"/>
+                                        <datalist id="people">
+                                            <g:each in="${people}" var="person">
+                                                <option value="${person.people_id}">${person.last_name}, ${person.first_name}</option>
+                                            </g:each>
+                                        </datalist>
+                                </td>
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="postalCode">Postal Code:</label>

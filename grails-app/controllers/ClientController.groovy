@@ -326,6 +326,18 @@ class ClientController
                 String county = params.q.replace("county:", "")
                 searchResults.addAll(Client.executeQuery( query, [county]))
             }
+            if (params.q.startsWith("state:"))
+            {
+                query = '''
+                          FROM Client AS client 
+                          INNER JOIN FETCH client.client AS person 
+                          INNER JOIN FETCH person.address AS address 
+                          WHERE LOWER(address.state) LIKE ?
+                            ORDER BY person.lastName
+                        '''
+                String state = params.q.replace("state:", "")
+                searchResults.addAll(Client.executeQuery( query, [state]))
+            }
             else
             {
                 query = '''
