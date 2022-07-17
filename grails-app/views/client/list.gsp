@@ -6,7 +6,7 @@
     </head>
     <body>
         <div class="body">
-            <h1>Client List (${clientList.size()} client families)</h1>
+            <h1>Client List: (${clientList.size()} client families)</h1>
             <g:if test="${flash.message}">
                 <div class="message">${flash.message}</div>
             </g:if>

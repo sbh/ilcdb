@@ -36,7 +36,7 @@ class Client implements Comparable<Client>
         fileLocation(nullable:true)
     }
 
-    static transients = [ "statiAchievedStrings", "firstVisitString", "homeCountry", "shortAddress", "emailAddress", "openCase", "validCases", "attorney", "person" ]
+    static transients = [ "statiAchievedStrings", "firstVisitString", "homeCountry", "shortAddress", "emailAddress", "openCase", "validCases", "attorney", "person", "intakes" ]
 
     def toMap() {
         [firstName           : person.firstName,
@@ -369,5 +369,16 @@ class Client implements Comparable<Client>
     public boolean hasAttemptedAnyStatus(Interval interval)
     {
         return hasAttemptedCitizenship(interval) || hasAttemptedDACA(interval) || hasAttemptedLPR(interval) || hasAttemptedLPRConditionsRemoved(interval) || hasAttemptedLPRCardRenewed(interval) || hasAttemptedTPS(interval)
+    }
+
+    def getIntakes() {
+        StringBuffer sb = new StringBuffer()
+        cases.collect { aCase ->
+            if (aCase.caseType != null) sb.append(aCase.caseType?.type)
+            else sb.append("SA")
+            sb.append(", ")
+        }
+
+        return sb.toString().replaceAll("^, ", "").replaceAll(", \$", "")
     }
 }

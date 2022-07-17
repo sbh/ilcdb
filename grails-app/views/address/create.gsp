@@ -47,8 +47,8 @@
                                 <td valign="top" class="value ${hasErrors(bean:address,field:'county','errors')}">
                                     <input type="text" id="county" name="county" value="${fieldValue(bean:address,field:'county')}"/>
                                 </td>
-                            </tr> 
-                        
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="postalCode">Postal Code:</label>

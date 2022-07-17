@@ -96,7 +96,6 @@ window.onload=toggleDatePickers;
                         </tbody>
                     </table>
                </g:form>
-                
             </div>
 
             <div class="list">
@@ -114,6 +113,7 @@ window.onload=toggleDatePickers;
                        <th>Birth Country</th>
                        <th>City, County, State</th>
                        <th>File Location</th>
+                       <th>Intakes</th>
                     </thead>
                     <tbody>
                         <g:each status="i" var="client" in="${searchResults}">
@@ -127,6 +127,7 @@ window.onload=toggleDatePickers;
                                 <td><g:link action="edit" id="${client.id}">${client.homeCountry?.encodeAsHTML()}</g:link></td>
                                 <td><g:link action="edit" id="${client.id}">${client.shortAddress?.encodeAsHTML()}</g:link></td>
                                 <td><g:link action="edit" id="${client.id}">${client.fileLocation}</g:link></td>
+                                <td><g:link action="edit" id="${client.id}">${client.intakes}</g:link></td>
                             </tr>
                         </g:each>
                     </tbody>

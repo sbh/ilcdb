@@ -334,7 +334,7 @@ window.onload = reporting.windowLoaded
             </g:form>
             <br>
             <g:if test="${report}">
-                <h3>Report Results (${Clients.size()} clients)</h3>
+                <h3>Report Results: (${Clients.size()} clients)</h3>
                 <br/>
                 <div class="list">
                     <table style="width:100%">
@@ -348,6 +348,7 @@ window.onload = reporting.windowLoaded
                            <th>Birth Country</th>
                            <th>City, County, State</th>
                            <th>File Location</th>
+                           <th>Intakes</th>
                         </thead>
                         <tbody>
                             <g:each status="i" var="client" in="${Clients}">
@@ -362,6 +363,7 @@ window.onload = reporting.windowLoaded
                                     <td><g:link action="edit" id="${client.id}">${client.homeCountry?.encodeAsHTML()}</g:link></td>
                                     <td><g:link action="edit" id="${client.id}">${client.shortAddress?.encodeAsHTML()}</g:link></td>
                                     <td><g:link action="edit" id="${client.id}">${client.fileLocation}</g:link></td>
+                                    <td><g:link action="edit" id="${client.id}">${client.intakes}</g:link></td>
                                 </tr>
                                 
                                 <tr class="${types.toString().replaceAll("[\\[\\],]", "")} intakeRow intakeRow-${i}">
