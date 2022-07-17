@@ -96,7 +96,6 @@ window.onload=toggleDatePickers;
                         </tbody>
                     </table>
                </g:form>
-                
             </div>
 
             <div class="list">

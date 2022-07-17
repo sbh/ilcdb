@@ -379,8 +379,6 @@ class Client implements Comparable<Client>
             sb.append(", ")
         }
 
-        def s =  sb.toString().replaceAll("^, ", "").replaceAll(", \$", "")
-        println("intakes: ${s}")
-        return s
+        return sb.toString().replaceAll("^, ", "").replaceAll(", \$", "")
     }
 }
