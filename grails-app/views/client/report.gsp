@@ -334,7 +334,7 @@ window.onload = reporting.windowLoaded
             </g:form>
             <br>
             <g:if test="${report}">
-                <h3>Report Results (${Clients.size()} clients)</h3>
+                <h3>Report Results: (${Clients.size()} clients)</h3>
                 <br/>
                 <div class="list">
                     <table style="width:100%">
