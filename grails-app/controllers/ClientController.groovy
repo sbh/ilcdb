@@ -435,7 +435,7 @@ class ClientController
         return [ searchResults:sortedResults, params:params ]
     }
 
-    @Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
+    //@Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
     def report()
     {
         //println("params: ${params}")
