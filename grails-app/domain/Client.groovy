@@ -294,16 +294,16 @@ class Client implements Comparable<Client>
     public boolean hasAchievedI192(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I192, interval) }
     public boolean hasAttemptedI192(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I192, interval) }
 
-    public boolean hasAchievedI1360(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I360, interval) ||
+    public boolean hasAchievedI360(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I360, interval) ||
             hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval) ||
             hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval)}
-    public boolean hasAttemptedI1360(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I360, interval) ||
+    public boolean hasAttemptedI360(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I360, interval) ||
             hasAchievedStatus(StatusAchieved.Type.I360VAWA, interval) ||
             hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval) }
 
     public boolean hasAchievedI539(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I539, interval) ||
             hasAchievedStatus(StatusAchieved.Type.I539VVisa, interval) }
-    public boolean hasAttemptedI1539(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I539, interval) ||
+    public boolean hasAttemptedI539(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I539, interval) ||
             hasAttemptedStatus(StatusAchieved.Type.I539VVisa, interval) }
 
     public boolean hasAchievedI601(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I601, interval) }
@@ -311,6 +311,9 @@ class Client implements Comparable<Client>
 
     public boolean hasAchievedI751(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I751, interval) }
     public boolean hasAttemptedI751(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I751, interval) }
+
+    public boolean hasAchievedI765(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I765, interval) }
+    public boolean hasAttemptedI765(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I765, interval) }
 
     public boolean hasAchievedI821(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I821, interval) }
     public boolean hasAttemptedI821(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I821, interval) }
