@@ -454,7 +454,8 @@ class ClientController
             } else if (params.intakeState == "closed") {
                 qry = CLIENTS_QUERY + " where " + COMPLETED_INTAKES_QUERY
             } else {
-                qry = CLIENTS_QUERY + " where (" + OPENED_INTAKES_QUERY + " or " + STILL_OPEN_INTAKES_QUERY + ")"
+                qry = CLIENTS_QUERY + " where (" + OPENED_INTAKES_QUERY + " or " +
+                        "( " + "intake.startDate <= :startDate and " + STILL_OPEN_INTAKES_QUERY + " )" + " or " + COMPLETED_INTAKES_QUERY + ")"
             }
 
             def unfilteredClients = getClients(qry, params)
@@ -495,7 +496,6 @@ class ClientController
     private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate and intake.completionDate <= :endDate ) "
     private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate and intake.startDate <= :endDate )"
     private static String STILL_OPEN_INTAKES_QUERY = " ( intake.completionDate is NULL or intake.completionDate >= :endDate ) "
-
     Collection<Client> getClients(String clientIntakeQuery, def params) {
         def queries = [getMunicipalitySubQuery(params.munType), getAttorneySubQuery(params.attorney), getHomeCountrySubQuery(params.homeCountry)]
 
