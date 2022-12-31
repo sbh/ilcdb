@@ -163,11 +163,12 @@ class ClientService
                 if (client.hasAttemptedNoStatus(interval))
                     results += client
             }
-        else if ("any" == statusAchieved)
+        else if ("any" == statusAchieved) {
             clients.each { client ->
                 if (client.hasAttemptedAnyStatus(interval))
                     results += client
             }
+        }
         else
             results = clients
 

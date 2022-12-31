@@ -232,7 +232,9 @@ class Client implements Comparable<Client>
 
     boolean hasAttemptedStatus(StatusAchieved.Type statusType, Interval interval) {
         cases.any{ clientCase ->
-            (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType))
+            (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType)) &&
+                    (interval.contains(clientCase.startDate.getTime()) || interval.contains(clientCase.completionDate.getTime()) ||
+                            (interval.isAfter(clientCase.startDate.getTime()) && interval.isBefore(clientCase.completionDate.getTime())))
         }
     }
 
@@ -295,11 +297,11 @@ class Client implements Comparable<Client>
     public boolean hasAttemptedI192(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I192, interval) }
 
     public boolean hasAchievedI360(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I360, interval) ||
-            hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval) ||
-            hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval)}
-    public boolean hasAttemptedI360(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I360, interval) ||
             hasAchievedStatus(StatusAchieved.Type.I360VAWA, interval) ||
-            hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval) }
+            hasAchievedStatus(StatusAchieved.Type.I360VAWAderivative, interval)}
+    public boolean hasAttemptedI360(Interval interval) { hasAttemptedStatus(StatusAchieved.Type.I360, interval) ||
+            hasAttemptedStatus(StatusAchieved.Type.I360VAWA, interval) ||
+            hasAttemptedStatus(StatusAchieved.Type.I360VAWAderivative, interval) }
 
     public boolean hasAchievedI539(Interval interval) { hasAchievedStatus(StatusAchieved.Type.I539, interval) ||
             hasAchievedStatus(StatusAchieved.Type.I539VVisa, interval) }
