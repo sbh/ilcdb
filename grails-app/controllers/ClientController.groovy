@@ -27,7 +27,7 @@ class ClientController
         file.delete()
         def id = 1
         clients.each{
-            file << """{"index":{"_index":"clients-2018-01-27","_type":"client","_id":${id++}}"""
+            file << """{"index":{"_index":"clients-2018-01-27","_type":"client","_id":${id++}}}"""
             file << "\n"
             file << JsonOutput.toJson(it.toMap())
             file << "\n"
