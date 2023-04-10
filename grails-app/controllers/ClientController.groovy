@@ -5,8 +5,7 @@ import org.joda.time.Interval
 import java.util.List
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
-class ClientController
-{
+class ClientController {
     def clientService
 
     def usStates = new USStates()
@@ -16,8 +15,7 @@ class ClientController
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
-    def list()
-    {
+    def list() {
         long t1 = System.currentTimeMillis()
         List<Client> clients = new ArrayList()
 
@@ -26,7 +24,7 @@ class ClientController
         def file = new File("/var/tmp/clients.json")
         file.delete()
         def id = 1
-        clients.each{
+        clients.each {
             file << """{"index":{"_index":"clients-2018-01-27","_type":"client","_id":${id++}}}"""
             file << "\n"
             file << JsonOutput.toJson(it.toMap())
@@ -41,8 +39,7 @@ class ClientController
 
         def clientMaps = []
         t1 = System.currentTimeMillis()
-        for (client in clients)
-        {
+        for (client in clients) {
             def clientMap = new HashMap()
             clientMap['id'] = client.id
             clientMap['person'] = client.client?.encodeAsHTML()
@@ -65,13 +62,10 @@ class ClientController
         [ clientList:  clientMaps ]
     }
 
-    private class ClientComparator implements Comparator<Client>
-    {
-        int compare(Client c1, Client c2)
-        {
+    private class ClientComparator implements Comparator<Client> {
+        int compare(Client c1, Client c2) {
             int val = c1.client.getSortableLastName().compareTo(c2.client.getSortableLastName())
-            if (val == 0)
-            {
+            if (val == 0) {
                 val = c1.client.getSortableFirstName().compareTo(c2.client.getSortableFirstName())
                 if (val != 0)
                     return val;
@@ -81,13 +75,11 @@ class ClientController
         }
     }
 
-    def show()
-    {
+    def show() {
         //println("ClientController.show params: "+params)
         def client = Client.get( params.id )
 
-        if(!client)
-        {
+        if(!client) {
             flash.message = "Client not found with id ${params.id}"
             redirect(action:"search")
         }
@@ -95,46 +87,38 @@ class ClientController
             return [ client : client ]
     }
 
-    def delete()
-    {
+    def delete() {
         //println("ClientController.delete params: "+params)
         def client = Client.get( params.id )
-        if(client)
-        {
+        if(client) {
             client.delete()
             flash.message = "Client ${params.id} deleted"
             redirect(action:"search")
         }
-        else
-        {
+        else {
             flash.message = "Client not found with id ${params.id}"
             redirect(action:"search")
         }
     }
 
-    def edit()
-    {
+    def edit() {
         //println("ClientController.edit params: "+params)
         def client = Client.get( params.id )
 
-        if(!client)
-        {
+        if(!client) {
             flash.message = "Client not found with id ${params.id}"
             redirect(action:"search")
         }
-        else
-        {
+        else {
             return [client: client]
         }
     }
 
-    def update()
-    {
+    def update() {
         //println("ClientController.update params: "+params)
 
         def client = Client.get( params.id )
-        if(client)
-        {
+        if(client) {
             def addressCountry = Country.get(params.client.address.country)
 
             def birthCountry = Country.get(params.client.placeOfBirth.country)
@@ -146,13 +130,11 @@ class ClientController
 
             client.client.placeOfBirth.country = birthCountry
             client.clearErrors()
-            if(client.validate() && client.save())
-            {
+            if(client.validate() && client.save()) {
                 flash.message = "Client ${params.id} updated"
                 redirect(action:"search", fragment:params.id)
             }
-            else
-            {
+            else {
                 println("errors***")
                 client.errors.allErrors.each { println it }
                 println("***errors")
@@ -160,27 +142,23 @@ class ClientController
                 render(view:'edit',model:[client:client])
             }
         }
-        else
-        {
+        else {
             flash.message = "Client not found with id ${params.id}"
             redirect(action:"edit", id:params.id)
         }
     }
 
-    def create()
-    {
+    def create() {
         def client = new Client()
         client.properties = params
 
         return ['client':client]
     }
 
-    def save()
-    {
+    def save() {
         //println("ClientController.save params: "+params)
 
-        if(params.containsKey('personSource') && params['personSource'] == 'new')
-        {
+        if(params.containsKey('personSource') && params['personSource'] == 'new') {
             //For generating a new person
             def client = new Client(params)
             def person = new Person(params.client)
@@ -221,8 +199,7 @@ class ClientController
             //Ensure the entire graph is valid before saving anything
             if (client.validate() &&
             address.validate() && person.validate() &&
-            placeOfBirth.validate())
-            {
+            placeOfBirth.validate()) {
                 address.save()
                 placeOfBirth.save()
                 person.save()
@@ -233,8 +210,7 @@ class ClientController
                 // redirect to the newly created intake so that it can be edited if so desired
                 redirect(controller:"clientCase", action:"edit", id:clientCase.id)
             }
-            else
-            {
+            else {
                 //Restore object graph to report errors in the view
                 if (!client.validate())
                     client.errors.allErrors.each { println "client error: "+it }
@@ -260,8 +236,7 @@ class ClientController
                 person.placeOfBirth = placeOfBirth
 
             if (!client.hasErrors() && placeOfBirth.validate() &&
-            client.validate())
-            {
+            client.validate()) {
                 placeOfBirth.save()
                 client.save()
 
@@ -271,8 +246,7 @@ class ClientController
             else
                 render(view:'create', model:[client:client])
         }
-        else
-        {
+        else {
             /*The user is passing custom parameters. Something bad is going on!
              *That or someone is modifying the application, in which case they
              *should see this. Consider logging the user out and noting an error?
@@ -280,8 +254,7 @@ class ClientController
         }
     }
 
-    def search()
-    {
+    def search() {
         //println("ClientController.search params: "+params)
 
         if (!params.max || ("all".equalsIgnoreCase(params.max)))
@@ -296,70 +269,81 @@ class ClientController
 
         def searchResults = new HashSet()
 
-        String query;
-        if (params.q == null || params.q.size() == 0)
-        {
+        if (params.q == null || params.q.size() == 0) {
             if (params.dateRestricted)
                 searchResults.addAll(Client.list())
         }
-        else
-        {
-            if (params.q.startsWith("city:"))
-            {
-                query = '''
-                        FROM Client AS client 
-                        INNER JOIN FETCH client.client AS person 
-                        INNER JOIN FETCH person.address AS address 
-                        WHERE LOWER(address.city) LIKE ?
-                          ORDER BY person.lastName
+        else {
+            if (params.q.toLowerCase().startsWith("city:")) {
+                String query = '''
+                                 FROM Client AS client 
+                                 INNER JOIN FETCH client.client AS person 
+                                 INNER JOIN FETCH person.address AS address 
+                                 WHERE LOWER(address.city) LIKE ?
+                                 ORDER BY person.lastName
                         '''
-                String city = params.q.replace("city:", "")
-                searchResults.addAll(Client.executeQuery( query, [city]))
+                String token = "%" + params.q.toLowerCase().replace("city:", "").trim() + "%"
+                println("Executing query: "+query+", token: "+token)
+                searchResults.addAll(Client.executeQuery( query, [token]))
             }
-            if (params.q.startsWith("county:"))
-            {
-                query = '''
-                          FROM Client AS client 
-                          INNER JOIN FETCH client.client AS person 
-                          INNER JOIN FETCH person.address AS address 
-                          WHERE LOWER(address.county) LIKE ?
-                            ORDER BY person.lastName
+            else if (params.q.toLowerCase().startsWith("county:")) {
+                String query = '''
+                                 FROM Client AS client 
+                                  INNER JOIN FETCH client.client AS person 
+                                  INNER JOIN FETCH person.address AS address 
+                                  WHERE LOWER(address.county) LIKE ?
+                                  ORDER BY person.lastName
                         '''
-                String county = params.q.replace("county:", "")
-                searchResults.addAll(Client.executeQuery( query, [county]))
+                String token = "%" + params.q.toLowerCase().replace("county:", "").trim() + "%"
+                println("Executing query: "+query+", token: "+token)
+                searchResults.addAll(Client.executeQuery( query, [token]))
             }
-            if (params.q.startsWith("state:"))
-            {
-                query = '''
-                          FROM Client AS client 
-                          INNER JOIN FETCH client.client AS person 
-                          INNER JOIN FETCH person.address AS address 
-                          WHERE LOWER(address.state) LIKE ?
-                            ORDER BY person.lastName
+            else if (params.q.toLowerCase().startsWith("state:")) {
+                String query = '''
+                                 FROM Client AS client 
+                                 INNER JOIN FETCH client.client AS person 
+                                 INNER JOIN FETCH person.address AS address 
+                                 WHERE LOWER(address.state) LIKE ?
+                                 ORDER BY person.lastName
                         '''
-                String state = params.q.replace("state:", "")
-                searchResults.addAll(Client.executeQuery( query, [state]))
+                String token = "%" + params.q.toLowerCase().replace("state:", "").trim() + "%"
+                println("Executing query: "+query+", token: "+token)
+                searchResults.addAll(Client.executeQuery( query, [token]))
             }
-            else
-            {
-                query = '''
-                          FROM Client AS client 
-                          INNER JOIN FETCH client.client AS person 
-                          INNER JOIN FETCH person.address AS address 
-                          WHERE LOWER(address.street) LIKE ? 
-                          OR LOWER(address.city) LIKE ? 
-                          OR LOWER(address.county) LIKE ? 
-                          OR LOWER(address.state) LIKE ? 
-                          OR LOWER(address.country.name) LIKE ? 
-                          OR LOWER(person.firstName) LIKE ? 
-                          OR LOWER(person.lastName) LIKE ?
-                          OR LOWER(person.phoneNumber) LIKE ?
-                            ORDER BY person.lastName
+            else if (params.q.toLowerCase().startsWith("birth country:")) {
+                String query = '''
+                                FROM Client AS client 
+                                INNER JOIN FETCH client.client AS person 
+                                INNER JOIN FETCH person.placeOfBirth AS birthPlace 
+                                WHERE LOWER(birthPlace.country.name) LIKE ?
+                                ORDER BY person.lastName
+                        '''
+                String token = "%" + params.q.toLowerCase().replace("birth country:", "").trim() + "%"
+                println("Executing query: "+query+", token: "+token)
+                searchResults.addAll(Client.executeQuery(query, [token]))
+            }
+            else {
+                String query = '''
+                                FROM Client AS client 
+                                INNER JOIN FETCH client.client AS person 
+                                INNER JOIN FETCH person.address AS address 
+                                JOIN FETCH person.placeOfBirth AS birthPlace
+                                WHERE LOWER(address.street) LIKE ? 
+                                   OR LOWER(address.city) LIKE ? 
+                                   OR LOWER(address.county) LIKE ? 
+                                   OR LOWER(address.state) LIKE ? 
+                                   OR LOWER(address.country.name) LIKE ? 
+                                   OR LOWER(birthPlace.country.name) LIKE ?
+                                   OR LOWER(person.firstName) LIKE ? 
+                                   OR LOWER(person.lastName) LIKE ?
+                                   OR LOWER(person.phoneNumber) LIKE ?
+                                ORDER BY person.lastName
                         '''
                 params.q.split(/\s/).each
                 { token ->
-                    token = "%${token}%".toLowerCase()
-                    searchResults.addAll(Client.executeQuery( query, [token, token, token, token, token, token, token, token ]))
+                    token = "%${token.trim()}%".toLowerCase()
+                    println("Executing query: "+query+", token: "+token)
+                    searchResults.addAll(Client.executeQuery(query, [token, token, token, token, token, token, token, token, token]))
                     searchResults.addAll(Client.createCriteria().list { notes { ilike ("text", "%"+token+"%") } })
                 }
             }
@@ -375,27 +359,22 @@ class ClientController
 
             params.count = 0
             params.serviceHours = 0
-            try
-            {
+            try {
                 def serviceRecords = ServiceRecord.findAllByServiceDateBetween(params.serviceRecordStartDate, endDate)
                 def clientIds = []
                 def serviceHours = 0
-                for (ServiceRecord serviceRecord : serviceRecords)
-                {
+                for (ServiceRecord serviceRecord : serviceRecords) {
                     clientIds += serviceRecord.clientId
                     if (params.serviceRecordStartDate?.compareTo(serviceRecord.serviceDate) <= 0 &&
-                    serviceRecord.serviceDate.compareTo(endDate) <= 0)
+                        serviceRecord.serviceDate.compareTo(endDate) <= 0)
                         serviceHours += serviceRecord.serviceHours
                 }
 
                 clientIds = clientIds.unique()
                 def dateRestrictedSearchResults = []
-                for (String clientId : clientIds)
-                {
-                    for (Client client : searchResults)
-                    {
-                        if (clientId.equals(client.clientId))
-                        {
+                for (String clientId : clientIds) {
+                    for (Client client : searchResults) {
+                        if (clientId.equals(client.clientId)) {
                             dateRestrictedSearchResults.add(client)
                             continue
                         }
@@ -405,8 +384,7 @@ class ClientController
                 searchResults.addAll(dateRestrictedSearchResults)
                 params.serviceHours = serviceHours
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -414,12 +392,10 @@ class ClientController
         params.count = searchResults.size()
 
         //Paginate results
-        if (params.max < searchResults.size())
-        {
+        if (params.max < searchResults.size()) {
             def tempResults = []
 
-            (params.offset ..< (params.offset + params.max)).each
-            {
+            (params.offset ..< (params.offset + params.max)).each {
                 if(it < searchResults?.size())
                     tempResults += searchResults[it]
             }
@@ -436,15 +412,13 @@ class ClientController
     }
 
     //@Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
-    def report()
-    {
+    def report() {
         //println("params: ${params}")
 
         //println("**** report params: "+params)
         def returnValue = [ : ];
 
-        if(params.startDate && params.endDate)
-        {
+        if(params.startDate && params.endDate) {
             // adjust the endDate to be the end of the day.
             params.endDate = new Date(params.endDate.getTime() + 1000L*24L*60L*60L - 1L)
 
@@ -529,15 +503,13 @@ class ClientController
         clients
     }
 
-    String getAttorneySubQuery(String attorney)
-    {
+    String getAttorneySubQuery(String attorney) {
         if ("Any".equals(attorney))
             return ""
         return "intake.attorney = '" + attorney + "'"
     }
 
-    String getMunicipalitySubQuery(String municipalityType)
-    {
+    String getMunicipalitySubQuery(String municipalityType) {
         if ("State".equals(municipalityType))
             return "(upper(address.state) = upper(:mun) or upper(address.state) = upper(:munAlt))"
         else if ("Any".equals(municipalityType))
@@ -546,11 +518,9 @@ class ClientController
             return "upper(address.${municipalityType.toLowerCase()}) = upper(:mun)"
     }
 
-    String getHomeCountrySubQuery(String homeCountry)
-    {
-        if (homeCountry == "-1") {
+    String getHomeCountrySubQuery(String homeCountry) {
+        if (homeCountry == "-1")
             return ""
-        }
         else
             return "(upper(placeOfBirth.country.name) = '${Country.get(homeCountry)}')"
     }

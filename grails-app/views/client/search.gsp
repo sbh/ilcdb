@@ -45,7 +45,8 @@ window.onload=toggleDatePickers;
                                 <td valign="top">
                                     (To find clients by their city, prefix
     the search with the word 'city:' as in city:boulder. Similarly, to find
-    clients by their county, prefix the search with the word 'county' as in county:boulder.)
+    clients by their county, prefix the search with the word 'county' as in county:boulder.
+    To find clients by the country of birth, prefix the search with 'birth country:')
                                 </td>
                            </tr>
                         </tbody>

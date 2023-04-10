@@ -1,5 +1,5 @@
 - To produce a .war file do:
-    grails prod war
+    JAVA_HOME=$(/usr/libexec/java_home) grails prod war
 - To run locally against a local mysql db:
     JAVA_HOME=$(/usr/libexec/java_home) grails run-app
 - This link describes how to configure tomcat for launchd: https://www.joel.lopes-da-silva.com/2008/05/13/installing-tomcat-on-mac-os-x/
