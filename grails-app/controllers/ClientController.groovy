@@ -274,7 +274,8 @@ class ClientController {
                 searchResults.addAll(Client.list())
         }
         else {
-            if (params.q.toLowerCase().startsWith("city:")) {
+            String paramsString = params.q.toLowerCase().trim()
+            if (paramsString.startsWith("city:")) {
                 String query = '''
                                  FROM Client AS client 
                                  INNER JOIN FETCH client.client AS person 
@@ -282,11 +283,11 @@ class ClientController {
                                  WHERE LOWER(address.city) LIKE ?
                                  ORDER BY person.lastName
                         '''
-                String token = "%" + params.q.toLowerCase().replace("city:", "").trim() + "%"
+                String token = "%" + paramsString.replace("city:", "").trim() + "%"
                 println("Executing query: "+query+", token: "+token)
                 searchResults.addAll(Client.executeQuery( query, [token]))
             }
-            else if (params.q.toLowerCase().startsWith("county:")) {
+            else if (paramsString.startsWith("county:")) {
                 String query = '''
                                  FROM Client AS client 
                                   INNER JOIN FETCH client.client AS person 
@@ -294,11 +295,11 @@ class ClientController {
                                   WHERE LOWER(address.county) LIKE ?
                                   ORDER BY person.lastName
                         '''
-                String token = "%" + params.q.toLowerCase().replace("county:", "").trim() + "%"
+                String token = "%" + paramsString.replace("county:", "").trim() + "%"
                 println("Executing query: "+query+", token: "+token)
                 searchResults.addAll(Client.executeQuery( query, [token]))
             }
-            else if (params.q.toLowerCase().startsWith("state:")) {
+            else if (paramsString.startsWith("state:")) {
                 String query = '''
                                  FROM Client AS client 
                                  INNER JOIN FETCH client.client AS person 
@@ -306,11 +307,11 @@ class ClientController {
                                  WHERE LOWER(address.state) LIKE ?
                                  ORDER BY person.lastName
                         '''
-                String token = "%" + params.q.toLowerCase().replace("state:", "").trim() + "%"
+                String token = "%" + paramsString.replace("state:", "").trim() + "%"
                 println("Executing query: "+query+", token: "+token)
                 searchResults.addAll(Client.executeQuery( query, [token]))
             }
-            else if (params.q.toLowerCase().startsWith("birth country:")) {
+            else if (paramsString.startsWith("birth country:")) {
                 String query = '''
                                 FROM Client AS client 
                                 INNER JOIN FETCH client.client AS person 
@@ -318,7 +319,7 @@ class ClientController {
                                 WHERE LOWER(birthPlace.country.name) LIKE ?
                                 ORDER BY person.lastName
                         '''
-                String token = "%" + params.q.toLowerCase().replace("birth country:", "").trim() + "%"
+                String token = "%" + paramsString.replace("birth country:", "").trim() + "%"
                 println("Executing query: "+query+", token: "+token)
                 searchResults.addAll(Client.executeQuery(query, [token]))
             }
@@ -339,9 +340,9 @@ class ClientController {
                                    OR LOWER(person.phoneNumber) LIKE ?
                                 ORDER BY person.lastName
                         '''
-                params.q.split(/\s/).each
+                paramsString.split(/\s/).each
                 { token ->
-                    token = "%${token.trim()}%".toLowerCase()
+                    token = "%${token.trim()}%"
                     println("Executing query: "+query+", token: "+token)
                     searchResults.addAll(Client.executeQuery(query, [token, token, token, token, token, token, token, token, token]))
                     searchResults.addAll(Client.createCriteria().list { notes { ilike ("text", "%"+token+"%") } })
