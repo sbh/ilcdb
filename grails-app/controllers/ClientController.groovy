@@ -284,7 +284,7 @@ class ClientController {
                                  ORDER BY person.lastName
                         '''
                 String token = "%" + paramsString.replace("city:", "").trim() + "%"
-                println("Executing query: "+query+", token: "+token)
+                //println("Executing query: "+query+", token: "+token)
                 searchResults.addAll(Client.executeQuery( query, [token]))
             }
             else if (paramsString.startsWith("county:")) {
@@ -296,7 +296,7 @@ class ClientController {
                                   ORDER BY person.lastName
                         '''
                 String token = "%" + paramsString.replace("county:", "").trim() + "%"
-                println("Executing query: "+query+", token: "+token)
+                //println("Executing query: "+query+", token: "+token)
                 searchResults.addAll(Client.executeQuery( query, [token]))
             }
             else if (paramsString.startsWith("state:")) {
@@ -308,7 +308,7 @@ class ClientController {
                                  ORDER BY person.lastName
                         '''
                 String token = "%" + paramsString.replace("state:", "").trim() + "%"
-                println("Executing query: "+query+", token: "+token)
+                //println("Executing query: "+query+", token: "+token)
                 searchResults.addAll(Client.executeQuery( query, [token]))
             }
             else if (paramsString.startsWith("birth country:")) {
@@ -320,7 +320,7 @@ class ClientController {
                                 ORDER BY person.lastName
                         '''
                 String token = "%" + paramsString.replace("birth country:", "").trim() + "%"
-                println("Executing query: "+query+", token: "+token)
+                //println("Executing query: "+query+", token: "+token)
                 searchResults.addAll(Client.executeQuery(query, [token]))
             }
             else {
@@ -343,7 +343,7 @@ class ClientController {
                 paramsString.split(/\s/).each
                 { token ->
                     token = "%${token.trim()}%"
-                    println("Executing query: "+query+", token: "+token)
+                    //println("Executing query: "+query+", token: "+token)
                     searchResults.addAll(Client.executeQuery(query, [token, token, token, token, token, token, token, token, token]))
                     searchResults.addAll(Client.createCriteria().list { notes { ilike ("text", "%"+token+"%") } })
                 }

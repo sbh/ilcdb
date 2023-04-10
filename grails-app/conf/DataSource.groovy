@@ -14,7 +14,7 @@ environments {
     development {
         dataSource {
             dbCreate = "update"
-            driverClassName = "com.mysql.jdbc.Driver"
+            driverClassName = "com.mysql.cj.jdbc.Driver"
             url = "jdbc:mysql://localhost/ilcdb"
             username = "ilcdb"
             password =  "snuggl3s"
@@ -31,7 +31,7 @@ environments {
     production {
         dataSource {
             dbCreate = "update"
-            driverClassName = "com.mysql.jdbc.Driver"
+            driverClassName = "com.mysql.cj.jdbc.Driver"
             url = "jdbc:mysql://localhost/ilcdb"
             username = "ilcdb"
             password =  "snuggl3s"
