@@ -25,8 +25,8 @@ class ClientController {
         file.delete()
         def id = 1
         clients.each {
-            file << """{"index":{"_index":"clients-2018-01-27","_type":"client","_id":${id++}}}"""
-            file << "\n"
+            //file << """{"index":{"_index":"clients-2018-01-27","_type":"client","_id":${id++}}}"""
+            //file << "\n"
             file << JsonOutput.toJson(it.toMap())
             file << "\n"
         }
@@ -277,9 +277,9 @@ class ClientController {
             String paramsString = params.q.toLowerCase().trim()
             if (paramsString.startsWith("city:")) {
                 String query = '''
-                                 FROM Client AS client 
-                                 INNER JOIN FETCH client.client AS person 
-                                 INNER JOIN FETCH person.address AS address 
+                                 FROM Client AS client
+                                 INNER JOIN FETCH client.client AS person
+                                 INNER JOIN FETCH person.address AS address
                                  WHERE LOWER(address.city) LIKE ?
                                  ORDER BY person.lastName
                         '''
@@ -289,9 +289,9 @@ class ClientController {
             }
             else if (paramsString.startsWith("county:")) {
                 String query = '''
-                                 FROM Client AS client 
-                                  INNER JOIN FETCH client.client AS person 
-                                  INNER JOIN FETCH person.address AS address 
+                                 FROM Client AS client
+                                  INNER JOIN FETCH client.client AS person
+                                  INNER JOIN FETCH person.address AS address
                                   WHERE LOWER(address.county) LIKE ?
                                   ORDER BY person.lastName
                         '''
@@ -301,9 +301,9 @@ class ClientController {
             }
             else if (paramsString.startsWith("state:")) {
                 String query = '''
-                                 FROM Client AS client 
-                                 INNER JOIN FETCH client.client AS person 
-                                 INNER JOIN FETCH person.address AS address 
+                                 FROM Client AS client
+                                 INNER JOIN FETCH client.client AS person
+                                 INNER JOIN FETCH person.address AS address
                                  WHERE LOWER(address.state) LIKE ?
                                  ORDER BY person.lastName
                         '''
@@ -313,9 +313,9 @@ class ClientController {
             }
             else if (paramsString.startsWith("birth country:")) {
                 String query = '''
-                                FROM Client AS client 
-                                INNER JOIN FETCH client.client AS person 
-                                INNER JOIN FETCH person.placeOfBirth AS birthPlace 
+                                FROM Client AS client
+                                INNER JOIN FETCH client.client AS person
+                                INNER JOIN FETCH person.placeOfBirth AS birthPlace
                                 WHERE LOWER(birthPlace.country.name) LIKE ?
                                 ORDER BY person.lastName
                         '''
@@ -325,17 +325,17 @@ class ClientController {
             }
             else {
                 String query = '''
-                                FROM Client AS client 
-                                INNER JOIN FETCH client.client AS person 
-                                INNER JOIN FETCH person.address AS address 
+                                FROM Client AS client
+                                INNER JOIN FETCH client.client AS person
+                                INNER JOIN FETCH person.address AS address
                                 JOIN FETCH person.placeOfBirth AS birthPlace
-                                WHERE LOWER(address.street) LIKE ? 
-                                   OR LOWER(address.city) LIKE ? 
-                                   OR LOWER(address.county) LIKE ? 
-                                   OR LOWER(address.state) LIKE ? 
-                                   OR LOWER(address.country.name) LIKE ? 
+                                WHERE LOWER(address.street) LIKE ?
+                                   OR LOWER(address.city) LIKE ?
+                                   OR LOWER(address.county) LIKE ?
+                                   OR LOWER(address.state) LIKE ?
+                                   OR LOWER(address.country.name) LIKE ?
                                    OR LOWER(birthPlace.country.name) LIKE ?
-                                   OR LOWER(person.firstName) LIKE ? 
+                                   OR LOWER(person.firstName) LIKE ?
                                    OR LOWER(person.lastName) LIKE ?
                                    OR LOWER(person.phoneNumber) LIKE ?
                                 ORDER BY person.lastName

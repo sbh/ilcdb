@@ -39,7 +39,8 @@ class Client implements Comparable<Client>
     static transients = [ "statiAchievedStrings", "firstVisitString", "homeCountry", "shortAddress", "emailAddress", "openCase", "validCases", "attorney", "person", "intakes" ]
 
     def toMap() {
-        [firstName           : person.firstName,
+        [id : person.id,
+         firstName           : person.firstName,
          lastName            : person.lastName,
          email               : person.emailAddress,
          dateOfBirth         : person.dateOfBirth,

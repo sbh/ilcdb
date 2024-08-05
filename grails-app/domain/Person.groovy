@@ -3,8 +3,9 @@ import java.text.SimpleDateFormat;
 import com.sun.corba.se.impl.oa.poa.POAPolicyMediatorImpl_R_USM.Etherealizer;
 
 class Person implements Comparable<Person>
-{ 
-    String firstName 
+{
+    Long id
+    String firstName
     String lastName
     String phoneNumber
     BirthPlace placeOfBirth
@@ -14,7 +15,7 @@ class Person implements Comparable<Person>
     Address address
     String gender;
     String race;
-    
+
     static mapping =
     {
         cache true
@@ -24,7 +25,7 @@ class Person implements Comparable<Person>
 
     static List Ethnicities = ['', 'African', 'Asian Pac', 'Latino', 'Native American', 'White'];
 
-    static constraints = 
+    static constraints =
     {
         firstName(blank:false)
         lastName(blank:false)
@@ -43,9 +44,9 @@ class Person implements Comparable<Person>
         placeOfBirth(nullable:true)
         address(nullable:true)
     }
-    
+
     static transients = [ "age", "birthDayString", "sortableLastName", "sortableFirstName" ]
-    
+
     public int compareTo(Person other)
     {
         String[] lastNames = lastName.split("\\s+")
@@ -57,12 +58,12 @@ class Person implements Comparable<Person>
 
         return firstName.compareTo(other.firstName)
     }
-    
+
     String getBirthDayString()
     {
         return (new SimpleDateFormat("MMM-dd-yyyy").format(dateOfBirth));
     }
-    
+
     String getAge()
     {
         if (dateOfBirth == null)
@@ -100,10 +101,10 @@ class Person implements Comparable<Person>
                 break;
             }
         }
-        
+
         if (sortableLastName == null)
             sortableLastName = lastName.trim().split()[0]
-        
+
         //println("sortableLastName: "+sortableLastName)
         return sortableLastName.toUpperCase()
     }
