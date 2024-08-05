@@ -6,21 +6,21 @@
     <key>Label</key>                <string>org.apache.jakarta.tomcat</string>
     <key>OnDemand</key>             <false/>
     <key>Debug</key>                <true/>
-    <key>Program</key>              <string>/usr/local/apache-tomcat/bin/tomcat-launchd.sh</string>
+    <key>Program</key>              <string>/opt/tomcat/bin/tomcat-launchd.sh</string>
     <key>UserName</key>             <string>admin</string>
-    <key>StandardOutPath</key>      <string>/Volumes/data/Users/admin/stdout.log</string>
-    <key>StandardErrorPath</key>    <string>/Volumes/data/Users/admin/stderror.log</string>
+    <key>StandardOutPath</key>      <string>/Users/admin/stdout.log</string>
+    <key>StandardErrorPath</key>    <string>/Users/admin/stderror.log</string>
     <key>EnvironmentVariables</key> <dict>
                                         <key>GROOVY_HOME</key>
-                                        <string>/usr/local/groovy</string>
+                                        <string>/opt/groovy</string>
                                         <key>GRAILS_HOME</key>
-                                        <string>/usr/local/grails</string>
+                                        <string>/opt/grails</string>
                                         <key>CATALINA_HOME</key>
-                                        <string>/usr/local/apache-tomcat</string>
+                                        <string>/opt/tomcat</string>
                                         <key>JAVA_HOME</key>
-                                        <string>/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home</string>
+					<string>/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home</string>
                                         <key>JAVA_OPTS</key>
-                                        <string>-server -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=512m  -Djava.awt.headless=true</string>
+                                        <string>-server -Xmx8192m -Djava.awt.headless=true</string>
                                     </dict>
     <key>WorkingDirectory</key>     <string>/tmp</string>
   </dict>
