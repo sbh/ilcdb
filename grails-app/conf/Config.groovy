@@ -132,7 +132,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
     '/**/images/**':   ['permitAll'],
     '/**/favicon.ico': ['permitAll']
  ]
- 
+
 rememberMe.tokenValiditySeconds = 43200 // 12 hours
 
 grails {
@@ -164,12 +164,12 @@ jqueryDateTimePicker {
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 
-/* remove this line 
+/* remove this line
 // GSP settings
 grails {
     views {
         gsp {
-            encoding = 'UTF-8'
+ encoding = 'UTF-8'
             htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
             codecs {
                 expression = 'html' // escapes values inside null
