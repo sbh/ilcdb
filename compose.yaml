@@ -1,0 +1,42 @@
+services:
+  webapp:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=ilcdb
+      - MYSQL_USER=ilcdb
+      - MYSQL_PASSWORD=snuggl3s
+      - FOO=foo
+    #command: ["/bin/bash", "-c", "/wait-for-it.sh db && (grails run-app || echo 'App failed to start') && tail -f /dev/null"]
+    command: ["/bin/bash", "-c", "(grails prod run-app || echo 'App failed to start') && tail -f /dev/null"]
+    # restart: on-failure:2
+
+
+  db:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=route66
+      - MYSQL_DATABASE=ilcdb
+      - MYSQL_USER=ilcdb
+      - MYSQL_PASSWORD=snuggl3s
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+volumes:
+  mysql_data:  # This line defines the volume
+
+# secrets:
+#   mysql_user_password: ./secrets/mysql_ilcdb_password.txt
+#   mysql_root_password: ./secrets/mysql_root_password.txt
