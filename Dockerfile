@@ -1,7 +1,10 @@
-    FROM openjdk:8-jdk
+    # Use the official Tomcat base image
+    FROM tomcat:9-jdk8
 
-    RUN apt-get update && apt-get install -y less vim default-mysql-client
+    RUN apt-get update && apt-get install -y less vim default-mysql-client unzip
 
+    # Remove the default web apps
+    RUN rm -rf /usr/local/tomcat/webapps/*
 
     # Install Grails 2.4
     ENV GRAILS_VERSION 2.4.5
@@ -13,21 +16,12 @@
     ENV GRAILS_HOME /grails
     ENV PATH $GRAILS_HOME/bin:$PATH
 
-    # Set up app directory
-    WORKDIR /app
+    # Copy the WAR file into the Tomcat webapps directory
+    COPY target/ilcdb-1.0.war /usr/local/tomcat/webapps/
 
-    # Copy the Grails project
-    COPY . /app
 
-    # Build the WAR file
-    RUN grails war
-
-    # Expose the port your app runs on
+    # Expose the port Tomcat is running on
     EXPOSE 8080
 
-    COPY wait-for-it.sh /wait-for-it.sh
-    RUN chmod +x /wait-for-it.sh
-
-    # Run the application
-    # CMD ["grails", "run-app"]
-    CMD ["/wait-for-it.sh", "db", "grails", "run-app"]
+    # Start Tomcat
+    CMD ["catalina.sh", "run"]
