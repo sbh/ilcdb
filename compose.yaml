@@ -12,11 +12,6 @@ services:
       - MYSQL_DATABASE=ilcdb
       - MYSQL_USER=ilcdb
       - MYSQL_PASSWORD=snuggl3s
-      - FOO=foo
-    #command: ["/bin/bash", "-c", "/wait-for-it.sh db && (grails run-app || echo 'App failed to start') && tail -f /dev/null"]
-    command: ["/bin/bash", "-c", "(grails prod run-app || echo 'App failed to start') && tail -f /dev/null"]
-    # restart: on-failure:2
-
 
   db:
     image: mysql:latest
