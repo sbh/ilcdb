@@ -35,7 +35,7 @@ environments {
             driverClassName = "com.mysql.cj.jdbc.Driver"
             url = "jdbc:mysql://${System.getenv('MYSQL_HOST')}:3306/${System.getenv('MYSQL_DATABASE')}"
             username = System.getenv("MYSQL_USER")
-            password =  System.getenv("MYSQL_PASSWORD")
+            password =  System.getenv("MYSQL_USER_PASSWORD")
         }
     }
 }
