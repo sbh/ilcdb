@@ -1,6 +1,10 @@
+name: ilcdb
+
 services:
   webapp:
     build: .
+    container_name: ilcdb-webapp
+    image: ilcdb-webapp
     ports:
       - "8080:8080"
     depends_on:
@@ -14,7 +18,8 @@ services:
       - MYSQL_USER_PASSWORD=$MYSQL_USER_PASSWORD
 
   db:
-    image: mysql:latest
+    image: mysql:9
+    container_name: ilcdb-mysql
     ports:
       - "3306:3306"
     environment:
