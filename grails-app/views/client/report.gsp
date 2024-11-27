@@ -12,16 +12,16 @@
 <body>
 <script type="text/javascript">
 
-var reporting = 
-{    
+var reporting =
+{
     windowLoaded : function ()
     {
         reporting.resetRowVisibility();
-        reporting.setMunicipality("${munType}") 
+        reporting.setMunicipality("${munType}")
         reporting.resetIntakeRowVisibility(false)
         reporting.setEndDateVisibility("${intakeState}")
     },
-    
+
     resetRowVisibility: function( )
     {
         var selectTypes = document.getElementsByClassName("displaySelect")
@@ -53,14 +53,14 @@ var reporting =
                     display = '';
                     break
                 }
-            } 
-            toModify[i].style.display = display; 
+            }
+            toModify[i].style.display = display;
         }
     },
 
     resetRowHighlighting : function( )
     {
-       var clientRows = document.getElementsByClassName("clientRow"); 
+       var clientRows = document.getElementsByClassName("clientRow");
        var visibleItemNum = 0;
        var i = 0;
        for(i ; i < clientRows.length; i++)
@@ -70,7 +70,7 @@ var reporting =
                 if(visibleItemNum % 2 == 0)
                 {
                     clientRows[i].style.backgroundColor = "#fff";
-                } 
+                }
                 else
                 {
                     clientRows[i].style.backgroundColor = "#f7f7f7";
@@ -180,7 +180,7 @@ var reporting =
         var elemLabel = document.getElementById(elemLabelName)
         if (image.alt == "Expand")
         {
-            reporting.expand(image);  
+            reporting.expand(image);
             elem.style.display = ""
             elemLabel.innerHTML = "Status Attempted/Achieved"
         }
@@ -190,8 +190,8 @@ var reporting =
             elem.style.display = "none"
             elemLabel.innerHTML = "Advanced"
         }
-    } 
-}    
+    }
+}
 
 window.onload = reporting.windowLoaded
 
@@ -208,13 +208,14 @@ window.onload = reporting.windowLoaded
                 name="clientReport" id="clientReport">
                 <table style="width:auto">
                     <tbody>
-                    
+
                         <tr class="prop">
                             <td valign="top" for="intakeState"><label>Intake State</label> </td>
                             <td name="intakeState" valign="top">
                                 <g:radio id="intakeState" name="intakeState" value="any" checked="${intakeState == null || ''.equals(intakeState) || 'any'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Any<br>
                                 <g:radio id="intakeState" name="intakeState" value="opened" checked="${'opened'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Opened<br>
                                 <g:radio id="intakeState" name="intakeState" value="closed" checked="${'closed'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Closed<br>
+                                <g:radio id="intakeState" name="intakeState" value="ongoing" checked="${'ongoing'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Ongoing<br>
                             </td>
                         </tr>
 
@@ -260,14 +261,14 @@ window.onload = reporting.windowLoaded
 								<g:select id="homeCountry" name="homeCountry" from="${Country.list(sort:'name')}"
                                           optionKey="id" optionValue="name" noSelection="${['-1':'Any']}"
                                           value="${homeCountry}" />
-                                
+
                             </td>
                         </tr>
 
                         <tr class="prop" >
                             <td valign="top" for="statusAchieved"><label>Status</label></td>
                             <td valign="top">
-                            
+
                             <label></label>
                             <table style="width:auto">
                                 <tr class="prop">
@@ -365,7 +366,7 @@ window.onload = reporting.windowLoaded
                                     <td><g:link action="edit" id="${client.id}">${client.fileLocation}</g:link></td>
                                     <td><g:link action="edit" id="${client.id}">${client.intakes}</g:link></td>
                                 </tr>
-                                
+
                                 <tr class="${types.toString().replaceAll("[\\[\\],]", "")} intakeRow intakeRow-${i}">
                                     <td colspan="2" align="right">Intakes:</td>
                                     <td colspan="7">
@@ -406,4 +407,3 @@ window.onload = reporting.windowLoaded
     </div>
 </body>
 </html>
-

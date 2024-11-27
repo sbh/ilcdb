@@ -17,8 +17,10 @@
 CREATE USER 'ilcdb'@'localhost' IDENTIFIED BY 's******s';
 create database ilcdb;
 grant all on `ilcdb`.* to 'ilcdb'@'localhost' identified by 's******s';
-or maybe
+# or maybe
 grant all on `ilcdb`.* to 'ilcdb'@'localhost';
+# For docker:
+grant all on `ilcdb`.* to 'ilcdb'@'%';
 
 ### Schema changes
 # Modify the note table to use a text column:
