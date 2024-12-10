@@ -3,18 +3,18 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
         <title>Search</title>
-<script language="javascript"> 
+<script language="javascript">
 function toggleDatePickers()
 {
-   if (document.clientSearch.dateRestricted.checked == true) 
-    { 
+   if (document.clientSearch.dateRestricted.checked == true)
+    {
         document.clientSearch.serviceRecordStartDate_month.disabled=false;
         document.clientSearch.serviceRecordStartDate_year.disabled=false;
         document.clientSearch.serviceRecordEndDate_month.disabled=false;
         document.clientSearch.serviceRecordEndDate_year.disabled=false;
     }
     else
-    { 
+    {
         document.clientSearch.serviceRecordStartDate_month.disabled=true;
         document.clientSearch.serviceRecordStartDate_year.disabled=true;
         document.clientSearch.serviceRecordEndDate_month.disabled=true;
@@ -22,7 +22,7 @@ function toggleDatePickers()
    }
 }
 window.onload=toggleDatePickers;
-</script> 
+</script>
 
     </head>
     <body>
@@ -60,10 +60,10 @@ window.onload=toggleDatePickers;
                                    <g:checkBox name="dateRestricted" id="dateRestricted" value="${params?.dateRestricted}" onclick="toggleDatePickers()" />
                               </td>
                                 <td valign="top" id="startDatePicker" name="startDatePicker" visible="false">
-                                    Starting Date: <g:datePicker name="serviceRecordStartDate" id="serviceRecordStartDate" default="none" precision="month" value="${params?.serviceRecordStartDate}" years="${2005..2020}" noSelection="['':'']" />
+                                    Starting Date: <g:datePicker name="serviceRecordStartDate" id="serviceRecordStartDate" default="none" precision="month" value="${params?.serviceRecordStartDate}" years="${2005..2075}" noSelection="['':'']" />
                                 </td>
                                 <td valign="top" id="endDatePicker" name="endDatePicker">
-                                    Ending Date: <g:datePicker name="serviceRecordEndDate" id="serviceRecordEndDate" default="none" precision="month" value="${params?.serviceRecordEndDate}" years="${2005..2020}" noSelection="['':'']" />
+                                    Ending Date: <g:datePicker name="serviceRecordEndDate" id="serviceRecordEndDate" default="none" precision="month" value="${params?.serviceRecordEndDate}" years="${2005..2075}" noSelection="['':'']" />
                                 </td>
                            </tr>
 
@@ -73,10 +73,10 @@ window.onload=toggleDatePickers;
                                    <g:checkBox name="caseResolution" id="caseResolution" value="${params?.caseResolution}" onclick="toggleCaseDatePickers()" />
                                 </td>
                                 <td valign="top" id="caseStartDatePicker" name="caseStartDatePicker" visible="false">
-                                    Starting Date: <g:datePicker name="caseStartDate" id="caseStartDate" default="none" precision="month" value="${params?.startStartDate}" years="${2005..2020}" noSelection="['':'']" />
+                                    Starting Date: <g:datePicker name="caseStartDate" id="caseStartDate" default="none" precision="month" value="${params?.startStartDate}" years="${2005..2075}" noSelection="['':'']" />
                                 </td>
                                 <td valign="top" id="caseCompletionDatePicker" name="caseCompletionDatePicker">
-                                    Ending Date: <g:datePicker name="caseCompletionDate" id="caseCompletionDate" default="none" precision="month" value="${params?.completionDate}" years="${2005..2020}" noSelection="['':'']" />
+                                    Ending Date: <g:datePicker name="caseCompletionDate" id="caseCompletionDate" default="none" precision="month" value="${params?.completionDate}" years="${2005..2075}" noSelection="['':'']" />
                                 </td>
                             </tr>
 
@@ -143,4 +143,3 @@ window.onload=toggleDatePickers;
         </div>
     </body>
 </html>
-

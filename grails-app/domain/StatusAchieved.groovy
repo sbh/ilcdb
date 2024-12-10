@@ -8,6 +8,7 @@ class StatusAchieved
 
     enum Type
     {
+        Any("Any"),
         Citizenship("Citizenship"),
         LPR("LPR"),
         DACA("DACA"),
@@ -60,7 +61,7 @@ class StatusAchieved
 
         static list()
         {
-            [Citizenship, DACA, LPR, LPRCardRenewed, LPRConditionsRemoved, TPS, I90, EOIR, FOIA,
+            [Any, Citizenship, DACA, LPR, LPRCardRenewed, LPRConditionsRemoved, TPS, I90, EOIR, FOIA,
              I102, I129F, I130IR, I130nonIR, I131, I192, I360, I360VAWA, I360VAWAderivative, I539,
              I539VVisa, I601, I751, I765, I821, I824, I881, I912, I914, I914SuppA, I918, I918SuppA,
              I918SuppB, I929, N336, N400, N565, N600]

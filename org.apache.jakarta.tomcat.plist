@@ -18,9 +18,17 @@
                                         <key>CATALINA_HOME</key>
                                         <string>/opt/tomcat</string>
                                         <key>JAVA_HOME</key>
-					                    <string>/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home</string>
+					<string>/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home</string>
                                         <key>JAVA_OPTS</key>
                                         <string>-server -Xmx8192m -Djava.awt.headless=true</string>
+                                        <key>MYSQL_HOST</key>
+                                        <string>localhost</string>
+                                        <key>MYSQL_DATABASE</key>
+                                        <string>ilcdb</string>
+                                        <key>MYSQL_USER</key>
+                                        <string>ilcdb</string>
+                                        <key>MYSQL_USER_PASSWORD</key>
+                                        <string></string>
                                     </dict>
     <key>WorkingDirectory</key>     <string>/tmp</string>
   </dict>
