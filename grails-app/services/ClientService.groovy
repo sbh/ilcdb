@@ -4,171 +4,98 @@ import org.joda.time.Interval
 @Transactional
 class ClientService
 {
+    def statusFuncs =
+        [
+        "any": [{Client client, Interval interval -> Client.hasAttemptedAnyStatus(client, interval)},
+                {Client client, Interval interval -> Client.hasAchievedAnyStatus(client, interval)}],
+        "lpr": [{Client client, Interval interval -> Client.hasAttemptedLPR(client, interval)},
+                {Client client, Interval interval -> Client.hasAchievedLPR(client, interval)}],
+         "citizenship": [{Client client, Interval interval -> Client.hasAttemptedCitizenship(client, interval)},
+                         {Client client, Interval interval -> Client.hasAchievedCitizenship(client, interval)}],
+         "daca": [{Client client, Interval interval -> Client.hasAttemptedDACA(client, interval)},
+                  {Client client, Interval interval -> Client.hasAchievedDACA(client, interval)}],
+         "tps": [{Client client, Interval interval -> Client.hasAttemptedTPS(client, interval)},
+                 {Client client, Interval interval -> Client.hasAchievedTPS(client, interval)}],
+         "i-90": [{Client client, Interval interval -> Client.hasAttemptedI90(client, interval)},
+                  {Client client, Interval interval -> Client.hasAchievedI90(client, interval)}],
+         "eoir": [{Client client, Interval interval -> Client.hasAttemptedEOIR(client, interval)},
+                  {Client client, Interval interval -> Client.hasAchievedEOIR(client, interval)}],
+         "foia": [{Client client, Interval interval -> Client.hasAttemptedFOIA(client, interval)},
+                  {Client client, Interval interval -> Client.hasAchievedFOIA(client, interval)}],
+         "i-102": [{Client client, Interval interval -> Client.hasAttemptedI102(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI102(client, interval)}],
+         "i-129f": [{Client client, Interval interval -> Client.hasAttemptedI129F(client, interval)},
+                    {Client client, Interval interval -> Client.hasAchievedI129F(client, interval)}],
+         "i-130": [{Client client, Interval interval -> Client.hasAttemptedI130(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI130(client, interval)}],
+         "i-131": [{Client client, Interval interval -> Client.hasAttemptedI131(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI131(client, interval)}],
+         "1-192": [{Client client, Interval interval -> Client.hasAttemptedI192(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI192(client, interval)}],
+         "i-360": [{Client client, Interval interval -> Client.hasAttemptedI360(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI360(client, interval)}],
+         "i-539": [{Client client, Interval interval -> Client.hasAttemptedI539(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI539(client, interval)}],
+         "i-601": [{Client client, Interval interval -> Client.hasAttemptedI601(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI601(client, interval)}],
+         "i-751": [{Client client, Interval interval -> Client.hasAttemptedI751(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI751(client, interval)}],
+         "i-765": [{Client client, Interval interval -> Client.hasAttemptedI765(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI765(client, interval)}],
+         "i-821": [{Client client, Interval interval -> Client.hasAttemptedI821(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI821(client, interval)}],
+         "i-824": [{Client client, Interval interval -> Client.hasAttemptedI824(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI824(client, interval)}],
+         "i-881": [{Client client, Interval interval -> Client.hasAttemptedI881(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI881(client, interval)}],
+         "i-912": [{Client client, Interval interval -> Client.hasAttemptedI912(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI912(client, interval)}],
+         "i-914": [{Client client, Interval interval -> Client.hasAttemptedI914(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI914(client, interval)}],
+         "i-918": [{Client client, Interval interval -> Client.hasAttemptedI918(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI918(client, interval)}],
+         "i-929": [{Client client, Interval interval -> Client.hasAttemptedI929(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedI929(client, interval)}],
+         "n-336": [{Client client, Interval interval -> Client.hasAttemptedN336(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedN336(client, interval)}],
+         "n-400": [{Client client, Interval interval -> Client.hasAttemptedN400(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedN400(client, interval)}],
+         "n-565": [{Client client, Interval interval -> Client.hasAttemptedN565(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedN565(client, interval)}],
+         "n-600": [{Client client, Interval interval -> Client.hasAttemptedN600(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedN600(client, interval)}]]
+
     def filterStatus(Collection clients, String statusAchieved, String intakeState, Interval interval) {
         Set results = new HashSet()
 
-        if ("staff-advise" == statusAchieved) {
-            clients.each { client ->
-                if (client.hasStaffAdvise(intakeState, interval))
-                    results += client
-            }
-        }
+        if ("staff-advise" == statusAchieved)
+            results = clients.findAll {it.hasStaffAdvise(intakeState, interval)}
         else if ("staff-representation" == statusAchieved)
-            clients.each { client ->
-                if (client.hasStaffRepresentation(intakeState, interval))
-                    results += client
+            results = clients.findAll {it.hasStaffRepresentation(intakeState, interval)}
+        else if (statusFuncs.containsKey(statusAchieved)) {
+            def functionTuple = statusFuncs.get(statusAchieved)
+            def hasAttempted = functionTuple[0]
+            def hasAchieved = functionTuple[1]
+
+            switch(intakeState) {
+                case "opened":
+                    results = clients.findAll{ hasAttempted(it, interval) }
+                    break
+                case "closed":
+                    results = clients.findAll{ hasAchieved(it, interval) }
+                    break
+                case "ongoing":
+                    results = clients.findAll{ it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
+                    break
+                default:
+                    results = clients.findAll{ it.hasAttemptedAnyStatus(it, interval) || it.hasAchievedAnyStatus(it, interval) }
+                    break
             }
-        else if ("lpr" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedLPR(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedLPR(interval)}
-            else results = clients.findAll{it.hasAttemptedLPR(interval) || it.hasAchievedLPR(interval)}
-        }
-        else if ("citizenship" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedCitizenship(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedCitizenship(interval)}
-            else results = clients.findAll{it.hasAttemptedCitizenship(interval) || it.hasAchievedCitizenship(interval)}
-        }
-        else if ("daca" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedDACA(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedDACA(interval)}
-            else results = clients.findAll{it.hasAttemptedDACA(interval) || it.hasAchievedDACA(interval)}
-        }
-        else if ("tps" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedTPS(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedTPS(interval)}
-            else results = clients.findAll{it.hasAttemptedTPS(interval) || it.hasAchievedTPS(interval)}
-        }
-        else if ("i-90" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI90(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI90(interval)}
-            else results = clients.findAll{it.hasAttemptedI90(interval) || it.hasAchievedI90(interval)}
-        }
-        else if ("eoir" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedEOIR(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedEOIR(interval)}
-            else results = clients.findAll{it.hasAttemptedEOIR(interval) || it.hasAchievedEOIR(interval)}
-        }
-        else if ("foia" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedFOIA(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedFOIA(interval)}
-            else results = clients.findAll{it.hasAttemptedFOIA(interval) || it.hasAchievedFOIA(interval)}
-        }
-        else if ("i-102" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI102(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI102(interval)}
-            else results = clients.findAll{it.hasAttemptedI102(interval) || it.hasAchievedI102(interval)}
-        }
-        else if ("i-129f" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI129F(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI129F(interval)}
-            else results = clients.findAll{it.hasAttemptedI129F(interval) || it.hasAchievedI129F(interval)}
-        }
-        else if ("i-130" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI130(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI130(interval)}
-            else results = clients.findAll{it.hasAttemptedI130(interval) || it.hasAchievedI130(interval)}
-        }
-        else if ("i-131" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI131(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI131(interval)}
-            else results = clients.findAll{it.hasAttemptedI131(interval) || it.hasAchievedI131(interval)}
-        }
-        else if ("i-192" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI192(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI192(interval)}
-            else results = clients.findAll{it.hasAttemptedI192(interval) || it.hasAchievedI192(interval)}
-        }
-        else if ("i-360" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI360(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI360(interval)}
-            else results = clients.findAll{it.hasAttemptedI360(interval) || it.hasAchievedI360(interval)}
-        }
-        else if ("i-539" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI539(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI539(interval)}
-            else results = clients.findAll{it.hasAttemptedI539(interval) || it.hasAchievedI539(interval)}
-        }
-        else if ("i-601" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI601(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI601(interval)}
-            else results = clients.findAll{it.hasAttemptedI601(interval) || it.hasAchievedI601(interval)}
-        }
-        else if ("i-751" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI751(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI751(interval)}
-            else results = clients.findAll{it.hasAttemptedI751(interval) || it.hasAchievedI751(interval)}
-        }
-        else if ("i-765" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI765(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI765(interval)}
-            else results = clients.findAll{it.hasAttemptedI765(interval) || it.hasAchievedI765(interval)}
-        }
-        else if ("i-821" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI821(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI821(interval)}
-            else results = clients.findAll{it.hasAttemptedI821(interval) || it.hasAchievedI821(interval)}
-        }
-        else if ("i-824" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI824(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI824(interval)}
-            else results = clients.findAll{it.hasAttemptedI824(interval) || it.hasAchievedI824(interval)}
-        }
-        else if ("i-881" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI881(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI881(interval)}
-            else results = clients.findAll{it.hasAttemptedI881(interval) || it.hasAchievedI881(interval)}
-        }
-        else if ("i-912" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI912(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI912(interval)}
-            else results = clients.findAll{it.hasAttemptedI912(interval) || it.hasAchievedI912(interval)}
-        }
-        else if ("i-914" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI914(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI914(interval)}
-            else results = clients.findAll{it.hasAttemptedI914(interval) || it.hasAchievedI914(interval)}
-        }
-        else if ("i-918" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI918(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI918(interval)}
-            else results = clients.findAll{it.hasAttemptedI918(interval) || it.hasAchievedI918(interval)}
-        }
-        else if ("i-929" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedI929(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedI929(interval)}
-            else results = clients.findAll{it.hasAttemptedI929(interval) || it.hasAchievedI929(interval)}
-        }
-        else if ("n-336" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedN336(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedN336(interval)}
-            else results = clients.findAll{it.hasAttemptedN336(interval) || it.hasAchievedN336(interval)}
-        }
-        else if ("n-400" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedN400(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedN400(interval)}
-            else results = clients.findAll{it.hasAttemptedN400(interval) || it.hasAchievedN400(interval)}
-        }
-        else if ("n-565" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedN565(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedN565(interval)}
-            else results = clients.findAll{it.hasAttemptedN565(interval) || it.hasAchievedN565(interval)}
-        }
-        else if ("n-600" == statusAchieved) {
-            if ("opened" == intakeState) results = clients.findAll{it.hasAttemptedN600(interval)}
-            else if ("closed" == intakeState) results = clients.findAll{it.hasAchievedN600(interval)}
-            else results = clients.findAll{it.hasAttemptedN600(interval) || it.hasAchievedN600(interval)}
         }
         else if ("none" == statusAchieved)
-            clients.each { client ->
-                if (client.hasAttemptedNoStatus(interval))
-                    results += client
-            }
-        else if ("any" == statusAchieved) {
-            clients.each { client ->
-                if (client.hasAttemptedAnyStatus(interval))
-                    results += client
-            }
-        }
+            results = clients.findAll{it.hasAttemptedNoStatus(it, interval)}
+        else if ("any" == statusAchieved)
+            clients.findAll {it.hasAttemptedAnyStatus(it, interval)}
         else
             results = clients
 
