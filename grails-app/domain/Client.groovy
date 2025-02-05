@@ -246,16 +246,11 @@ class Client implements Comparable<Client>
     }
 
     static boolean hasAchievedStatus(Client client, StatusAchieved.Type statusType, Interval interval) {
-        client.cases.any{ clientCase ->
+        return client.cases.any{ clientCase ->
             clientCase.isStatusAchieved() &&
-                    (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType)) &&
-                (clientCase.completionDate == null || interval.contains(clientCase.completionDate.getTime()))
+                (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType)) &&
+                (clientCase.completionDate == null || interval.contains(clientCase.completionDate.getTime()));
         }
-        for (ClientCase clientCase : client.cases) {
-            if (clientCase.isStatusAchieved() && (clientCase.caseType.associatedStatus == String.valueOf(statusType) || clientCase.caseType.type == String.valueOf(statusType)))
-                return true
-        }
-        return false
     }
 
     public static boolean hasAchievedCitizenship(Client client, Interval interval) { hasAchievedStatus(client, StatusAchieved.Type.Citizenship, interval) }

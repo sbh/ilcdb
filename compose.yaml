@@ -4,7 +4,8 @@ services:
   webapp:
     build: .
     container_name: ilcdb-webapp
-    image: ilcdb-webapp
+#    image: sbherndon/ilcdb-webapp:latest
+    image: ilcdb-webapp:latest
     ports:
       - "8080:8080"
     depends_on:
@@ -31,8 +32,8 @@ services:
       - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
+      timeout: 10s
+      retries: 2
 
 volumes:
   mysql_data:  # This line defines the volume

@@ -285,7 +285,7 @@ window.onload = reporting.windowLoaded
                                 </tr>
                                 <tr class="prop">
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-129f" checked="${'i-129f'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-129F<br></td>
-                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-130*" checked="${'i-130*'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-130*<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-130" checked="${'i-130'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-130<br></td>
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-131" checked="${'i-131'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-131<br></td>
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-192" checked="${'i-192'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-192<br></td>
                                 </tr>
@@ -314,8 +314,8 @@ window.onload = reporting.windowLoaded
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-600" checked="${'n-600'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-600<br></td>
                                 </tr>
                                 <tr class="prop">
-                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="cp*" checked="${'cp*'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Consular Processing<br></td>
-                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="aos*" checked="${'aos*'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;AOS*<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="cp" checked="${'cp'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Consular Processing<br></td>
+                                    <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="aos" checked="${'aos'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;AOS<br></td>
                                 </tr>
                                 <tr class="prop">
                                     <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="any" checked="${'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Any<br></td>
@@ -328,9 +328,9 @@ window.onload = reporting.windowLoaded
                             </table>
                             </td>
                         </tr>
-
+<!--
                         <tr class="prop"><td></td><td>* Reports on multiple types of this status. e.g. I-130* will match on I-130 (IR) and I-130 (non-IR)</td></tr>
-
+-->
                         <tr>
                             <td></td><td valign="bottom"><span class="button"><g:actionSubmit class="save" value="Generate Report" action="report" /> </span></td>
                         </tr>
