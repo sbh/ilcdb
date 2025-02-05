@@ -88,7 +88,7 @@ class ClientService
                     results = clients.findAll{ it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
                     break
                 default:
-                    results = clients.findAll{ it.hasAttemptedAnyStatus(it, interval) || it.hasAchievedAnyStatus(it, interval) }
+                    results = clients.findAll{ hasAttempted(it, interval) || hasAchieved(it, interval) }
                     break
             }
         }
