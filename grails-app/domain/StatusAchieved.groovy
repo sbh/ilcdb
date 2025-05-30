@@ -45,7 +45,12 @@ class StatusAchieved
         N336("N-336"),
         N400("N-400"),
         N565("N-565"),
-        N600("N-600")
+        N600("N-600"),
+        AOS("AOS"),
+        AOS_OneStep("AOS one-step"),
+        AOS_T("AOS T"),
+        AOS_U("AOS U"),
+        AOS_VAWA("AOS VAWA")
 
         private final String value;
 
@@ -64,7 +69,7 @@ class StatusAchieved
             [Any, Citizenship, DACA, LPR, LPRCardRenewed, LPRConditionsRemoved, TPS, I90, EOIR, FOIA,
              I102, I129F, I130IR, I130nonIR, I131, I192, I360, I360VAWA, I360VAWAderivative, I539,
              I539VVisa, I601, I751, I765, I821, I824, I881, I912, I914, I914SuppA, I918, I918SuppA,
-             I918SuppB, I929, N336, N400, N565, N600]
+             I918SuppB, I929, N336, N400, N565, N600, AOS, AOS_OneStep, AOS_T, AOS_U, AOS_VAWA]
         }
 
         public static Type fromValue(String aStatusTypeValue)
