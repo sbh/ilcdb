@@ -6,8 +6,7 @@ class StatusAchieved
 {
     static belongsTo = [ client:Client ]
 
-    enum Type
-    {
+    enum Type {
         Any("Any"),
         Citizenship("Citizenship"),
         LPR("LPR"),
@@ -54,28 +53,23 @@ class StatusAchieved
 
         private final String value;
 
-        Type(String value)
-        {
+        Type(String value) {
             this.value = value;
         }
 
-        public String toString()
-        {
+        public String toString() {
             return value;
         }
 
-        static list()
-        {
+        static list() {
             [Any, Citizenship, DACA, LPR, LPRCardRenewed, LPRConditionsRemoved, TPS, I90, EOIR, FOIA,
              I102, I129F, I130IR, I130nonIR, I131, I192, I360, I360VAWA, I360VAWAderivative, I539,
              I539VVisa, I601, I751, I765, I821, I824, I881, I912, I914, I914SuppA, I918, I918SuppA,
              I918SuppB, I929, N336, N400, N565, N600, AOS, AOS_OneStep, AOS_T, AOS_U, AOS_VAWA]
         }
 
-        public static Type fromValue(String aStatusTypeValue)
-        {
-            for (Type statusType : EnumSet.allOf(Type.class))
-            {
+        public static Type fromValue(String aStatusTypeValue) {
+            for (Type statusType : EnumSet.allOf(Type.class)) {
                 if (aStatusTypeValue.equalsIgnoreCase(statusType.toString()))
                     return statusType;
             }
@@ -86,20 +80,18 @@ class StatusAchieved
     Type type
     Date date
 
-    static constraints =
-    {
+    static constraints = {
     }
 
     static transients = ["statusAchievedDateString"]
 
-    String getStatusAchievedDateString()
-    {
+    String getStatusAchievedDateString() {
         if (date instanceof Date)
             return (new SimpleDateFormat("yyyy-MM-dd").format(date));
         return "";
     }
-    public String toString()
-    {
+
+    public String toString() {
         return "${type}: ${getStatusAchievedDateString()}";
     }
 }
