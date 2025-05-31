@@ -63,7 +63,10 @@ class ClientService
          "n-565": [{Client client, Interval interval -> Client.hasAttemptedN565(client, interval)},
                    {Client client, Interval interval -> Client.hasAchievedN565(client, interval)}],
          "n-600": [{Client client, Interval interval -> Client.hasAttemptedN600(client, interval)},
-                   {Client client, Interval interval -> Client.hasAchievedN600(client, interval)}]]
+                   {Client client, Interval interval -> Client.hasAchievedN600(client, interval)}],
+        "aos":  [{Client client, Interval interval -> Client.hasAttemptedAOS(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedAOS(client, interval)}]
+    ]
 
     def filterStatus(Collection clients, String statusAchieved, String intakeState, Interval interval) {
         Set results = new HashSet()
@@ -88,7 +91,7 @@ class ClientService
                     results = clients.findAll{ it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
                     break
                 default:
-                    results = clients.findAll{ hasAttempted(it, interval) || hasAchieved(it, interval) }
+                    results = clients.findAll{ it.hasAttemptedAnyStatus(it, interval) || it.hasAchievedAnyStatus(it, interval) }
                     break
             }
         }
