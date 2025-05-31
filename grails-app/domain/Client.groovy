@@ -357,6 +357,18 @@ class Client implements Comparable<Client>
     public static boolean hasAchievedN600(Client client, Interval interval) { hasAchievedStatus(client, StatusAchieved.Type.N600, interval) }
     public static boolean hasAttemptedN600(Client client, Interval interval) { hasAttemptedStatus(client, StatusAchieved.Type.N600, interval) }
 
+    public static boolean hasAchievedAOS(Client client, Interval interval) { hasAchievedStatus(client, StatusAchieved.Type.AOS, interval) ||
+                                                                                                                     hasAchievedStatus(client, StatusAchieved.Type.AOS_OneStep, interval) ||
+                                                                                                                     hasAchievedStatus(client, StatusAchieved.Type.AOS_T, interval) ||
+                                                                                                                     hasAchievedStatus(client, StatusAchieved.Type.AOS_U, interval) ||
+                                                                                                                     hasAchievedStatus(client, StatusAchieved.Type.AOS_VAWA, interval)}
+    
+    public static boolean hasAttemptedAOS(Client client, Interval interval) { hasAttemptedStatus(client, StatusAchieved.Type.AOS, interval) ||
+                                                                                                                      hasAttemptedStatus(client, StatusAchieved.Type.AOS_OneStep, interval) ||
+                                                                                                                      hasAttemptedStatus(client, StatusAchieved.Type.AOS_T, interval) ||
+                                                                                                                      hasAttemptedStatus(client, StatusAchieved.Type.AOS_U, interval) ||
+                                                                                                                      hasAttemptedStatus(client, StatusAchieved.Type.AOS_VAWA, interval)}
+
     public static boolean hasAttemptedNoStatus(Client client, Interval interval) { return !hasAttemptedAnyStatus(client, interval) }
 
     public static boolean hasAchievedNoStatus(Client client, Interval interval) { return !hasAchievedAnyStatus(client, interval) }
