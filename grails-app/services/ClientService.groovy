@@ -65,7 +65,9 @@ class ClientService
          "n-600": [{Client client, Interval interval -> Client.hasAttemptedN600(client, interval)},
                    {Client client, Interval interval -> Client.hasAchievedN600(client, interval)}],
         "aos":  [{Client client, Interval interval -> Client.hasAttemptedAOS(client, interval)},
-                   {Client client, Interval interval -> Client.hasAchievedAOS(client, interval)}]
+                 {Client client, Interval interval -> Client.hasAchievedAOS(client, interval)}],
+        "cp":  [{Client client, Interval interval -> Client.hasAttemptedConsularProcessing(client, interval)},
+                   {Client client, Interval interval -> Client.hasAchievedConsularProcessing(client, interval)}]
     ]
 
     def filterStatus(Collection clients, String statusAchieved, String intakeState, Interval interval) {
