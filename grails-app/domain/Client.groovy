@@ -334,16 +334,30 @@ class Client implements Comparable<Client> {
     public static boolean hasAttemptedN600(Client client, Interval interval) { hasAttemptedStatus(client, StatusAchieved.Type.N600, interval) }
 
     public static boolean hasAchievedAOS(Client client, Interval interval) { hasAchievedStatus(client, StatusAchieved.Type.AOS, interval) ||
-                                                                                                                      hasAchievedStatus(client, StatusAchieved.Type.AOS_OneStep, interval) ||
-                                                                                                                      hasAchievedStatus(client, StatusAchieved.Type.AOS_T, interval) ||
-                                                                                                                      hasAchievedStatus(client, StatusAchieved.Type.AOS_U, interval) ||
-                                                                                                                      hasAchievedStatus(client, StatusAchieved.Type.AOS_VAWA, interval)}
+                                                                             hasAchievedStatus(client, StatusAchieved.Type.AOS_OneStep, interval) ||
+                                                                             hasAchievedStatus(client, StatusAchieved.Type.AOS_T, interval) ||
+                                                                             hasAchievedStatus(client, StatusAchieved.Type.AOS_U, interval) ||
+                                                                             hasAchievedStatus(client, StatusAchieved.Type.AOS_VAWA, interval)}
     
     public static boolean hasAttemptedAOS(Client client, Interval interval) { hasAttemptedStatus(client, StatusAchieved.Type.AOS, interval) ||
-                                                                                                                       hasAttemptedStatus(client, StatusAchieved.Type.AOS_OneStep, interval) ||
-                                                                                                                       hasAttemptedStatus(client, StatusAchieved.Type.AOS_T, interval) ||
-                                                                                                                       hasAttemptedStatus(client, StatusAchieved.Type.AOS_U, interval) ||
-                                                                                                                       hasAttemptedStatus(client, StatusAchieved.Type.AOS_VAWA, interval)}
+                                                                              hasAttemptedStatus(client, StatusAchieved.Type.AOS_OneStep, interval) ||
+                                                                              hasAttemptedStatus(client, StatusAchieved.Type.AOS_T, interval) ||
+                                                                              hasAttemptedStatus(client, StatusAchieved.Type.AOS_U, interval) ||
+                                                                              hasAttemptedStatus(client, StatusAchieved.Type.AOS_VAWA, interval)}
+
+    public static boolean hasAchievedConsularProcessing(Client client, Interval interval) { hasAchievedStatus(client, StatusAchieved.Type.CP, interval) ||
+                                                                                            hasAchievedStatus(client, StatusAchieved.Type.CP_T, interval) ||
+                                                                                            hasAchievedStatus(client, StatusAchieved.Type.CP_U, interval) ||
+                                                                                            hasAchievedStatus(client, StatusAchieved.Type.CP_Admin_Processing, interval) ||
+                                                                                            hasAchievedStatus(client, StatusAchieved.Type.CP_I601_Waiver, interval) ||
+                                                                                            hasAchievedStatus(client, StatusAchieved.Type.CP_I601A_Provisional_Waiver, interval)}
+    
+    public static boolean hasAttemptedConsularProcessing(Client client, Interval interval) { hasAttemptedStatus(client, StatusAchieved.Type.CP, interval) ||
+                                                                                             hasAttemptedStatus(client, StatusAchieved.Type.CP_T, interval) ||
+                                                                                             hasAttemptedStatus(client, StatusAchieved.Type.CP_U, interval) ||
+                                                                                             hasAttemptedStatus(client, StatusAchieved.Type.CP_Admin_Processing, interval) ||
+                                                                                             hasAttemptedStatus(client, StatusAchieved.Type.CP_I601_Waiver, interval) ||
+                                                                                             hasAttemptedStatus(client, StatusAchieved.Type.CP_I601A_Provisional_Waiver, interval)}
 
     public static boolean hasAttemptedNoStatus(Client client, Interval interval) { return !hasAttemptedAnyStatus(client, interval) }
 
