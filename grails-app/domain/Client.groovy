@@ -2,8 +2,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.Interval
 
-class Client implements Comparable<Client>
-{
+class Client implements Comparable<Client> {
     static final long YEAR_IN_MILLIS = 365L*24L*60L*60L*1000L;
     private static final DateTimeFormatter briefDateFormat = DateTimeFormat.forPattern("MMM-dd-yyyy");
 
@@ -20,16 +19,14 @@ class Client implements Comparable<Client>
     static hasMany = [notes:Note, cases:ClientCase, appointments:Appointment, sponsorRelations:ClientSponsorRelation,
                       serviceRecords:ServiceRecord, conflicts:Conflict]
 
-    static mapping =
-    {
+    static mapping = {
         cache true
         cases sort:"startDate"
     }
 
     static fetchMode = [client:"eager", notes:"eager", cases:"eager",serviceRecords:"eager", conflicts:"eager"]
 
-    static constraints =
-    {
+    static constraints = {
         firstVisit(nullable:true)
         householdIncomeLevel(nullable:true)
         numberInHousehold(nullable:true)
@@ -61,8 +58,7 @@ class Client implements Comparable<Client>
          notes               : notes.collect { it.toMap() }]
     }
 
-    String toString()
-    {
+    String toString() {
         String returnValue
         if(client != null)
             returnValue = client.toString()
@@ -71,40 +67,32 @@ class Client implements Comparable<Client>
         return returnValue
     }
 
-    String toDebugString()
-    {
+    String toDebugString() {
         return "client: $client, firstVisit: $firstVisit, householdIncomeLevel: $householdIncomeLevel, numberInHousehold: $numberInHousehold, address: $client.address";
     }
 
-    String getFirstVisitString()
-    {
+    String getFirstVisitString() {
         if (firstVisit instanceof Date)
             return (briefDateFormat.print(firstVisit.getTime()));
         return "";
     }
 
-    String getHomeCountry()
-    {
+    String getHomeCountry() {
         return client?.placeOfBirth?.country
     }
 
-    String getShortAddress()
-    {
+    String getShortAddress() {
         return client.getAddress().toShortString()
     }
 
-    String getEmailAddress()
-    {
+    String getEmailAddress() {
         return client.getEmailAddress()
     }
 
-    Collection<String> getFileLocationAsList()
-    {
+    Collection<String> getFileLocationAsList() {
         def locations = new TreeSet()
-        if (fileLocation == null)
-        {
-            for (intake in cases)
-            {
+        if (fileLocation == null) {
+            for (intake in cases) {
                 if (intake.fileLocation != null && intake.fileLocation != "")
                     locations.add(intake.fileLocation)
             }
@@ -114,10 +102,8 @@ class Client implements Comparable<Client>
         return locations
     }
 
-    String getFileLocation()
-    {
-        if (fileLocation == null)
-        {
+    String getFileLocation() {
+        if (fileLocation == null) {
             def locations = getFileLocationAsList()
             fileLocation = ""
             for (location in locations)
@@ -130,8 +116,7 @@ class Client implements Comparable<Client>
         return fileLocation
     }
 
-    public boolean equals(Object other)
-    {
+    public boolean equals(Object other) {
         return id == ((Client)other).id
     }
 
@@ -151,18 +136,15 @@ class Client implements Comparable<Client>
         String attorneys = ""
         List<ClientCase> openList = new ArrayList<ClientCase>();
         List<ClientCase> closedList = new ArrayList<ClientCase>()
-        for (ClientCase clientCase : cases)
-        {
+        for (ClientCase clientCase : cases) {
             if (clientCase.isOpen())
                 openList.add(clientCase)
             else
                 closedList.add(clientCase)
         }
 
-        if (openList.size() > 0)
-        {
-            for (ClientCase clientCase : openList)
-            {
+        if (openList.size() > 0) {
+            for (ClientCase clientCase : openList) {
                 if (clientCase.attorney == null || "-Choose-".equals(clientCase.attorney))
                     attorneys += "? (open)"+", "
                 else
@@ -171,11 +153,9 @@ class Client implements Comparable<Client>
         }
         else
         {
-            if (closedList.size() > 0)
-            {
+            if (closedList.size() > 0) {
                 ClientCase newestCase
-                for (ClientCase clientCase : closedList)
-                {
+                for (ClientCase clientCase : closedList) {
                     if (newestCase == null || clientCase.completionDate > newestCase.completionDate)
                         newestCase = clientCase
                 }
@@ -187,10 +167,8 @@ class Client implements Comparable<Client>
         return attorneys.replaceFirst(", \$", "")
     }
 
-    boolean isValidCases()
-    {
-        for (ClientCase clientCase : cases)
-        {
+    boolean isValidCases() {
+        for (ClientCase clientCase : cases) {
             if (!clientCase.isValid())
                 return false;
         }
@@ -198,8 +176,7 @@ class Client implements Comparable<Client>
     }
 
     // Called from client/edit.gsp
-    List<String> getStatiAchieved()
-    {
+    List<String> getStatiAchieved() {
         List<String> achievedList = new ArrayList();
 
         cases.each{ clientCase ->
@@ -210,8 +187,7 @@ class Client implements Comparable<Client>
         return achievedList
     }
 
-    int compareTo(Client other)
-    {
+    int compareTo(Client other) {
         return client.compareTo(other.client)
     }
 
@@ -247,7 +223,7 @@ class Client implements Comparable<Client>
 
     static boolean hasAchievedStatus(Client client, StatusAchieved.Type statusType, Interval interval) {
         return client.cases.any{ clientCase ->
-            clientCase.isStatusAchieved() &&
+            (clientCase.isStatusAchieved() || clientCase.isSuccessful()) &&
                 (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType)) &&
                 (clientCase.completionDate == null || interval.contains(clientCase.completionDate.getTime()));
         }
@@ -356,6 +332,18 @@ class Client implements Comparable<Client>
 
     public static boolean hasAchievedN600(Client client, Interval interval) { hasAchievedStatus(client, StatusAchieved.Type.N600, interval) }
     public static boolean hasAttemptedN600(Client client, Interval interval) { hasAttemptedStatus(client, StatusAchieved.Type.N600, interval) }
+
+    public static boolean hasAchievedAOS(Client client, Interval interval) { hasAchievedStatus(client, StatusAchieved.Type.AOS, interval) ||
+                                                                                                                      hasAchievedStatus(client, StatusAchieved.Type.AOS_OneStep, interval) ||
+                                                                                                                      hasAchievedStatus(client, StatusAchieved.Type.AOS_T, interval) ||
+                                                                                                                      hasAchievedStatus(client, StatusAchieved.Type.AOS_U, interval) ||
+                                                                                                                      hasAchievedStatus(client, StatusAchieved.Type.AOS_VAWA, interval)}
+    
+    public static boolean hasAttemptedAOS(Client client, Interval interval) { hasAttemptedStatus(client, StatusAchieved.Type.AOS, interval) ||
+                                                                                                                       hasAttemptedStatus(client, StatusAchieved.Type.AOS_OneStep, interval) ||
+                                                                                                                       hasAttemptedStatus(client, StatusAchieved.Type.AOS_T, interval) ||
+                                                                                                                       hasAttemptedStatus(client, StatusAchieved.Type.AOS_U, interval) ||
+                                                                                                                       hasAttemptedStatus(client, StatusAchieved.Type.AOS_VAWA, interval)}
 
     public static boolean hasAttemptedNoStatus(Client client, Interval interval) { return !hasAttemptedAnyStatus(client, interval) }
 

@@ -4,8 +4,8 @@ services:
   webapp:
     build: .
     container_name: ilcdb-webapp
-#    image: sbherndon/ilcdb-webapp:latest
-    image: ilcdb-webapp:latest
+    image: sbherndon/ilcdb-webapp:latest
+#    image: ilcdb-webapp:latest
     ports:
       - "8080:8080"
     depends_on:
