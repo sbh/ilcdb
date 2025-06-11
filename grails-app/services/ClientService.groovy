@@ -83,6 +83,11 @@ class ClientService
             def hasAchieved = functionTuple[1]
 
             switch(intakeState) {
+                case "any":
+                    results = clients.findAll{ hasAttempted(it, interval) ||
+                                               hasAchieved(it, interval) ||
+                                               it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
+                    break;
                 case "opened":
                     results = clients.findAll{ hasAttempted(it, interval) }
                     break
