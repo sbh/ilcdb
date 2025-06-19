@@ -437,7 +437,7 @@ class ClientController {
 
             println("${unfilteredClients.size()} clients found in requested time interval.")
 
-            def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, new Interval(params.startDate.getTime(), params.endDate.getTime()))
+            def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, params.intakeType, new Interval(params.startDate.getTime(), params.endDate.getTime()))
             def sortedClients = new ArrayList(clients)
             Collections.sort(sortedClients, new ClientComparator());
 
@@ -448,6 +448,7 @@ class ClientController {
             returnValue["attorney"] = params.attorney
             returnValue["displayIntakesCheckBox"] = params.displayIntakesCheckBox == "on" || params.displayIntakesCheckBox == "true"? "true" : "false"
             returnValue["intakeState"] = params.intakeState
+            returnValue["intakeType"] = params.intakeType
             returnValue["statusAchieved"] = params.statusAchieved
             returnValue["homeCountry"] = params.homeCountry
 

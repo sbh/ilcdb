@@ -70,44 +70,60 @@ class ClientService
                    {Client client, Interval interval -> Client.hasAchievedConsularProcessing(client, interval)}]
     ]
 
-    def filterStatus(Collection clients, String statusAchieved, String intakeState, Interval interval) {
+    def filterStatus(Collection clients, String statusAchieved, String intakeState, String intakeType, Interval interval) {
         Set results = new HashSet()
 
-        if ("staff-advise" == statusAchieved)
-            results = clients.findAll {it.hasStaffAdvise(intakeState, interval)}
-        else if ("staff-representation" == statusAchieved)
-            results = clients.findAll {it.hasStaffRepresentation(intakeState, interval)}
-        else if (statusFuncs.containsKey(statusAchieved)) {
-            def functionTuple = statusFuncs.get(statusAchieved)
-            def hasAttempted = functionTuple[0]
-            def hasAchieved = functionTuple[1]
-
-            switch(intakeState) {
-                case "any":
-                    results = clients.findAll{ hasAttempted(it, interval) ||
-                                               hasAchieved(it, interval) ||
-                                               it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
-                    break;
-                case "opened":
-                    results = clients.findAll{ hasAttempted(it, interval) }
-                    break
-                case "closed":
-                    results = clients.findAll{ hasAchieved(it, interval) }
-                    break
-                case "ongoing":
-                    results = clients.findAll{ it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
-                    break
-                default:
-                    results = clients.findAll{ it.hasAttemptedAnyStatus(it, interval) || it.hasAchievedAnyStatus(it, interval) }
-                    break
-            }
-        }
-        else if ("none" == statusAchieved)
-            results = clients.findAll{it.hasAttemptedNoStatus(it, interval)}
-        else if ("any" == statusAchieved)
-            clients.findAll {it.hasAttemptedAnyStatus(it, interval)}
-        else
+        if ("any".equalsIgnoreCase(intakeType)) {
+            println("intakeType: any")
             results = clients
+        }
+        else if (ClientCase.STAFF_ADVISE.equalsIgnoreCase(intakeType)) {
+	    println("intakeType: ${ClientCase.STAFF_ADVISE}")
+            results = clients.findAll {it.hasStaffAdvise(intakeState, interval)}
+	}
+        else if (ClientCase.STAFF_REPRESENTATION.equalsIgnoreCase(intakeType)) {
+	    println("intakeType: ${ClientCase.STAFF_REPRESENTATION}")
+            if ("none" == statusAchieved)
+                results = clients.findAll{it.hasAttemptedNoStatus(it, interval)}
+            else if ("any" == statusAchieved)
+                clients.findAll {it.hasAttemptedAnyStatus(it, interval)}
+            else if (statusFuncs.containsKey(statusAchieved)) {
+                def functionTuple = statusFuncs.get(statusAchieved)
+                def hasAttempted = functionTuple[0]
+                def hasAchieved = functionTuple[1]
+
+                switch(intakeState) {
+                    case "any":
+//                        results = clients.findAll {it.hasStaffRepresentation(intakeState, interval)} // Don't know what to do with this one.
+
+                        results = clients.findAll{ hasAttempted(it, interval) ||
+                                                   hasAchieved(it, interval) ||
+                                                   it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
+                        break;
+                    case "opened":
+                        results = clients.findAll{ hasAttempted(it, interval) }
+                        break
+                    case "closed":
+                        results = clients.findAll{ hasAchieved(it, interval) }
+                        break
+                    case "ongoing":
+                        results = clients.findAll{ it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
+                        break
+                    default: // Not sure what this case is
+		        println("Returning the results of 'clients.findAll{ it.hasAttemptedAnyStatus(it, interval) || it.hasAchievedAnyStatus(it, interval) }' in the default case - not sure how we got here.")
+                        results = clients.findAll{ it.hasAttemptedAnyStatus(it, interval) || it.hasAchievedAnyStatus(it, interval) }
+                        break
+                }
+            }
+            else {
+	        println("Looking for all ${ClientCase.STAFF_REPRESENTATION} for some reason.")
+                results = clients.findAll {it.hasStaffRepresentation(intakeState, interval)}
+            }
+	}
+	else {
+	    println("Bogus intakeType: ${intakeType}")
+	    results = clients // Should never happen
+        }
 
         return results
     }
