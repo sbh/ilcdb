@@ -414,8 +414,6 @@ class ClientController {
 
     //@Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
     def report() {
-        //println("params: ${params}")
-
         //println("**** report params: "+params)
         def returnValue = [ : ];
 
@@ -436,10 +434,14 @@ class ClientController {
             def unfilteredClients = getClients(qry, params)
 
             println("${unfilteredClients.size()} clients found in requested time interval.")
+            println("******* params: " + params)
 
-            def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, params.intakeType, new Interval(params.startDate.getTime(), params.endDate.getTime()))
+            def interval = new Interval(params.startDate.getTime(), params.endDate.getTime())
+            def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, params.intakeType, interval)
             def sortedClients = new ArrayList(clients)
             Collections.sort(sortedClients, new ClientComparator());
+
+            def intakeTypeCounts = clientService.intakeTypeCounts(unfilteredClients, interval)
 
             returnValue["startDate"] = params.startDate
             returnValue["endDate"] = params.endDate
@@ -449,11 +451,13 @@ class ClientController {
             returnValue["displayIntakesCheckBox"] = params.displayIntakesCheckBox == "on" || params.displayIntakesCheckBox == "true"? "true" : "false"
             returnValue["intakeState"] = params.intakeState
             returnValue["intakeType"] = params.intakeType
-            returnValue["statusAchieved"] = params.statusAchieved
+            returnValue["statusAchieved"] = (params.statusAchieved == null || params.statusAchieved.trim().isEmpty()) ? "any" : params.statusAchieved
             returnValue["homeCountry"] = params.homeCountry
 
             returnValue["report"] = true;
             returnValue["Clients"] = sortedClients;
+            returnValue["saIntakesCount"] = intakeTypeCounts[0]
+            returnValue["srIntakesCount"] = intakeTypeCounts[1]
         }
 
         //println("**** report returnValue: " + returnValue)

@@ -4,8 +4,7 @@ import org.joda.time.Interval
 @Transactional
 class ClientService
 {
-    def statusFuncs =
-        [
+    public static Map statusFuncs = [
         "any": [{Client client, Interval interval -> Client.hasAttemptedAnyStatus(client, interval)},
                 {Client client, Interval interval -> Client.hasAchievedAnyStatus(client, interval)}],
         "lpr": [{Client client, Interval interval -> Client.hasAttemptedLPR(client, interval)},
@@ -72,59 +71,61 @@ class ClientService
 
     def filterStatus(Collection clients, String statusAchieved, String intakeState, String intakeType, Interval interval) {
         Set results = new HashSet()
+        switch (intakeType.toLowerCase()) {
+            case "any":
+                results = clients
+                break;
+            case ClientCase.STAFF_ADVISE.toLowerCase():
+                results = clients.findAll {it.hasStaffAdvise(intakeState, interval)}
+                break;
+            case ClientCase.STAFF_REPRESENTATION.toLowerCase():
+                if ("any" == statusAchieved)
+                    results = clients.findAll {it.hasStaffRepresentation(intakeState, interval)}
+                else if (statusFuncs.containsKey(statusAchieved)) {
+                    def functionTuple = statusFuncs.get(statusAchieved)
+                    def hasAttempted = functionTuple[0]
+                    def hasAchieved = functionTuple[1]
 
-        if ("any".equalsIgnoreCase(intakeType)) {
-            println("intakeType: any")
-            results = clients
-        }
-        else if (ClientCase.STAFF_ADVISE.equalsIgnoreCase(intakeType)) {
-	    println("intakeType: ${ClientCase.STAFF_ADVISE}")
-            results = clients.findAll {it.hasStaffAdvise(intakeState, interval)}
-	}
-        else if (ClientCase.STAFF_REPRESENTATION.equalsIgnoreCase(intakeType)) {
-	    println("intakeType: ${ClientCase.STAFF_REPRESENTATION}")
-            if ("none" == statusAchieved)
-                results = clients.findAll{it.hasAttemptedNoStatus(it, interval)}
-            else if ("any" == statusAchieved)
-                clients.findAll {it.hasAttemptedAnyStatus(it, interval)}
-            else if (statusFuncs.containsKey(statusAchieved)) {
-                def functionTuple = statusFuncs.get(statusAchieved)
-                def hasAttempted = functionTuple[0]
-                def hasAchieved = functionTuple[1]
-
-                switch(intakeState) {
-                    case "any":
-//                        results = clients.findAll {it.hasStaffRepresentation(intakeState, interval)} // Don't know what to do with this one.
-
-                        results = clients.findAll{ hasAttempted(it, interval) ||
-                                                   hasAchieved(it, interval) ||
-                                                   it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
-                        break;
-                    case "opened":
-                        results = clients.findAll{ hasAttempted(it, interval) }
-                        break
-                    case "closed":
-                        results = clients.findAll{ hasAchieved(it, interval) }
-                        break
-                    case "ongoing":
-                        results = clients.findAll{ it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
-                        break
-                    default: // Not sure what this case is
-		        println("Returning the results of 'clients.findAll{ it.hasAttemptedAnyStatus(it, interval) || it.hasAchievedAnyStatus(it, interval) }' in the default case - not sure how we got here.")
-                        results = clients.findAll{ it.hasAttemptedAnyStatus(it, interval) || it.hasAchievedAnyStatus(it, interval) }
-                        break
+                    switch(intakeState.toLowerCase()) {
+                        case "any":
+                            results = clients.findAll{ hasAttempted(it, interval) ||
+                                                       hasAchieved(it, interval) ||
+                                                       it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
+                            break;
+                        case "opened":
+                            results = clients.findAll{ hasAttempted(it, interval) }
+                            break
+                        case "closed":
+                            results = clients.findAll{ hasAchieved(it, interval) }
+                            break
+                        case "ongoing":
+                            results = clients.findAll{ it.hasOngoingStaffRepresentation(it, StatusAchieved.Type.fromValue(statusAchieved), interval) }
+                            break
+                        default: // Not sure what this case is
+                            results = clients.findAll{ it.hasAttemptedAnyStatus(it, interval) || it.hasAchievedAnyStatus(it, interval) }
+                            break
+                    }
+                    break;
                 }
-            }
-            else {
-	        println("Looking for all ${ClientCase.STAFF_REPRESENTATION} for some reason.")
+                else {
+                    println("SHOULD NOT BE HERE! statusAchieved: " + statusAchieved + ", intakeState: " + intakeState)
+                    results = clients
+                }
+                break;
+            default:
+                println("Looking for all ${ClientCase.STAFF_REPRESENTATION} for some reason.")
                 results = clients.findAll {it.hasStaffRepresentation(intakeState, interval)}
-            }
-	}
-	else {
-	    println("Bogus intakeType: ${intakeType}")
-	    results = clients // Should never happen
+                break;
         }
 
         return results
+    }
+
+    def intakeTypeCounts(Collection clients, Interval interval) {
+        println("*** Counting intake types for "+ clients.size() + " clients.")
+        return clients.inject([0, 0]) { acc, aClient ->
+            def counts = aClient.intakeTypeCounts(interval)
+            [acc[0] + counts[0], acc[1] + counts[1]]
+        }
     }
 }

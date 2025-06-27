@@ -19,7 +19,7 @@ var reporting =
         reporting.setMunicipality("${munType}")
         reporting.resetIntakeRowVisibility(false)
         reporting.setEndDateVisibility("${intakeState}")
-	reporting.showOrHideIntakeStatus("intakeStatusRow", "${intakeType}")
+        reporting.showOrHideIntakeStatus("intakeStatusRow", "${intakeType}")
     },
 
     resetRowVisibility: function( ) {
@@ -150,13 +150,13 @@ var reporting =
         }
     },
     showOrHideIntakeStatus : function(elementName, value) {
-	var intakeStatusElement = document.getElementById(elementName);
-	if (value == "Staff Representation") {
+        var intakeStatusElement = document.getElementById(elementName);
+        if (value == "Staff Representation") {
             intakeStatusElement.style.display = "block";
         }
-	else {
+        else {
             intakeStatusElement.style.display = "none";
-	}
+        }
     }
 }
 
@@ -226,7 +226,7 @@ window.onload = reporting.windowLoaded
                         <tr class="prop">
                             <td valign="top"><label for="homeCountry">Home Country</label></td>
                             <td name="homeCountry" valign="top">
-			      <g:select id="homeCountry" name="homeCountry" from="${Country.list(sort:'name')}"
+                              <g:select id="homeCountry" name="homeCountry" from="${Country.list(sort:'name')}"
                                         optionKey="id" optionValue="name" noSelection="${['-1':'Any']}"
                                         value="${homeCountry}" />
 
@@ -237,7 +237,7 @@ window.onload = reporting.windowLoaded
                             <td valign="top"><label for="intakeType">Intake Type</label></td>
                             <td name="intakeType" valign="top">
                               <g:select id="intakeType" name="intakeType" from="${intakeTypes}" value="${intakeType}"
-					onChange="reporting.showOrHideIntakeStatus('intakeStatusRow', this.value)" />
+                                        onChange="reporting.showOrHideIntakeStatus('intakeStatusRow', this.value)" />
                             </td>
                         </tr>
 
@@ -245,6 +245,9 @@ window.onload = reporting.windowLoaded
                           <td valign="top"><label for="statusAchieved">Status</label></td>
                           <td valign="top" colspan="2">
                             <table style="display:grid">
+                              <tr class="prop">
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="any" checked="${'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Any<br></td>
+                              </tr>
                               <tr class="prop">
                                 <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="lpr" checked="${'lpr'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;LPR<br></td>
                                 <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="citizenship" checked="${'citizenship'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Citizenship<br></td>
@@ -269,35 +272,31 @@ window.onload = reporting.windowLoaded
                                 <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-601" checked="${'i-601'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-601<br></td>
                                 <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-751" checked="${'i-751'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-751<br></td>
                                 </tr>
-                                <tr class="prop">
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-765" checked="${'i-765'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-765<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-821" checked="${'i-821'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-821<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-824" checked="${'i-824'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-824<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-881" checked="${'i-881'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-881<br></td>
-                                </tr>
-                                <tr class="prop">
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-912" checked="${'i-912'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-912<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-914" checked="${'i-914'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-914<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-918" checked="${'i-918'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-918<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-929" checked="${'i-929'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-929<br></td>
-                                </tr>
-                                <tr class="prop">
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-336" checked="${'n-336'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-336<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-400" checked="${'n-400'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-400<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-565" checked="${'n-565'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-565<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-600" checked="${'n-600'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-600<br></td>
-                                </tr>
-                                <tr class="prop">
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="cp" checked="${'cp'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Consular Processing<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="aos" checked="${'aos'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;AOS<br></td>
-                                </tr>
-                                <tr class="prop">
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="any" checked="${'any'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Any<br></td>
-                                  <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="none" checked="${'none'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;None<br></td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
+                              <tr class="prop">
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-765" checked="${'i-765'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-765<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-821" checked="${'i-821'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-821<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-824" checked="${'i-824'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-824<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-881" checked="${'i-881'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-881<br></td>
+                              </tr>
+                              <tr class="prop">
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-912" checked="${'i-912'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-912<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-914" checked="${'i-914'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-914<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-918" checked="${'i-918'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-918<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="i-929" checked="${'i-929'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;I-929<br></td>
+                              </tr>
+                              <tr class="prop">
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-336" checked="${'n-336'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-336<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-400" checked="${'n-400'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-400<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-565" checked="${'n-565'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-565<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="n-600" checked="${'n-600'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;N-600<br></td>
+                              </tr>
+                              <tr class="prop">
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="cp" checked="${'cp'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;Consular Processing<br></td>
+                                <td valign="top"><g:radio id="statusAchieved" name="statusAchieved" value="aos" checked="${'aos'.equals(statusAchieved) ? 'true' : ''}" ></g:radio>&nbsp;AOS<br></td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
                         <tr>
                             <td></td><td valign="bottom"><span class="button"><g:actionSubmit class="save" value="Generate Report" action="report" /> </span></td>
                         </tr>
@@ -307,10 +306,10 @@ window.onload = reporting.windowLoaded
             </g:form>
             <br>
             <g:if test="${report}">
-                <h3>Report Results: (${Clients.size()} clients)</h3>
+                <h3>Report Results: (${Clients.size()} clients, ${saIntakesCount} Staff Advise Intakes, ${srIntakesCount} Staff Representation Intakes)</h3>
                 <br/>
                 <div class="list">
-                    <table style="width:100%; display:grid">
+                    <table style="width:100%">
                         <thead>
                            <th><g:img dir="images" file="expand.gif" alt="Expand" onclick="reporting.setExpandCollapseAllIntakes(this)" />&nbsp;Client</th>
                            <th>Phone Number</th>

@@ -191,8 +191,24 @@ class Client implements Comparable<Client> {
         return client.compareTo(other.client)
     }
 
+    // Returns a 2 integer array with the first value the number of Staff Advises in the interval and
+    // the second value the number of Staff Representations in the interval
+    def intakeTypeCounts(interval) {
+        return cases.inject([0, 0]) { acc, aCase  ->
+            println("client id: " + aCase.client.id + ", intake type: " + aCase.intakeType + "startDate: " + aCase.startDate + ", completionDate: " + aCase.completionDate)
+            if (interval.contains(aCase.startDate.getTime()) || aCase.completionDate == null || interval.contains(aCase.completionDate.getTime())) {
+                if (aCase.isStaffAdvise())
+                    [acc[0] + 1, acc[1]]
+                else
+                    [acc[0], acc[1] + 1]
+            }
+            else
+                acc
+        }
+    }
+
     boolean hasStaffAdvise(String intakeState, Interval interval) {
-        cases.any{ it.isStaffAdvise() && (interval.contains(it.startDate.getTime()) || interval.contains(it.endDate.getTime())) }
+        cases.any{ it.isStaffAdvise() && (interval.contains(it.startDate.getTime()) || interval.contains(it.completionDate.getTime())) }
     }
 
     boolean hasStaffRepresentation(String intakeState, Interval interval) {
@@ -364,12 +380,7 @@ class Client implements Comparable<Client> {
     public static boolean hasAchievedNoStatus(Client client, Interval interval) { return !hasAchievedAnyStatus(client, interval) }
 
     public static boolean hasAttemptedAnyStatus(Client client, Interval interval) {
-        return hasAttemptedCitizenship(client, interval) ||
-            hasAttemptedDACA(client, interval) ||
-            hasAttemptedLPR(client, interval) ||
-            hasAttemptedLPRConditionsRemoved(client, interval) ||
-            hasAttemptedLPRCardRenewed(client, interval) ||
-            hasAttemptedTPS(client, interval)
+        return client.hasStaffRepresentation("any", interval)
     }
 
     public static boolean hasAchievedAnyStatus(Client client, Interval interval) {
