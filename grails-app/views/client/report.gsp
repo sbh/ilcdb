@@ -19,7 +19,7 @@ var reporting =
         reporting.setMunicipality("${munType}")
         reporting.resetIntakeRowVisibility(false)
         reporting.setEndDateVisibility("${intakeState}")
-        reporting.showOrHideIntakeStatus("intakeStatusRow", "${intakeType}")
+        reporting.enableOrDisableIntakeStatus("intakeStatusRow", "${intakeType}")
     },
 
     resetRowVisibility: function( ) {
@@ -96,7 +96,7 @@ var reporting =
 
     setEndDateVisibility : function(value) {
         var endDateRow = document.getElementById("endDateRow")
-        if ("opened" == value) {
+        if ("opened-why" == value) { // 250628 - not sure why the end date wouldn't matter in the opened intake state case
             endDateRow.style.display = "none"
             var endDate_day = document.getElementById("endDate_day")
             var endDate_month = document.getElementById("endDate_month")
@@ -149,13 +149,17 @@ var reporting =
             intakeRow.style.display = "none"
         }
     },
-    showOrHideIntakeStatus : function(elementName, value) {
-        var intakeStatusElement = document.getElementById(elementName);
+   enableOrDisableIntakeStatus : function(elementName, value) {
+	var radios = document.getElementsByName("statusAchieved")
         if (value == "Staff Representation") {
-            intakeStatusElement.style.display = "block";
+	    for (var i=0, iLen=radios.length; i<iLen; i++) {
+		radios[i].disabled = false;
+	    }
         }
         else {
-            intakeStatusElement.style.display = "none";
+	    for (var i=0, iLen=radios.length; i<iLen; i++) {
+		radios[i].disabled = true;
+	    }
         }
     }
 }
@@ -183,7 +187,7 @@ window.onload = reporting.windowLoaded
                                 <g:radio id="intakeState" name="intakeState" value="any" checked="${intakeState == null || ''.equals(intakeState) || 'any'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Any<br>
                                 <g:radio id="intakeState" name="intakeState" value="opened" checked="${'opened'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Opened<br>
                                 <g:radio id="intakeState" name="intakeState" value="closed" checked="${'closed'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Closed<br>
-                                <g:radio id="intakeState" name="intakeState" value="ongoing" checked="${'ongoing'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Ongoing (Start Date doesn't matter.)<br>
+                                <g:radio id="intakeState" name="intakeState" value="ongoing" checked="${'ongoing'.equals(intakeState) ? 'true' : ''}" onclick="reporting.setEndDateVisibility(this.value)" ></g:radio>&nbsp;Ongoing<br>
                             </td>
                         </tr>
 
@@ -237,7 +241,7 @@ window.onload = reporting.windowLoaded
                             <td valign="top"><label for="intakeType">Intake Type</label></td>
                             <td name="intakeType" valign="top">
                               <g:select id="intakeType" name="intakeType" from="${intakeTypes}" value="${intakeType}"
-                                        onChange="reporting.showOrHideIntakeStatus('intakeStatusRow', this.value)" />
+                                        onChange="reporting.enableOrDisableIntakeStatus('intakeStatusRow', this.value)" />
                             </td>
                         </tr>
 

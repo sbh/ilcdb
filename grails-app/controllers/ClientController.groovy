@@ -421,15 +421,7 @@ class ClientController {
             // adjust the endDate to be the end of the day.
             params.endDate = new Date(params.endDate.getTime() + 1000L*24L*60L*60L - 1L)
 
-            String qry = null
-            if (params.intakeState == "opened") {
-                qry = CLIENTS_QUERY + " where " + OPENED_INTAKES_QUERY
-            } else if (params.intakeState == "closed") {
-                qry = CLIENTS_QUERY + " where " + COMPLETED_INTAKES_QUERY
-            } else {
-                qry = CLIENTS_QUERY + " where (" + OPENED_INTAKES_QUERY + " or " +
-                        "( " + "intake.startDate <= :startDate and " + STILL_OPEN_INTAKES_QUERY + " )" + " or " + COMPLETED_INTAKES_QUERY + ")"
-            }
+            String qry = CLIENTS_QUERY + "WHERE ( " + COMBINED_INTAKES_QUERY + " )"
 
             def unfilteredClients = getClients(qry, params)
 
@@ -473,9 +465,10 @@ class ClientController {
                inner join fetch person.placeOfBirth as placeOfBirth
                inner join fetch client.cases as intake
         """
-    private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate and intake.completionDate <= :endDate ) "
-    private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate and intake.startDate <= :endDate )"
-    private static String STILL_OPEN_INTAKES_QUERY = " ( intake.completionDate is NULL or intake.completionDate >= :endDate ) "
+    private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate AND intake.completionDate <= :endDate ) "
+    private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate AND intake.startDate <= :endDate )"
+    private static String ONGOING_INTAKES_QUERY = " ( intake.completionDate is NULL OR intake.completionDate >= :endDate ) "
+    public static String COMBINED_INTAKES_QUERY = COMPLETED_INTAKES_QUERY + " OR " + OPENED_INTAKES_QUERY + " OR " + ONGOING_INTAKES_QUERY
     Collection<Client> getClients(String clientIntakeQuery, def params) {
         def queries = [getMunicipalitySubQuery(params.munType), getAttorneySubQuery(params.attorney), getHomeCountrySubQuery(params.homeCountry)]
 
@@ -483,7 +476,7 @@ class ClientController {
         queries.each{ aQuery ->
             if (aQuery != "") {
                 String joiner = null
-                if (query.contains("where")) joiner = " and "
+                if (query.toLowerCase().contains("where")) joiner = " and "
                 else joiner = " where "
 
                 query = query + joiner + aQuery
@@ -496,9 +489,9 @@ class ClientController {
     Collection<Client> doit( String query, def params) {
         println("params2: " + params)
         def namedParams = [startDate:params.startDate, endDate:params.endDate]
-        if (query.contains(":mun")) namedParams += [mun:params.municipality]
-        if (query.contains(":homeCountry")) namedParams += [homeCountry:params.homeCountry]
-        if (query.contains(":attorney")) namedParams += [attorney:params.attorney]
+        if (query.toLowerCase().contains(":mun")) namedParams += [mun:params.municipality]
+        if (query.toLowerCase().contains(":homeCountry")) namedParams += [homeCountry:params.homeCountry]
+        if (query.toLowerCase().contains(":attorney")) namedParams += [attorney:params.attorney]
 
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]

@@ -195,7 +195,7 @@ class Client implements Comparable<Client> {
     // the second value the number of Staff Representations in the interval
     def intakeTypeCounts(interval) {
         return cases.inject([0, 0]) { acc, aCase  ->
-            println("client id: " + aCase.client.id + ", intake type: " + aCase.intakeType + "startDate: " + aCase.startDate + ", completionDate: " + aCase.completionDate)
+//            println("client id: " + aCase.client.id + ", intake type: " + aCase.intakeType + "startDate: " + aCase.startDate + ", completionDate: " + aCase.completionDate)
             if (interval.contains(aCase.startDate.getTime()) || aCase.completionDate == null || interval.contains(aCase.completionDate.getTime())) {
                 if (aCase.isStaffAdvise())
                     [acc[0] + 1, acc[1]]
@@ -241,7 +241,7 @@ class Client implements Comparable<Client> {
         return client.cases.any{ clientCase ->
             (clientCase.isStatusAchieved() || clientCase.isSuccessful()) &&
                 (clientCase.caseType?.associatedStatus == String.valueOf(statusType) || clientCase.caseType?.type == String.valueOf(statusType)) &&
-                (clientCase.completionDate == null || interval.contains(clientCase.completionDate.getTime()));
+                (clientCase.completionDate != null && interval.contains(clientCase.completionDate.getTime()));
         }
     }
 

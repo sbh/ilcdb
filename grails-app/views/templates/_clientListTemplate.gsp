@@ -1,4 +1,4 @@
-                <table style="display:grid">
+                <table style="width:100%">
                     <thead>
                         <tr>
                             <th>Client</th>

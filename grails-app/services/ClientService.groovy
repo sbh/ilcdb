@@ -73,7 +73,8 @@ class ClientService
         Set results = new HashSet()
         switch (intakeType.toLowerCase()) {
             case "any":
-                results = clients
+                results = clients.findAll {it.hasStaffAdvise(intakeState, interval)} +
+                          clients.findAll {it.hasStaffRepresentation(intakeState, interval)}
                 break;
             case ClientCase.STAFF_ADVISE.toLowerCase():
                 results = clients.findAll {it.hasStaffAdvise(intakeState, interval)}
