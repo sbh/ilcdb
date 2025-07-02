@@ -150,17 +150,11 @@ var reporting =
         }
     },
    enableOrDisableIntakeStatus : function(elementName, value) {
-	var radios = document.getElementsByName("statusAchieved")
-        if (value == "Staff Representation") {
-	    for (var i=0, iLen=radios.length; i<iLen; i++) {
-		radios[i].disabled = false;
-	    }
-        }
-        else {
-	    for (var i=0, iLen=radios.length; i<iLen; i++) {
-		radios[i].disabled = true;
-	    }
-        }
+       var radios = document.getElementsByName("statusAchieved")
+       var disable = value == "Staff Representation" ? false : true;
+       for (var i=0, iLen=radios.length; i<iLen; i++) {
+           radios[i].disabled = disable;
+       }
     }
 }
 
