@@ -15,6 +15,27 @@ class ClientController {
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
+    def makeClientMap(Client client) {
+        return ['id' :  client.id] +
+            ['person' : client.client?.encodeAsHTML()] +
+            ['phoneNumber' : client.client?.phoneNumber?.encodeAsHTML()] +
+            ['householeIncomeLevel' : client.householdIncomeLevel] +
+            ['numberInHousehold' : client.numberInHousehold] +
+            ['age' : client.client?.age] +
+            ['race' : client.client?.race?.encodeAsHTML()] +
+            ['homeCountry' : client.homeCountry?.encodeAsHTML()] +
+            ['shortAddress': client.shortAddress?.encodeAsHTML()] +
+            ['fileLocation' : client.fileLocation] +
+            ['attorney' : client.attorney] +
+            ['validCases' : (client.validCases ? "" : "**")] +
+            ['intakes' : client.intakes]
+
+    }
+
+    def makeClientMaps(List<Client> clients) {
+        return clients.collect{client -> makeClientMap(client)}
+    }
+
     def list() {
         long t1 = System.currentTimeMillis()
         List<Client> clients = new ArrayList()
@@ -37,25 +58,8 @@ class ClientController {
         Collections.sort(clients, new ClientComparator());
         println(clients.size()+" sorted in "+(System.currentTimeMillis()-t2)+" ms.")
 
-        def clientMaps = []
         t1 = System.currentTimeMillis()
-        for (client in clients) {
-            def clientMap = new HashMap()
-            clientMap['id'] = client.id
-            clientMap['person'] = client.client?.encodeAsHTML()
-            clientMap['phoneNumber'] = client.client?.phoneNumber?.encodeAsHTML()
-            clientMap['householeIncomeLevel'] = client.householdIncomeLevel
-            clientMap['numberInHousehold'] = client.numberInHousehold
-            clientMap['age'] = client.client?.age
-            clientMap['race'] = client.client?.race?.encodeAsHTML()
-            clientMap['homeCountry'] = client.homeCountry?.encodeAsHTML()
-            clientMap['shortAddress'] = client.shortAddress?.encodeAsHTML()
-            clientMap['fileLocation'] = client.fileLocation
-            clientMap['attorney'] = client.attorney
-            clientMap['validCases'] = (client.validCases ? "" : "**")
-            clientMap['intakes'] = client.intakes
-            clientMaps.add(clientMap)
-        }
+        def clientMaps = makeClientMaps(clients)
 
         println(clients.size()+" resolved "+(System.currentTimeMillis()-t1)+" ms.")
 
@@ -414,8 +418,6 @@ class ClientController {
 
     //@Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
     def report() {
-        //println("params: ${params}")
-
         //println("**** report params: "+params)
         def returnValue = [ : ];
 
@@ -423,23 +425,18 @@ class ClientController {
             // adjust the endDate to be the end of the day.
             params.endDate = new Date(params.endDate.getTime() + 1000L*24L*60L*60L - 1L)
 
-            String qry = null
-            if (params.intakeState == "opened") {
-                qry = CLIENTS_QUERY + " where " + OPENED_INTAKES_QUERY
-            } else if (params.intakeState == "closed") {
-                qry = CLIENTS_QUERY + " where " + COMPLETED_INTAKES_QUERY
-            } else {
-                qry = CLIENTS_QUERY + " where (" + OPENED_INTAKES_QUERY + " or " +
-                        "( " + "intake.startDate <= :startDate and " + STILL_OPEN_INTAKES_QUERY + " )" + " or " + COMPLETED_INTAKES_QUERY + ")"
-            }
+            String qry = CLIENTS_QUERY + "WHERE ( " + COMBINED_INTAKES_QUERY + " )"
 
             def unfilteredClients = getClients(qry, params)
 
             println("${unfilteredClients.size()} clients found in requested time interval.")
 
-            def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, new Interval(params.startDate.getTime(), params.endDate.getTime()))
+            def interval = new Interval(params.startDate.getTime(), params.endDate.getTime())
+            def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, params.intakeType, interval)
             def sortedClients = new ArrayList(clients)
             Collections.sort(sortedClients, new ClientComparator());
+
+            def intakeTypeCounts = clientService.intakeTypeCounts(unfilteredClients, interval)
 
             returnValue["startDate"] = params.startDate
             returnValue["endDate"] = params.endDate
@@ -448,11 +445,14 @@ class ClientController {
             returnValue["attorney"] = params.attorney
             returnValue["displayIntakesCheckBox"] = params.displayIntakesCheckBox == "on" || params.displayIntakesCheckBox == "true"? "true" : "false"
             returnValue["intakeState"] = params.intakeState
-            returnValue["statusAchieved"] = params.statusAchieved
+            returnValue["intakeType"] = params.intakeType
+            returnValue["statusAchieved"] = (params.statusAchieved == null || params.statusAchieved.trim().isEmpty()) ? "any" : params.statusAchieved
             returnValue["homeCountry"] = params.homeCountry
 
             returnValue["report"] = true;
-            returnValue["Clients"] = sortedClients;
+            returnValue["clientList"] = makeClientMaps(sortedClients);
+            returnValue["saIntakesCount"] = intakeTypeCounts[0]
+            returnValue["srIntakesCount"] = intakeTypeCounts[1]
         }
 
         //println("**** report returnValue: " + returnValue)
@@ -468,9 +468,10 @@ class ClientController {
                inner join fetch person.placeOfBirth as placeOfBirth
                inner join fetch client.cases as intake
         """
-    private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate and intake.completionDate <= :endDate ) "
-    private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate and intake.startDate <= :endDate )"
-    private static String STILL_OPEN_INTAKES_QUERY = " ( intake.completionDate is NULL or intake.completionDate >= :endDate ) "
+    private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate AND intake.completionDate <= :endDate ) "
+    private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate AND intake.startDate <= :endDate )"
+    private static String ONGOING_INTAKES_QUERY = " ( intake.completionDate is NULL OR intake.completionDate >= :endDate ) "
+    public static String COMBINED_INTAKES_QUERY = COMPLETED_INTAKES_QUERY + " OR " + OPENED_INTAKES_QUERY + " OR " + ONGOING_INTAKES_QUERY
     Collection<Client> getClients(String clientIntakeQuery, def params) {
         def queries = [getMunicipalitySubQuery(params.munType), getAttorneySubQuery(params.attorney), getHomeCountrySubQuery(params.homeCountry)]
 
@@ -478,7 +479,7 @@ class ClientController {
         queries.each{ aQuery ->
             if (aQuery != "") {
                 String joiner = null
-                if (query.contains("where")) joiner = " and "
+                if (query.toLowerCase().contains("where")) joiner = " and "
                 else joiner = " where "
 
                 query = query + joiner + aQuery
@@ -491,9 +492,9 @@ class ClientController {
     Collection<Client> doit( String query, def params) {
         println("params2: " + params)
         def namedParams = [startDate:params.startDate, endDate:params.endDate]
-        if (query.contains(":mun")) namedParams += [mun:params.municipality]
-        if (query.contains(":homeCountry")) namedParams += [homeCountry:params.homeCountry]
-        if (query.contains(":attorney")) namedParams += [attorney:params.attorney]
+        if (query.toLowerCase().contains(":mun")) namedParams += [mun:params.municipality]
+        if (query.toLowerCase().contains(":homeCountry")) namedParams += [homeCountry:params.homeCountry]
+        if (query.toLowerCase().contains(":attorney")) namedParams += [attorney:params.attorney]
 
         if ("State".equals(params.munType))
             namedParams += [munAlt:usStates.getAlternates(params.municipality)]
