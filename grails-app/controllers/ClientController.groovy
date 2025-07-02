@@ -430,7 +430,6 @@ class ClientController {
             def unfilteredClients = getClients(qry, params)
 
             println("${unfilteredClients.size()} clients found in requested time interval.")
-            println("******* params: " + params)
 
             def interval = new Interval(params.startDate.getTime(), params.endDate.getTime())
             def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, params.intakeType, interval)

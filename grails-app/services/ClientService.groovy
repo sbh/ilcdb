@@ -123,7 +123,6 @@ class ClientService
     }
 
     def intakeTypeCounts(Collection clients, Interval interval) {
-        println("*** Counting intake types for "+ clients.size() + " clients.")
         return clients.inject([0, 0]) { acc, aClient ->
             def counts = aClient.intakeTypeCounts(interval)
             [acc[0] + counts[0], acc[1] + counts[1]]
