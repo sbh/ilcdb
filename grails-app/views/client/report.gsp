@@ -310,72 +310,10 @@ window.onload = reporting.windowLoaded
             </g:form>
             <br>
             <g:if test="${report}">
-                <h3>Report Results: (${Clients.size()} clients, ${saIntakesCount} Staff Advise Intakes, ${srIntakesCount} Staff Representation Intakes)</h3>
+                <h3>Report Results: (${clientList.size()} clients, ${saIntakesCount} Staff Advise Intakes, ${srIntakesCount} Staff Representation Intakes)</h3>
                 <br/>
                 <div class="list">
-                    <table style="width:100%">
-                        <thead>
-                           <th><g:img dir="images" file="expand.gif" alt="Expand" onclick="reporting.setExpandCollapseAllIntakes(this)" />&nbsp;Client</th>
-                           <th>Phone Number</th>
-                           <th>Income</th>
-                           <th># in House</th>
-                           <th>Age</th>
-                           <th>Race</th>
-                           <th>Birth Country</th>
-                           <th>City, County, State</th>
-                           <th>File Location</th>
-                           <th>Intakes</th>
-                        </thead>
-                        <tbody>
-                            <g:each status="i" var="client" in="${Clients}">
-                                <tr class="${(i % 2 == 0) ? 'odd' : 'even'}" id="client.${i}">
-                                    <td>&nbsp;<g:img dir="images" file="expand.gif" alt="Expand" onclick="reporting.setExpandCollapseIntakeRow(this, ${i})" />&nbsp;
-                                              <g:link action="edit" id="${client.id}">${client.client?.encodeAsHTML()}</g:link></td>
-                                    <td><g:link action="edit" id="${client.id}">${client.client?.phoneNumber?.encodeAsHTML()}</g:link></td>
-                                    <td><g:link action="edit" id="${client.id}">${client.householdIncomeLevel}</g:link></td>
-                                    <td><g:link action="edit" id="${client.id}">${client.numberInHousehold}</g:link></td>
-                                    <td><g:link action="edit" id="${client.id}">${client.client?.age}</g:link></td>
-                                    <td><g:link action="edit" id="${client.id}">${client.client?.race?.encodeAsHTML()}</g:link></td>
-                                    <td><g:link action="edit" id="${client.id}">${client.homeCountry?.encodeAsHTML()}</g:link></td>
-                                    <td><g:link action="edit" id="${client.id}">${client.shortAddress?.encodeAsHTML()}</g:link></td>
-                                    <td><g:link action="edit" id="${client.id}">${client.fileLocation}</g:link></td>
-                                    <td><g:link action="edit" id="${client.id}">${client.intakes}</g:link></td>
-                                </tr>
-
-                                <tr class="${types.toString().replaceAll("[\\[\\],]", "")} intakeRow intakeRow-${i}">
-                                    <td colspan="2" align="right">Intakes:</td>
-                                    <td colspan="7">
-                                        <table style="display:grid">
-                                            <thead>
-                                                <tr>
-                                                    <th>Start Date</th>
-                                                    <th>Completion Date</th>
-                                                    <th>Intake Type</th>
-                                                    <th>Intensity</th>
-                                                    <th>Case Type</th>
-                                                    <th>Representative</th>
-                                                    <th>Result</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                              <g:each var="intake" in="${client.cases}" status="j">
-                                                  <tr class="${(j % 2 == 0) ? 'even' : 'odd'}" >
-                                                      <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.startDateString}</g:link></td>
-                                                      <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.completionDateString}</g:link></td>
-                                                      <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.intakeType}</g:link></td>
-                                                      <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.intensity}</g:link></td>
-                                                      <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.caseType?.type}</g:link></td>
-                                                      <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.attorney}</g:link></td>
-                                                      <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.caseResult?.result}</g:link></td>
-                                                  </tr>
-                                              </g:each>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </g:each>
-                        </tbody>
-                    </table>
+                  <g:render template="/templates/clientListTemplate" model="[clientList: clientList]" />
                 </div>
             </g:if>
         </div>

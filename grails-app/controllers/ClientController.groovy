@@ -15,6 +15,27 @@ class ClientController {
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
 
+    def makeClientMap(Client client) {
+        return ['id' :  client.id] +
+            ['person' : client.client?.encodeAsHTML()] +
+            ['phoneNumber' : client.client?.phoneNumber?.encodeAsHTML()] +
+            ['householeIncomeLevel' : client.householdIncomeLevel] +
+            ['numberInHousehold' : client.numberInHousehold] +
+            ['age' : client.client?.age] +
+            ['race' : client.client?.race?.encodeAsHTML()] +
+            ['homeCountry' : client.homeCountry?.encodeAsHTML()] +
+            ['shortAddress': client.shortAddress?.encodeAsHTML()] +
+            ['fileLocation' : client.fileLocation] +
+            ['attorney' : client.attorney] +
+            ['validCases' : (client.validCases ? "" : "**")] +
+            ['intakes' : client.intakes]
+
+    }
+
+    def makeClientMaps(List<Client> clients) {
+        return clients.collect{client -> makeClientMap(client)}
+    }
+
     def list() {
         long t1 = System.currentTimeMillis()
         List<Client> clients = new ArrayList()
@@ -37,25 +58,8 @@ class ClientController {
         Collections.sort(clients, new ClientComparator());
         println(clients.size()+" sorted in "+(System.currentTimeMillis()-t2)+" ms.")
 
-        def clientMaps = []
         t1 = System.currentTimeMillis()
-        for (client in clients) {
-            def clientMap = new HashMap()
-            clientMap['id'] = client.id
-            clientMap['person'] = client.client?.encodeAsHTML()
-            clientMap['phoneNumber'] = client.client?.phoneNumber?.encodeAsHTML()
-            clientMap['householeIncomeLevel'] = client.householdIncomeLevel
-            clientMap['numberInHousehold'] = client.numberInHousehold
-            clientMap['age'] = client.client?.age
-            clientMap['race'] = client.client?.race?.encodeAsHTML()
-            clientMap['homeCountry'] = client.homeCountry?.encodeAsHTML()
-            clientMap['shortAddress'] = client.shortAddress?.encodeAsHTML()
-            clientMap['fileLocation'] = client.fileLocation
-            clientMap['attorney'] = client.attorney
-            clientMap['validCases'] = (client.validCases ? "" : "**")
-            clientMap['intakes'] = client.intakes
-            clientMaps.add(clientMap)
-        }
+        def clientMaps = makeClientMaps(clients)
 
         println(clients.size()+" resolved "+(System.currentTimeMillis()-t1)+" ms.")
 
@@ -447,7 +451,7 @@ class ClientController {
             returnValue["homeCountry"] = params.homeCountry
 
             returnValue["report"] = true;
-            returnValue["Clients"] = sortedClients;
+            returnValue["clientList"] = makeClientMaps(sortedClients);
             returnValue["saIntakesCount"] = intakeTypeCounts[0]
             returnValue["srIntakesCount"] = intakeTypeCounts[1]
         }
