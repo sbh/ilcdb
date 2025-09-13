@@ -1,0 +1,101 @@
+#+title:      IT info for ILCBC
+#+date:       [2025-07-18 Fri 22:29]
+#+filetags:   :ilcbc:it:skit:
+#+identifier: 20250718T222927
+#+EXCLUDE_TAGS: tbd
+#+EXPORT_FILE_NAME: ILCBC-IT-Info
+
+* ILCDB
+The Immigrant Legal Center of Boulder County (ILCBC) manages and tracks its clients and their cases using a combination of physical files and a custom web application, known as the Immigrant Legal Center DataBase or ILCDB. This document describes the implementation, building, deployment/installation and maintenance of ILCDB. ILCDB is a webapp implemented in a web framework called [[https://grails.org][Grails]], which uses the programming language [[https://groovy-lang.org/][Groovy.]]
+
+** ILCDB implementation
+The ILCDB code base ([[https://github.com/sbh/ilcdb][https://github.com/sbh/ilcdb]]) is a grails webapp based on version 2.5.6 of grails. This version of grails is old and no longer supported. Upgrading to the latest version of grails, 7.0.0 at the time of this wriitng, has been attempted many times and has proven to be too difficult to do in a reasonalbe amount of time, so these instructions describe how to build the target ~ilcdb-1.0.war~ file using a Docker image with the grails 2.5.6 version installed. The [[https://hub.docker.com/r/joooostb/grails/tags?name=2.4.5][joostb/grails]] image on hub.docker.com is used to accomplish this. NOTE: I'm using podman to build ilcdb, but docker works as well.
+
+** Building ILCDB
+Clone or download the ILCDB code from [[https://github.com/sbh/ilcdb][https://github.com/sbh/ilcdb]] to someplace on your local drive and ~cd~ into the created directory:
+#+BEGIN_SRC sh
+  git clone git@github.com:sbh/ilcdb.git
+  cd ilcdb
+#+END_SRC
+Change the value of ~<ilcdb repo directory>~ in the ~-v~ argument in the ~docker run~ command below to the location of the cloned lcdb git repo on your local drive and execute the ~docker run~ command.
+#+BEGIN_SRC sh
+  podman run --platform linux/amd64 -it -v \
+  	<ilcdb repo directory>:/usr/src/app joooostb/grails:2.5.6
+#+END_SRC
+Running the above command will launch a shell in the docker container just created. In order to build the ~ilcdb-1.0.war~ file, which will be put in the =target/ilcdb-1.0.war= file, run the following command in the docker shell:
+#+BEGIN_SRC sh
+  grails prod war
+#+END_SRC
+
+** Deploying ILCDB
+***  Current deployment or deploying directly on ILCBC's mac mini:
+As of September 2025, ILCDB is running on a Mac Mini Model Z12P000KDLL/A, which is a late 2020 M1 Mac Mini with 16GB of memory. The webapp is installed in ~/opt/tomcat/webapps~ and is launched and kept running using the ~launchctl~ command in combination with the launchctl file located in ~/Library/LaunchDaemons/org.apache.jakarta.tomcat.plist~.
+
+Once the webapp is built according to the instructions above and the resulting ~ilcdb-1.0.war~ file is copied, usually by ssh, to the home directory of the admin user on the mac mini host known as ilcdb on the tailscal tailnet and by the IP address 10.0.1.206 on the ILCBC office subnet, install the webapp by executing the following commands:
+#+BEGIN_SRC sh
+  # Stop the current running ILCDB.
+  sudo launchctl unload /Library/LaunchDaemons/org.apache.jakarta.tomcat.plist
+  cd /opt/tomcat/webapps
+
+  # Copy the current ilcdb-1.0.war file to admin's home directory so that it can
+  # be restored in case the new version doesn't work.
+  mv ilcdb-1.0.war ~/ilcdb-1.0_YYMMDD.war
+
+  # Remove the ilcdb-1.0 directory so that a new one can be created when the new
+  # version of ILCDB is started.
+  rm -rf ilcdb-1.0
+
+  # Copy the new version into place.
+  cp -p ~/ilcdb-1.0.war .
+
+  # Restart ILCDB to finish the installation of the new version.
+  sudo launchctl load /Library/LaunchDaemons/org.apache.jakarta.tomcat.plist
+
+  # In a web browser, visit the home page of ILCDB (http://ilcdb:8080/ilcdb-1.0),
+  # login as admin (or some other version) and verify some functionality.
+#+END_SRC
+
+
+*** Deploying via container (Docker)
+
+ILCDB can be deployed as a containerized web application rather than a 'native' application directly on a server. The main reason to do this is because the software on which ILCDB is built and runs, namely grails version 2.5.6r and java 8, are old and have involved significant effort to get to work on new apple hardware. For example, the current mac mini is an M1 architecture chipset (based on the ARM specification) and moving ILCDB to this machine from the previous x86 based mac mini took a significant effort to find and convert to versions of mysql, java and grails that would run on the M1. Deploying as a container simplifys ILCDB's deployment and also allows the use of non-apple hardware. For example, it is possible to deploy to ILCBC's AyudaClouda, which runs on a Minisforum MS-01 server running unraid.
+
+Build the ~ilcdb-1.0.war~ as described above in [[ Building ILCDB]].
+
+The  [[https://github.com/sbh/ilcdb][ILCDB]] git repo contains a ~Dockerfile~ for running ~ILCDB~ in a docker container using ~tomcat~ and a ~compose.yaml~ file for building a docker multi-container with both the ~ILCDB~ process as well as a ~mysql~ database process. The ~compose.yaml~ file specifies a docker managed volume named ~mysql_data~ for persistently storing the contents of the *ilcdb* (this is the name of the database in mysql) mysql database.
+
+To build the docker multi-container, which will run both the grails webapp as well as the mysql instance, execute the following commands:
+#+BEGIN_SRC sh
+  podman build -t sbherndon/ilcdb-webapp .
+  podman tag sbherndon/ilcdb-webapp:latest sbherndon/ilcdb-webapp:v1
+#+END_SRC
+
+To launch the docker multi-conainer, execute the following command:
+#+BEGIN_SRC
+ podman-compose up
+#+END_SRC
+
+*** Potential Future Deployment
+** Testing ILCDB
+In order to test the ILCDB webapp just built, a mysql instance with an *ilcdb* database and some data is required. Creating the mysql container and populating it with and =ilcdb= database can be done by importing the test data in the file =???= with the commands:
+#+BEGIN_SRC sh
+  podman pull mysql/mysql-server:latest-aarch64
+  podman run -d -p 3306:3306 --name ilcdb-mysql \
+  	-e MYSQL_ROOT_PASSWORD=secret-password \
+  	mysql/mysql-server:latest-aarch64
+  # You'll have to install mysqlsh
+  mysqlsh -h localhost -P 3306 -p -u ilcdb \
+  	-D ilcdb < /var/tmp/ilcdb.test-data.sql
+#+END_SRC
+** ILCDB maintenance
+* ILCDB :tbd:
+** Internet
+** Local Network
+** VPN
+* Publishing this document to a PDF
+To publish (export) this document as a PDF file for sharing, execute the following elisp expression:
+#+BEGIN_SRC elisp
+  org-latex-export-to-pdf
+#+END_SRC
+The published file will be in the same directory as this ~.org~ file named ~ILCDB-IT-Info.pdf~.
+** Translate the exported PDF file to spanish using [[https://translate.google.com/?sl=en&tl=es&op=translate][google translate]]
