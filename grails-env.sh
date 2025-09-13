@@ -1,8 +1,8 @@
 #!/bin/bash
 # Grails Environment Setup Script
-# This script sets up the proper Java environment for Grails 2.4.5
+# This script sets up the proper Java environment for Grails 2.5.6
 
-# Set JAVA_HOME to Java 8 which is compatible with Grails 2.4.5
+# Set JAVA_HOME to Java 8 which is compatible with Grails 2.5.6
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home
 
 # Set GRAILS_HOME (already set but ensuring it's correct)

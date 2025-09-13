@@ -7,7 +7,7 @@
 The Immigrant Legal Center of Boulder County (ILCBC) manages and tracks its clients and their cases using a combination of physical files and a custom web application, known as the Immigrant Legal Center DataBase or ILCDB. This document describes the implementation, building, deployment/installation and maintenance of  ILCDB. ILCDB is a webapp implemented in a web framework called [[https://grails.org][Grails]], which uses the programming language [[https://groovy-lang.org/][Groovy.]]
 
 ** ILCDB implementation
-The ILCDB code base ([[https://github.com/sbh/ilcdb][https://github.com/sbh/ilcdb]]) is a grails webapp based on version 2.4.5 of grails. This version of grails is old and no longer supported. Upgrading to the latest version of grails, 7.0.0 at the time of this wriitng, has been attempted many times and proved to be too difficult to do in a reasonalbe amount of time, so these instructions describe how to build the target ~ilcdb-1.0.war~ file using a Docker image with the grails 2.4.5 version installed. The [[https://hub.docker.com/r/joooostb/grails/tags?name=2.4.5][joostb/grails]] image on hub.docker.com is used to accomplish this. NOTE: I'm using podman to build ilcdb, but docker works as well.
+The ILCDB code base ([[https://github.com/sbh/ilcdb][https://github.com/sbh/ilcdb]]) is a grails webapp based on version 2.5.6 of grails. This version of grails is old and no longer supported. Upgrading to the latest version of grails, 7.0.0 at the time of this wriitng, has been attempted many times and proved to be too difficult to do in a reasonalbe amount of time, so these instructions describe how to build the target ~ilcdb-1.0.war~ file using a Docker image with the grails 2.5.6 version installed. The [[https://hub.docker.com/r/joooostb/grails/tags?name=2.5.6][joostb/grails]] image on hub.docker.com is used to accomplish this. NOTE: I'm using podman to build ilcdb, but docker works as well.
 
 ** Building ILCDB
 Clone or download the ILCDB code from [[https://github.com/sbh/ilcdb][https://github.com/sbh/ilcdb]] to someplace on your local drive and ~cd~ into the created directory:
@@ -19,7 +19,7 @@ Clone or download the ILCDB code from [[https://github.com/sbh/ilcdb][https://gi
 Change the value of the ~-v~ argument in the ~docker run~ command below to the location of the cloned lcdb git repo on your local drive and execute the ~docker run~ command.
 #+BEGIN_SRC sh
   podman run --platform linux/amd64 -it -v \
-  	/Users/sbh/workspace_ilcDB/ilcdb-git/ilcdb:/usr/src/app joooostb/grails:2.4.5
+  	/Users/sbh/workspace_ilcDB/ilcdb-git/ilcdb:/usr/src/app joooostb/grails:2.5.6
 #+END_SRC
 Running the above command will launch a shell in the docker container just created. In order to build the ~ilcdb-1.0.war~ file, which will be put in the =target/ilcdb-1.0.war= file, run the following command in the docker shell:
 #+BEGIN_SRC sh
@@ -54,7 +54,7 @@ Once the webapp is built according to the instructions above and the resulting ~
 #+END_SRC
 
 *** Deploying via container (Docker)
-ILCDB can be deployed as a containerized web application rather than a 'native' application directly on a server. The main reason to do this is because the software on which ILCDB is built and runs, namely grails version 2.4.5 and java 8, are old and have involved significant effort to get to work on new apple hardware. For example, the current mac mini is an M1 architecture chipset (based on the ARM specification) and moving ILCDB to this machine from the previous x86 based mac mini took a significant effort to find and convert to versions of mysql, java and grails that would run on the M1. Deploying as a container simplifys ILCDB's deployment and also allows the use of non-apple hardware. For example, it is possible to deploy to ILCBC's AyudaClouda, which runs on a Minisforum MS-01 server running unraid.
+ILCDB can be deployed as a containerized web application rather than a 'native' application directly on a server. The main reason to do this is because the software on which ILCDB is built and runs, namely grails version 2.5.6 and java 8, are old and have involved significant effort to get to work on new apple hardware. For example, the current mac mini is an M1 architecture chipset (based on the ARM specification) and moving ILCDB to this machine from the previous x86 based mac mini took a significant effort to find and convert to versions of mysql, java and grails that would run on the M1. Deploying as a container simplifys ILCDB's deployment and also allows the use of non-apple hardware. For example, it is possible to deploy to ILCBC's AyudaClouda, which runs on a Minisforum MS-01 server running unraid.
 
 Build the ~ilcdb-1.0.war~ as described above in [[ Building ILCDB]].
 
