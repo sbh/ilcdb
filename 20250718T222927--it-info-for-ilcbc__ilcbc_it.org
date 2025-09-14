@@ -57,8 +57,7 @@ Once the webapp is built according to the instructions above and the resulting ~
 
 
 *** Deploying via container (Docker)
-
-ILCDB can be deployed as a containerized web application rather than a 'native' application directly on a server. The main reason to do this is because the software on which ILCDB is built and runs, namely grails version 2.5.6r and java 8, are old and have involved significant effort to get to work on new apple hardware. For example, the current mac mini is an M1 architecture chipset (based on the ARM specification) and moving ILCDB to this machine from the previous x86 based mac mini took a significant effort to find and convert to versions of mysql, java and grails that would run on the M1. Deploying as a container simplifys ILCDB's deployment and also allows the use of non-apple hardware. For example, it is possible to deploy to ILCBC's AyudaClouda, which runs on a Minisforum MS-01 server running unraid.
+ILCDB can be deployed as a containerized web application rather than a 'native' application directly on a server. The main reason to do this is because the software on which ILCDB is built and runs, namely grails version 2.5.6 and java 8, are old and have involved significant effort to get to work on new apple hardware. For example, the current mac mini is an M1 architecture chipset (based on the ARM specification) and moving ILCDB to this machine from the previous x86 based mac mini took a significant effort to find and convert to versions of mysql, java and grails that would run on the M1. Deploying as a container simplifys ILCDB's deployment and also allows the use of non-apple hardware. For example, it is possible to deploy to ILCBC's AyudaClouda, which runs on a Minisforum MS-01 server running unraid.
 
 Build the ~ilcdb-1.0.war~ as described above in [[ Building ILCDB]].
 
