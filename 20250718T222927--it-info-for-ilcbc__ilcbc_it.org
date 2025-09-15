@@ -13,17 +13,21 @@ The ILCDB code base ([[https://github.com/sbh/ilcdb][https://github.com/sbh/ilcd
 
 ** Building ILCDB
 Clone or download the ILCDB code from [[https://github.com/sbh/ilcdb][https://github.com/sbh/ilcdb]] to someplace on your local drive and ~cd~ into the created directory:
-#+BEGIN_SRC sh
+#+BEGIN_SRC shell
   git clone git@github.com:sbh/ilcdb.git
   cd ilcdb
 #+END_SRC
-Change the value of ~<ilcdb repo directory>~ in the ~-v~ argument in the ~docker run~ command below to the location of the cloned lcdb git repo on your local drive and execute the ~docker run~ command.
-#+BEGIN_SRC sh
-  podman run --platform linux/amd64 -it -v \
-  	<ilcdb repo directory>:/usr/src/app joooostb/grails:2.5.6
+Prior to executing the actual build commands below, the credentials for connecting the grails webapp to the mysql database are encrypted and stored in the ~.env~ file in the ilcdb git repo. Decrypting the ~.env~ file requires the ~gitgpg.key~ file that is stored in the *ILCBC* vault of Laurel's and Steve's *1Password* account under the *ILCDB GPG key* note. After getting a copy of the ~gitgpg.key~ file from Laurel, place it someplace other than in the ilcdb repo directory, and decrypt  the ~.env~ file using the command:
+#+BEGIN_SRC shell
+  git crypt unlock <gitgpg.key file directory>/gitgpg.key
 #+END_SRC
-Running the above command will launch a shell in the docker container just created. In order to build the ~ilcdb-1.0.war~ file, which will be put in the =target/ilcdb-1.0.war= file, run the following command in the docker shell:
-#+BEGIN_SRC sh
+In the ~podman run...~ command below, change the value of ~<ilcdb repo directory>~ in the ~-v~ argument to the location of the cloned ilcdb git repo on your local drive and execute the command.
+#+BEGIN_SRC shell
+  podman run --platform linux/amd64 -it -v \
+         <ilcdb repo directory>:/usr/src/app joooostb/grails:2.5.6
+#+END_SRC
+When this ~podman~ command is run it will launch a command line shell in the docker container just created, which is where the actual building of the ~ilcdb-1.0.war~ for the grails app will occur. Because the ilcdb repo on the local machine is mapped to the ~/usr/src/app~ directory on the started docker container, the ~ilcdb-1.0.war~ file will be put in the =target/ilcdb-1.0.war= on the local machine. Run the following command in the docker shell to do this:
+#+BEGIN_SRC shell
   grails prod war
 #+END_SRC
 
@@ -32,7 +36,7 @@ Running the above command will launch a shell in the docker container just creat
 As of September 2025, ILCDB is running on a Mac Mini Model Z12P000KDLL/A, which is a late 2020 M1 Mac Mini with 16GB of memory. The webapp is installed in ~/opt/tomcat/webapps~ and is launched and kept running using the ~launchctl~ command in combination with the launchctl file located in ~/Library/LaunchDaemons/org.apache.jakarta.tomcat.plist~.
 
 Once the webapp is built according to the instructions above and the resulting ~ilcdb-1.0.war~ file is copied, usually by ssh, to the home directory of the admin user on the mac mini host known as ilcdb on the tailscal tailnet and by the IP address 10.0.1.206 on the ILCBC office subnet, install the webapp by executing the following commands:
-#+BEGIN_SRC sh
+#+BEGIN_SRC shell
   # Stop the current running ILCDB.
   sudo launchctl unload /Library/LaunchDaemons/org.apache.jakarta.tomcat.plist
   cd /opt/tomcat/webapps
@@ -64,20 +68,20 @@ Build the ~ilcdb-1.0.war~ as described above in [[ Building ILCDB]].
 The  [[https://github.com/sbh/ilcdb][ILCDB]] git repo contains a ~Dockerfile~ for running ~ILCDB~ in a docker container using ~tomcat~ and a ~compose.yaml~ file for building a docker multi-container with both the ~ILCDB~ process as well as a ~mysql~ database process. The ~compose.yaml~ file specifies a docker managed volume named ~mysql_data~ for persistently storing the contents of the *ilcdb* (this is the name of the database in mysql) mysql database.
 
 To build the docker multi-container, which will run both the grails webapp as well as the mysql instance, execute the following commands:
-#+BEGIN_SRC sh
+#+BEGIN_SRC shell
   podman build -t sbherndon/ilcdb-webapp .
   podman tag sbherndon/ilcdb-webapp:latest sbherndon/ilcdb-webapp:v1
 #+END_SRC
 
 To launch the docker multi-conainer, execute the following command:
-#+BEGIN_SRC
+#+BEGIN_SRC shell
  podman-compose up
 #+END_SRC
 
 *** Potential Future Deployment
 ** Testing ILCDB
 In order to test the ILCDB webapp just built, a mysql instance with an *ilcdb* database and some data is required. Creating the mysql container and populating it with and =ilcdb= database can be done by importing the test data in the file =???= with the commands:
-#+BEGIN_SRC sh
+#+BEGIN_SRC shell
   podman pull mysql/mysql-server:latest-aarch64
   podman run -d -p 3306:3306 --name ilcdb-mysql \
   	-e MYSQL_ROOT_PASSWORD=secret-password \
