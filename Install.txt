@@ -15,6 +15,7 @@
 - start apache (sudo launchctl load /Library/LaunchDaemons/org.apache.jakarta.tomcat.plist)
 
 CREATE USER 'ilcdb'@'localhost' IDENTIFIED BY 's******s';
+CREATE USER 'ilcdb'@'%' IDENTIFIED BY 's******s';
 create database ilcdb;
 grant all on `ilcdb`.* to 'ilcdb'@'localhost' identified by 's******s';
 # or maybe

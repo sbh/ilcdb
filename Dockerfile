@@ -7,7 +7,7 @@
     RUN rm -rf /usr/local/tomcat/webapps/*
 
     # Install Grails 2.4
-    ENV GRAILS_VERSION=2.4.5
+    ENV GRAILS_VERSION=2.5.6
     RUN wget https://github.com/grails/grails-core/releases/download/v${GRAILS_VERSION}/grails-${GRAILS_VERSION}.zip && \
      unzip grails-${GRAILS_VERSION}.zip && \
      rm grails-${GRAILS_VERSION}.zip && \
