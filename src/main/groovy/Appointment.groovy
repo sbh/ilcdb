@@ -1,4 +1,6 @@
-class Appointment {
+import grails.gorm.Entity;
+
+class Appointment implements Entity {
 
     Date date
     String note

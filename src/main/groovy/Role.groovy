@@ -1,5 +1,6 @@
-class Role
-{
+import grails.gorm.Entity;
+
+class Role implements Entity {
     public static enum RoleType
     {
         ROLE_ADMIN("Administrator"),

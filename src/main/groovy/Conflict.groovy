@@ -1,5 +1,6 @@
-class Conflict implements Comparable<Conflict>
-{
+import grails.gorm.Entity;
+
+class Conflict implements Comparable<Conflict>, Entity {
     static mapping = 
     {
         cache true

@@ -1,4 +1,6 @@
-class ClientSponsorRelation {
+import grails.gorm.Entity;
+
+class ClientSponsorRelation implements Entity {
 
     static mapping = {
         cache true

@@ -1,8 +1,9 @@
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.Interval
+import grails.gorm.Entity;
 
-class Client implements Comparable<Client> {
+class Client implements Comparable<Client>, Entity {
     static final long YEAR_IN_MILLIS = 365L*24L*60L*60L*1000L;
     private static final DateTimeFormatter briefDateFormat = DateTimeFormat.forPattern("MMM-dd-yyyy");
 

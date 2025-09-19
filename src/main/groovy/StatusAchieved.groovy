@@ -1,9 +1,8 @@
 import sun.nio.cs.ext.IBM918
-
 import java.text.SimpleDateFormat
+import grails.gorm.Entity;
 
-class StatusAchieved
-{
+class StatusAchieved implements Entity {
     static belongsTo = [ client:Client ]
 
     enum Type {

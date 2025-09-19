@@ -1,5 +1,6 @@
-class BirthPlace
-{
+import grails.gorm.Entity;
+
+class BirthPlace implements Entity {
     String city
     String state
     Country country;

@@ -1,6 +1,6 @@
+import grails.gorm.Entity;
 
-class CaseType
-{
+class CaseType implements Entity {
     String type;
     boolean deprecated = false;
     String associatedStatus;

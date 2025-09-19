@@ -1,9 +1,9 @@
 import java.text.SimpleDateFormat;
+import grails.gorm.Entity;
 
 import com.sun.corba.se.impl.oa.poa.POAPolicyMediatorImpl_R_USM.Etherealizer;
 
-class Person implements Comparable<Person>
-{
+class Person implements Comparable<Person>, Entity {
     Long id
     String firstName
     String lastName

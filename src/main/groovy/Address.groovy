@@ -1,5 +1,6 @@
-class Address
-{
+import grails.gorm.Entity;
+
+class Address implements Entity {
     String street
     String city
     String county

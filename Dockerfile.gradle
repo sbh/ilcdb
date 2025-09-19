@@ -1,0 +1,18 @@
+# Use the official OpenJDK 8 base image
+FROM openjdk:8
+
+# Install utility tools (kept from original Dockerfile)
+RUN apt-get update && apt-get install -y less vim default-mysql-client unzip && rm -rf /var/lib/apt/lists/*
+
+# Set a working directory
+WORKDIR /app
+
+# Copy the executable JAR file from the build context
+# The JAR file is created by the 'gradlew assemble' command
+COPY build/libs/app-1.0.jar app.jar
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Set the command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,8 +1,8 @@
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import grails.gorm.Entity;
 
-public class ServiceRecord implements Comparable<ServiceRecord>
-{
+public class ServiceRecord implements Comparable<ServiceRecord>, Entity {
     static mapping = {
         cache true
     }

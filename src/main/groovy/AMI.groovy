@@ -1,4 +1,6 @@
-class AMI {
+import grails.gorm.Entity;
+
+class AMI implements Entity{
     String label
     int level
 

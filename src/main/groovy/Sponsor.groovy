@@ -1,4 +1,6 @@
-class Sponsor {
+import grails.gorm.Entity;
+
+class Sponsor implements Entity {
 
     static mapping = {
         cache true

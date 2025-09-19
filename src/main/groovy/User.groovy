@@ -1,5 +1,6 @@
-class User
-{
+import grails.gorm.Entity;
+
+class User implements Entity {
     def springSecurityService // Dependency injection for the springSecurityService.
 
     String username

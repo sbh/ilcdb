@@ -1,4 +1,4 @@
-import grails.plugin.springsecurity.annotation.Secured
+import org.springframework.security.access.annotation.Secured
 import groovy.json.JsonOutput
 import net.skytrail.util.USStates
 import org.joda.time.Interval

@@ -1,7 +1,9 @@
+import grails.gorm.Entity;
+
 /**
  * Domain class for Request Map.
  */
-class Requestmap {
+class Requestmap implements Entity {
 
 	String url
 	String configAttribute

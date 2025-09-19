@@ -1,6 +1,6 @@
+import grails.gorm.Entity;
 
-class CaseResult
-{
+class CaseResult implements Entity {
     String result;
     boolean successfulResult; // For client or ILCBC.
     boolean statusWasAchieved; // An actual immigration status was successfully achieved.

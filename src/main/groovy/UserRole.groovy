@@ -1,7 +1,7 @@
 import org.apache.commons.lang.builder.HashCodeBuilder
+import grails.gorm.Entity;
 
-class UserRole implements Serializable
-{
+class UserRole implements Serializable, Entity {
     User user
     Role role
 

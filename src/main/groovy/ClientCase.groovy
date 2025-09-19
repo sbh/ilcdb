@@ -1,8 +1,8 @@
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import grails.gorm.Entity;
 
-class ClientCase implements Comparable<ClientCase>
-{
+class ClientCase implements Comparable<ClientCase>, Entity {
     public static final String STAFF_ADVISE = "Staff Advise"
     public static final String STAFF_REPRESENTATION = "Staff Representation"
     private static final DateTimeFormatter briefDateFormat = DateTimeFormat.forPattern("MMM-dd-yyyy");

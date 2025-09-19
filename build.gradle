@@ -1,17 +1,13 @@
 buildscript {
     repositories {
         maven { url "https://repo.grails.org/grails/core" }
-        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral() // For Spring Boot and other build plugins
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "org.grails.plugins:hibernate5:6.1.10"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.22.RELEASE"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.2"
     }
-}
-
-plugins {
-    id 'org.springframework.boot' version '1.5.22.RELEASE'
 }
 
 version "1.0"
@@ -21,20 +17,31 @@ apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin:"org.grails.grails-web"
 apply plugin:"com.bertramlabs.asset-pipeline"
-apply plugin: 'org.springframework.boot'
+apply plugin: 'org.springframework.boot' // Apply the Spring Boot plugin
+apply plugin: 'io.spring.dependency-management' // Apply the dependency management plugin
 
 repositories {
     maven { url "https://repo.grails.org/grails/core" }
-    maven { url "https://repo.grails.org/grails/plugins" }
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.grails:grails-bom:$grailsVersion"
+    }
+    // We explicitly manage the dependency management plugin version here
+    dependencies {
+        dependency 'io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE'
+    }
+}
+
 dependencies {
+    // Dependencies are now managed by the BOM, explicit versions are not needed for Grails artifacts
     compile "org.springframework.boot:spring-boot-starter-logging"
     compile "org.springframework.boot:spring-boot-autoconfigure"
+    provided "org.springframework.boot:spring-boot-starter-tomcat"
+
     compile "org.grails:grails-core"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    compile "org.springframework.boot:spring-boot-starter-tomcat"
     compile "org.grails:grails-web-boot"
     compile "org.grails:grails-logging"
     compile "org.grails:grails-plugin-rest"
@@ -43,38 +50,27 @@ dependencies {
     compile "org.grails:grails-plugin-services"
     compile "org.grails.plugins:cache"
     compile "org.grails.plugins:scaffolding"
-    compile "org.grails.plugins:hibernate5"
-    compile "org.hibernate:hibernate-core:5.1.5.Final"
     compile "org.grails.plugins:gsp"
-
-    // Spring Security
+    compile "org.grails.plugins:hibernate5"
+    compile 'org.grails.plugins:async'
+    compile 'org.grails:grails-plugin-url-mappings'
+    compile 'org.hibernate:hibernate-validator:5.3.6.Final' // A version compatible with Hibernate 5.1
+    compile 'org.hibernate:hibernate-ehcache:5.1.17.Final'
+    compile 'javax.el:javax.el-api:2.2.4'
+    compile 'org.glassfish:javax.el:3.0.1-b08'
+    compile 'joda-time:joda-time:2.3'
     compile 'org.grails.plugins:spring-security-core:3.2.3'
 
-    // Mail
-    compile 'org.grails.plugins:mail:2.0.0.RC6'
 
-    // MySQL driver
-    runtime 'mysql:mysql-connector-java:8.0.33'
-
-    // Other dependencies
-//    runtime 'joda-time:joda-time:2.3'
-    compile 'joda-time:joda-time:2.14.0'
+    runtime 'mysql:mysql-connector-java:8.0.28'
 
     assets "org.webjars:jquery:3.3.1"
     assets "org.webjars:jquery-ui:1.12.1"
-    // assets "org.grails.plugins:jquery:3.3.1"
-    // assets "org.grails.plugins:jquery-ui:1.12.1"
-
+    
     testCompile "org.grails:grails-gorm-testing-support"
     testCompile "org.grails.plugins:geb"
     testCompile "org.grails:grails-web-testing-support"
-
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
-
+    testRuntime "com.h2database:h2"
 }
 
-assets {
-    minifyJs = true
-    minifyCss = true
-}
