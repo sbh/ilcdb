@@ -1,5 +1,4 @@
 package net.skytrail.ilcdb;
-package ilcdb
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
