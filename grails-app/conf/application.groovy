@@ -1,3 +1,6 @@
+// Explicitly scan for domain classes in this package
+grails.gorm.scan.packages = ['net.skytrail.ilcdb.domain']
+
 import net.skytrail.ilcdb.domain.User
 import net.skytrail.ilcdb.domain.Role
 import net.skytrail.ilcdb.domain.UserRole
