@@ -1,10 +1,9 @@
 package net.skytrail.ilcdb.domain;
-
 import gorm.transform.Entity
-import java.util.EnumSet
+
 
 @Entity
-class Role {
+class Role @Entity {
     public static enum RoleType
     {
         ROLE_ADMIN("Administrator"),

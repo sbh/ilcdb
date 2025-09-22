@@ -1,9 +1,9 @@
 package net.skytrail.ilcdb.domain;
-
 import gorm.transform.Entity
 
+
 @Entity
-class CaseResult {
+class CaseResult @Entity {
     String result;
     boolean successfulResult; // For client or ILCBC.
     boolean statusWasAchieved; // An actual immigration status was successfully achieved.

@@ -1,9 +1,9 @@
 package net.skytrail.ilcdb.domain;
-
 import gorm.transform.Entity
 
+
 @Entity
-class Address {
+class Address @Entity {
     String street
     String city
     String county

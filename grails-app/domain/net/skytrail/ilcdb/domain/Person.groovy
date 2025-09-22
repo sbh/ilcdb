@@ -1,7 +1,8 @@
 package net.skytrail.ilcdb.domain;
-
 import gorm.transform.Entity
-import java.text.SimpleDateFormat
+
+import java.text.SimpleDateFormat;
+
 
 @Entity
 class Person implements Comparable<Person> {

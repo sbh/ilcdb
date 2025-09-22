@@ -1,10 +1,10 @@
 package net.skytrail.ilcdb.domain;
-
 import gorm.transform.Entity
-import java.text.SimpleDateFormat
 
-@Entity
-class ServiceRecord implements Comparable<ServiceRecord> {
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
+public class ServiceRecord implements Comparable<ServiceRecord> {
     static mapping = {
         cache true
     }

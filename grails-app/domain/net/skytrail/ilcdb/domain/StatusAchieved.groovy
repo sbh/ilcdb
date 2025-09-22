@@ -1,11 +1,10 @@
 package net.skytrail.ilcdb.domain;
-
 import gorm.transform.Entity
+
 import java.text.SimpleDateFormat
-import java.util.EnumSet
 
 @Entity
-class StatusAchieved {
+class StatusAchieved @Entity {
     static belongsTo = [ client:Client ]
 
     enum Type {

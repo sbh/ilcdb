@@ -1,9 +1,9 @@
 package net.skytrail.ilcdb.domain;
-
 import gorm.transform.Entity
 
+
 @Entity
-class CaseType {
+class CaseType @Entity {
     String type;
     boolean deprecated = false;
     String associatedStatus;

@@ -1,8 +1,8 @@
 package net.skytrail.ilcdb.domain;
-
 import gorm.transform.Entity
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
+
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormat;
 
 @Entity
 class Note implements Comparable<Note>

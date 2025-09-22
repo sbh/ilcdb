@@ -1,9 +1,8 @@
 package net.skytrail.ilcdb.domain;
-
 import gorm.transform.Entity
 
-@Entity
-public enum StatusType {
+
+public enum StatusType @Entity {
     DACA("Deferred Action", "daca"), LPR("Legal Permanent Resident", "lpr"), TPS("Temporary Protected Status", "tps"), CITIZEN("Citizen", "citizen")
 
     private final String description
