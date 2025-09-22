@@ -1,10 +1,11 @@
 package net.skytrail.ilcdb.domain
 
-import grails.gorm.Entity
+import gorm.transform.Entity
 import org.hibernate.annotations.Immutable
 
 @Immutable
-class UserRole implements Serializable, Entity {
+@Entity
+class UserRole implements Serializable {
 
     User user
     Role role

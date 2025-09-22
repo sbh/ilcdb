@@ -5,8 +5,8 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.22.RELEASE"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.2"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.3.7.RELEASE"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.3.4"
     }
 }
 
@@ -32,50 +32,46 @@ dependencyManagement {
 
 dependencies {
     // Core Grails and Spring Boot
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.grails:grails-core"
-    compile "org.grails:grails-web-boot"
-    compile "org.grails:grails-logging"
-
-    // Core plugins from BOM
-    compile "org.grails:grails-plugin-databinding"
-    compile "org.grails:grails-plugin-i18n"
-    compile "org.grails:grails-plugin-services"
-    compile "org.grails:grails-plugin-url-mappings"
-    compile "org.grails:grails-plugin-rest"
-    compile "org.grails.plugins:gsp"
-    compile "org.grails.plugins:scaffolding"
-    compile "org.grails.plugins:cache"
-    compile "org.grails.plugins:async"
+    implementation "org.springframework.boot:spring-boot-starter-logging"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    compileOnly "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.grails:grails-core"
+    implementation "org.grails:grails-web-boot"
+    implementation "org.grails:grails-logging"
+    implementation "org.grails:grails-plugin-databinding"
+    implementation "org.grails:grails-plugin-i18n"
+    implementation "org.grails:grails-plugin-services"
+    implementation "org.grails:grails-plugin-url-mappings"
+    implementation "org.grails:grails-plugin-rest"
+    implementation "org.grails.plugins:gsp"
+    implementation "org.grails.plugins:scaffolding"
+    implementation "org.grails.plugins:cache"
+    implementation "org.grails.plugins:async"
 
     // GORM / Hibernate
-    compile "org.grails.plugins:hibernate5"
-    compile "org.hibernate:hibernate-ehcache" // Version managed by BOM
+    implementation "org.grails:grails-gorm-hibernate5"
+    implementation "org.hibernate:hibernate-ehcache"
 
     // Validation dependencies
-    compile 'org.hibernate:hibernate-validator:5.3.6.Final'
-    compile 'javax.el:javax.el-api:2.2.4'
-    compile 'org.glassfish:javax.el:3.0.1-b08'
+    implementation 'org.hibernate:hibernate-validator'
 
     // Spring Security
-    compile 'org.grails.plugins:spring-security-core:3.2.3'
+    implementation 'org.grails.plugins:spring-security-core:4.0.3'
 
     // Third-party libraries
-    compile 'joda-time:joda-time:2.3'
-    runtime 'mysql:mysql-connector-java:8.0.28'
+    implementation 'joda-time:joda-time:2.3'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.28'
 
     // Assets
     assets "org.webjars:jquery:3.3.1"
     assets "org.webjars:jquery-ui:1.12.1"
 
     // Testing
-    testCompile "org.grails:grails-gorm-testing-support"
-    testCompile "org.grails.plugins:geb"
-    testCompile "org.grails:grails-web-testing-support"
-    testRuntime "com.h2database:h2"
-    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
+    testImplementation "org.grails:grails-gorm-testing-support"
+    testImplementation "org.grails.plugins:geb"
+    testImplementation "org.grails:grails-web-testing-support"
+    testRuntimeOnly "com.h2database:h2"
+    testRuntimeOnly "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
 }
 
 assets {

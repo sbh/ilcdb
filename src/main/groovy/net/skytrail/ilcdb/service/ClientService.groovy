@@ -21,7 +21,7 @@ import net.skytrail.ilcdb.domain.StatusType
 import net.skytrail.ilcdb.domain.User
 import net.skytrail.ilcdb.domain.UserRole
 
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 import org.joda.time.Interval
 
 @Transactional
