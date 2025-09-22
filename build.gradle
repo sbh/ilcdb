@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.3.7.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.6.7"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.3.4"
     }
 }
@@ -31,7 +31,6 @@ dependencyManagement {
 }
 
 dependencies {
-    // Core Grails and Spring Boot
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     compileOnly "org.springframework.boot:spring-boot-starter-tomcat"
@@ -47,26 +46,14 @@ dependencies {
     implementation "org.grails.plugins:scaffolding"
     implementation "org.grails.plugins:cache"
     implementation "org.grails.plugins:async"
-
-    // GORM / Hibernate
     implementation "org.grails:grails-gorm-hibernate5:$gormVersion"
     implementation "org.hibernate:hibernate-ehcache"
-
-    // Validation dependencies
-    implementation 'org.hibernate:hibernate-validator:6.1.5.Final'
-
-    // Spring Security
-    implementation 'org.grails.plugins:spring-security-core:4.0.3'
-
-    // Third-party libraries
+    implementation 'org.hibernate:hibernate-validator'
+    implementation 'org.grails.plugins:spring-security-core:5.1.0'
     implementation 'joda-time:joda-time:2.3'
     runtimeOnly 'mysql:mysql-connector-java:8.0.28'
-
-    // Assets
     assets "org.webjars:jquery:3.3.1"
     assets "org.webjars:jquery-ui:1.12.1"
-
-    // Testing
     testImplementation "org.grails:grails-gorm-testing-support"
     testImplementation "org.grails.plugins:geb"
     testImplementation "org.grails:grails-web-testing-support"
