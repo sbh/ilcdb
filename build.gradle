@@ -49,11 +49,11 @@ dependencies {
     implementation "org.grails.plugins:async"
 
     // GORM / Hibernate
-    implementation "org.grails:grails-gorm-hibernate5"
+    implementation "org.grails:grails-gorm-hibernate5:$gormVersion"
     implementation "org.hibernate:hibernate-ehcache"
 
     // Validation dependencies
-    implementation 'org.hibernate:hibernate-validator'
+    implementation 'org.hibernate:hibernate-validator:6.1.5.Final'
 
     // Spring Security
     implementation 'org.grails.plugins:spring-security-core:4.0.3'
