@@ -1,4 +1,5 @@
 package net.skytrail.ilcdb.domain
+
 import net.skytrail.ilcdb.domain.AMI
 import net.skytrail.ilcdb.domain.Address
 import net.skytrail.ilcdb.domain.Appointment
@@ -25,7 +26,7 @@ import net.skytrail.ilcdb.domain.UserRole
 import grails.gorm.Entity;
 
 @Entity
-class AMI implements Entity{
+class AMI {
     String label
     int level
 

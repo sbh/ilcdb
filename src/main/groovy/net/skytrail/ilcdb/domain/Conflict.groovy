@@ -1,6 +1,6 @@
 package net.skytrail.ilcdb.domain;
-import gorm.transform.Entity
 
+import gorm.transform.Entity
 
 @Entity
 class Conflict implements Comparable<Conflict> {

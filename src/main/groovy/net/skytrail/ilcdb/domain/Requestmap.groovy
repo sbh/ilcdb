@@ -1,4 +1,5 @@
 package net.skytrail.ilcdb.domain;
+
 import gorm.transform.Entity
 
 
@@ -6,17 +7,17 @@ import gorm.transform.Entity
  * Domain class for Request Map.
  */
 @Entity
-class Requestmap @Entity {
+class Requestmap {
 
-	String url
-	String configAttribute
+    String url
+    String configAttribute
 
     static mapping = {
         cache true
     }
 
-	static constraints = {
-		url(blank: false, unique: true)
-		configAttribute(blank: false)
-	}
+    static constraints = {
+      	url(blank: false, unique: true)
+	configAttribute(blank: false)
+    }
 }

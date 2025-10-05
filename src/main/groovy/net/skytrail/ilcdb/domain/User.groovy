@@ -1,11 +1,9 @@
 package net.skytrail.ilcdb.domain;
+
 import gorm.transform.Entity
 
-
 @Entity
-class User @Entity {
-//    def springSecurityService // Dependency injection for the springSecurityService.
-
+class User {
     String username
     String password
     String email

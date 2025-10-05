@@ -1,9 +1,9 @@
 package net.skytrail.ilcdb.domain;
+
 import gorm.transform.Entity
 
-
 @Entity
-class ClientSponsorRelation @Entity {
+class ClientSponsorRelation {
 
     static mapping = {
         cache true

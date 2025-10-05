@@ -1,9 +1,10 @@
 package net.skytrail.ilcdb.domain;
+
 import gorm.transform.Entity
 
 
 @Entity
-class Appointment @Entity {
+class Appointment {
 
     Date date
     String note

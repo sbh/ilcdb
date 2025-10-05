@@ -1,0 +1,33 @@
+a# Use an official OpenJDK 8 runtime as a parent image
+FROM openjdk:8-jdk
+
+# Set environment variables for Grails
+ENV GRAILS_VERSION 5.3.1
+ENV GRADLE_OPTS "-Dorg.gradle.daemon=false"
+
+# Install dependencies and SDKMAN!
+RUN apt-get update && apt-get install -y zip curl && rm -rf /var/lib/apt/lists/*
+
+# Install Grails using SDKMAN
+RUN curl -s "https://get.sdkman.io" | bash
+RUN bash -c "source /root/.sdkman/bin/sdkman-init.sh && sdk install grails ${GRAILS_VERSION}"
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Gradle wrapper files first to leverage Docker cache
+###COPY gradlew /app/
+###COPY gradle/ /app/gradle/
+
+# Copy the build configuration files
+###COPY build.gradle gradle.properties settings.gradle /app/
+
+# Download dependencies. This layer is cached and only re-run if build files change.
+###RUN ./gradlew dependencies
+
+# Copy the rest of your application source code
+###COPY . .
+
+# Default command to open a shell in the container
+CMD ["/bin/bash"]
+

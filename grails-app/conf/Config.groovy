@@ -53,62 +53,9 @@ log4j = {
            'net.sf.ehcache.hibernate'
  }
 
-// WAR dependency config
-/*grails.war.dependencies = [
-    "ant.jar",
-    "ant-launcher.jar",
-    "hibernate3.jar",
-    "jdbc2_0-stdext.jar",
-    "jta.jar",
-    "groovy-all-*.jar",
-    "springmodules-sandbox.jar",
-    "standard-${servletVersion}.jar",
-    "jstl-${servletVersion}.jar",
-    "antlr-*.jar",
-    "cglib-*.jar",
-    "dom4j-*.jar",
-    "ehcache-*.jar",
-    "junit-*.jar",
-    "commons-logging-*.jar",
-    "sitemesh-*.jar",
-    "spring-*.jar",
-    "log4j-*.jar",
-    "ognl-*.jar",
-    "hsqldb-*.jar",
-    "commons-lang-*.jar",
-    "commons-collections-*.jar",
-    "commons-beanutils-*.jar",
-    "commons-pool-*.jar",
-    "commons-dbcp-*.jar",
-    "commons-cli-*.jar",
-    "commons-validator-*.jar",
-    "commons-fileupload-*.jar",
-    "commons-io-*.jar",
-    "commons-io-*.jar",
-    "*oro-*.jar",
-    "jaxen-*.jar",
-    "xercesImpl.jar",
-    "xstream-1.2.1.jar",
-    "xpp3_min-1.1.3.4.O.jar"
-]
-
-grails.war.java5.dependencies = [
-    "hibernate-annotations.jar",
-    "ejb3-persistence.jar",
-]*/
-
-
-
 // The following properties have been added by the Upgrade process...
 grails.views.default.codec="html" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
-
-//log4j.logger.org.springframework.security='off,stdout'
-
-
-//log4j.logger.org.springframework.security='off,stdout'
-
-//log4j.logger.org.springframework.security='off,stdout'
 
 // Spring Security settings are now managed in application.groovy
 
@@ -140,27 +87,3 @@ jqueryDateTimePicker {
     }
 }
 
-
-// Uncomment and edit the following lines to start using Grails encoding & escaping improvements
-
-/* remove this line
-// GSP settings
-grails {
-    views {
-        gsp {
- encoding = 'UTF-8'
-            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
-            codecs {
-                expression = 'html' // escapes values inside null
-                scriptlet = 'none' // escapes output from scriptlets in GSPs
-                taglib = 'none' // escapes output from taglibs
-                staticparts = 'none' // escapes output from static template parts
-            }
-        }
-        // escapes all not-encoded output at final stage of outputting
-        filteringCodecForContentType {
-            //'text/html' = 'html'
-        }
-    }
-}
-remove this line */

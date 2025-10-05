@@ -1,9 +1,10 @@
 package net.skytrail.ilcdb.domain;
+
 import gorm.transform.Entity
 
 
 @Entity
-class BirthPlace @Entity {
+class BirthPlace {
     String city
     String state
     Country country;

@@ -1,4 +1,5 @@
 package net.skytrail.ilcdb.domain
+
 import gorm.transform.Entity
 
 import org.hibernate.annotations.Immutable
