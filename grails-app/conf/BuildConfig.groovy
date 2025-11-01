@@ -23,7 +23,8 @@ grails.project.dependency.resolution = {
         grailsHome()
         grailsCentral()
         mavenCentral()
-        mavenRepo "http://repo.spring.io/milestone/"
+        mavenRepo "https://repo.spring.io/milestone/"
+        mavenRepo "http://repository.jboss.org/maven2/"
 
         // uncomment these to enable remote dependency resolution from public Maven repositories
         //mavenCentral()
@@ -40,6 +41,7 @@ grails.project.dependency.resolution = {
 //    }
     dependencies {
         runtime 'mysql:mysql-connector-java:8.0.33'
+        compile 'org.codehaus.gpars:gpars:1.2.1'
     }
 
     plugins {
@@ -52,6 +54,7 @@ grails.project.dependency.resolution = {
         compile ":spring-security-core:2.0-RC5"
         compile ":spring-security-ui:1.0-RC2"
         compile ":asset-pipeline:2.5.1"
+        compile ":cache:1.1.8"
         compile ":bcrypt:1.0"
         compile ":scaffolding:2.1.2"
         compile ":jquery-ui:1.10.4"
