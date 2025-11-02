@@ -38,23 +38,15 @@ class ClientController {
         return clients.collect{client -> makeClientMap(client)}
     }
 
-    @Cacheable(value = 'clients', key = "#max + '_' + #offset")
-    def list(String max, Integer offset) {
+    def list() {
         def clientCount = Client.count()
-        if (max == null || max == 'All') {
-            params.max = clientCount
-        } else {
-            params.max = Math.min(max?.toInteger() ?: 10, 100)
-        }
-        params.offset = offset ?: 0
         def query = """
             SELECT c
             FROM Client c
             JOIN c.client p
             ORDER BY LOWER(p.lastName), LOWER(p.firstName)
         """
-        def queryParams = [max: params.max, offset: params.offset]
-        def clients = Client.executeQuery(query, queryParams)
+        def clients = Client.executeQuery(query)
         def clientMaps = makeClientMaps(clients)
         [clientList: clientMaps, clientCount: clientCount]
     }
@@ -132,10 +124,6 @@ class ClientController {
                 redirect(action:"search", fragment:params.id)
             }
             else {
-                println("errors***")
-                client.errors.allErrors.each { println it }
-                println("***errors")
-
                 render(view:'edit',model:[client:client])
             }
         }
@@ -209,14 +197,6 @@ class ClientController {
             }
             else {
                 //Restore object graph to report errors in the view
-                if (!client.validate())
-                    client.errors.allErrors.each { println "client error: "+it }
-                if (!address.validate())
-                    address.errors.allErrors.each { println "address error: "+it }
-                if (!person.validate())
-                    person.errors.allErrors.each { println "person error: "+it }
-                if (!placeOfBirth.validate())
-                    placeOfBirth.errors.allErrors.each { println "placeOfBirth error: "+it }
                 person.address = address
                 client.client = person
                 render(view:'create', model:[client:client])
@@ -449,7 +429,6 @@ class ClientController {
                     srIntakesCount       : intakeTypeCounts[1]
             ]
         }
-        returnValue += params
         return returnValue
     }
 
@@ -468,7 +447,7 @@ class ClientController {
     Collection<Client> getClients(String clientIntakeQuery,
                                   String munType, String attorney, String homeCountry,
                                   Date startDate, Date endDate, String municipality, String statusAchieved, String intakeState, String intakeType) {
-        def queries = [getMunicipalitySubQuery(munType), getAttorneySubQuery(attorney), getHomeCountrySubQuery(homeCountry)]
+        def queries = [getMunicipalitySubQuery(munType, municipality), getAttorneySubQuery(attorney), getHomeCountrySubQuery(homeCountry)]
 
         String query = clientIntakeQuery
         queries.each{ aQuery ->
@@ -486,16 +465,21 @@ class ClientController {
 
     Collection<Client> doit( String query, String munType, Date startDate, Date endDate, String municipality, String homeCountry, String attorney) {
         def namedParams = [startDate:startDate, endDate:endDate]
-        if (query.toLowerCase().contains(":mun")) namedParams += [mun:municipality]
-        if (query.toLowerCase().contains(":homeCountry")) namedParams += [homeCountry:homeCountry]
-        if (query.toLowerCase().contains(":attorney")) namedParams += [attorney:attorney]
 
-        if ("State".equals(munType))
-            namedParams += [munAlt:usStates.getAlternates(municipality)]
+        if (attorney && attorney != "Any") {
+            namedParams += [attorney:attorney]
+        }
+        if (homeCountry && homeCountry != "-1") {
+            namedParams += [homeCountryName:Country.get(homeCountry).name]
+        }
+        if (munType && "Any" != munType && municipality?.trim()) {
+            namedParams += [mun:municipality]
+            if ("State".equals(munType)) {
+                namedParams += [munAlt:usStates.getAlternates(municipality)]
+            }
+        }
 
-        println "------> executing query: $query, namedParams: $namedParams"
         def clients = Client.executeQuery( query, namedParams )
-        println "\t results count: ${clients.size()}"
         clients
     }
 
@@ -503,17 +487,15 @@ class ClientController {
         if (!attorney || "Any".equals(attorney)) {
             return ""
         }
-        return "intake.attorney = '" + attorney + "'"
+        return "intake.attorney = :attorney"
     }
 
-    String getMunicipalitySubQuery(String municipalityType) {
-        if (!municipalityType) {
+    String getMunicipalitySubQuery(String municipalityType, String municipality) {
+        if (!municipalityType || "Any".equals(municipalityType) || !municipality?.trim()) {
             return ""
         }
         if ("State".equals(municipalityType))
             return "(upper(address.state) = upper(:mun) or upper(address.state) = upper(:munAlt))"
-        else if ("Any".equals(municipalityType))
-            return ""
         else
             return "upper(address.${municipalityType.toLowerCase()}) = upper(:mun)"
     }
@@ -523,7 +505,7 @@ class ClientController {
             return ""
         }
         else {
-            return "(upper(placeOfBirth.country.name) = '${Country.get(homeCountry)}')"
+            return "(upper(placeOfBirth.country.name) = :homeCountryName)"
         }
     }
 }

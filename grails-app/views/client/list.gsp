@@ -11,14 +11,7 @@
                 <div class="message">${flash.message}</div>
             </g:if>
             <div class="list">
-                <g:form action="list" method="get">
-                    <label for="max">Clients per page:</label>
-                    <g:select name="max" from="[10, 25, 50, 100, 'All']" value="${params.max ?: 'All'}" onchange="this.form.submit()" />
-                </g:form>
                 <g:render template="/templates/clientListTemplate" model="[clientList: clientList]" />
-            </div>
-            <div class="paginateButtons">
-                <g:paginate total="${clientCount}" params="${params}" />
             </div>
         </div>
     </body>
