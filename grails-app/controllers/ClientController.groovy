@@ -389,24 +389,48 @@ class ClientController {
         return [ searchResults:sortedResults, params:params ]
     }
 
-    @Cacheable(value = 'reportCache', key = "(#startDate?.toString() ?: '') + (#endDate?.toString() ?: '') + (#municipality ?: '') + (#munType ?: '') + (#attorney ?: '') + (#displayIntakesCheckBox ?: '') + (#intakeState ?: '') + (#intakeType ?: '') + (#statusAchieved ?: '') + (#homeCountry ?: '')")
-    def report(Date startDate, Date endDate, String municipality, String munType, String attorney,
-               String displayIntakesCheckBox, String intakeState, String intakeType, String statusAchieved, String homeCountry) {
+    def report() {
+        // Don't generate a report if the user is just navigating to the page
+        if (!params._action_report) {
+            return [:]
+        }
+        
+        // Manually construct dates to avoid i18n issues with params.date()
+        def startDay = params.int('startDate_day')
+        def startMonth = params.int('startDate_month') - 1 // Calendar is 0-based for months
+        def startYear = params.int('startDate_year')
+        Date startDate = (startDay && startMonth != null && startYear) ? new GregorianCalendar(startYear, startMonth, startDay).time : null
+
+        def endDay = params.int('endDate_day')
+        def endMonth = params.int('endDate_month') - 1 // Calendar is 0-based for months
+        def endYear = params.int('endDate_year')
+        Date endDate = (endDay && endMonth != null && endYear) ? new GregorianCalendar(endYear, endMonth, endDay).time : null
+        def municipality = params.municipality
+        def munType = params.munType ?: "Any"
+        def attorney = params.attorney ?: "Any"
+        def displayIntakesCheckBox = params.displayIntakesCheckBox
+        def intakeState = params.intakeState ?: "any"
+        def intakeType = params.intakeType ?: "any"
+        def statusAchieved = params.statusAchieved ?: "any"
+        def homeCountry = params.homeCountry
+        
+        return _report(startDate, endDate, municipality, munType, attorney, displayIntakesCheckBox, intakeState, intakeType, statusAchieved, homeCountry)
+    }
+
+    @Cacheable(value = 'reportCache', key = "(#startDate?.format('yyyy-MM-dd') ?: '') + (#endDate?.format('yyyy-MM-dd') ?: '') + (#municipality ?: '') + (#munType ?: '') + (#attorney ?: '') + (#displayIntakesCheckBox ?: '') + (#intakeState ?: '') + (#intakeType ?: '') + (#statusAchieved ?: '') + (#homeCountry ?: '')")
+    private def _report(Date startDate, Date endDate, String municipality, String munType, String attorney,
+                        String displayIntakesCheckBox, String intakeState, String intakeType, String statusAchieved, String homeCountry) {
         def returnValue = [:]
         if (startDate && endDate) {
             endDate = new Date(endDate.getTime() + 1000L * 24L * 60L * 60L - 1L)
             
-            def finalIntakeType = (intakeType == null || intakeType.trim().isEmpty()) ? "any" : intakeType
-            def finalIntakeState = (intakeState == null || intakeState.trim().isEmpty()) ? "any" : intakeState
-            def finalStatusAchieved = (statusAchieved == null || statusAchieved.trim().isEmpty()) ? "any" : statusAchieved
-            
             def unfilteredClients = getClients(CLIENTS_QUERY + "WHERE ( " + COMBINED_INTAKES_QUERY + " )",
-                    munType, attorney, homeCountry, startDate, endDate, municipality, finalStatusAchieved, finalIntakeState, finalIntakeType)
+                    munType, attorney, homeCountry, startDate, endDate, municipality, statusAchieved, intakeState, intakeType)
             def interval = new Interval(startDate.getTime(), endDate.getTime())
             def clients
             GParsPool.withPool {
                 clients = unfilteredClients.collate(100).parallel.map { chunk ->
-                    clientService.filterStatus(chunk, finalStatusAchieved, finalIntakeState, finalIntakeType, interval)
+                    clientService.filterStatus(chunk, statusAchieved, intakeState, intakeType, interval)
                 }.collection.flatten()
             }
             def sortedClients = new ArrayList(clients)
@@ -419,9 +443,9 @@ class ClientController {
                     munType              : munType,
                     attorney             : attorney,
                     displayIntakesCheckBox: displayIntakesCheckBox == "on" || displayIntakesCheckBox == "true" ? "true" : "false",
-                    intakeState          : finalIntakeState,
-                    intakeType           : finalIntakeType,
-                    statusAchieved       : finalStatusAchieved,
+                    intakeState          : intakeState,
+                    intakeType           : intakeType,
+                    statusAchieved       : statusAchieved,
                     homeCountry          : homeCountry,
                     report               : true,
                     clientList           : makeClientMaps(sortedClients),
@@ -440,10 +464,10 @@ class ClientController {
                inner join fetch person.placeOfBirth as placeOfBirth
                inner join fetch client.cases as intake
         """
-    private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate AND intake.completionDate <= :endDate ) "
-    private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate AND intake.startDate <= :endDate )"
-    private static String ONGOING_INTAKES_QUERY = " ( intake.completionDate is NULL OR intake.completionDate >= :endDate ) "
-    public static String COMBINED_INTAKES_QUERY = COMPLETED_INTAKES_QUERY + " OR " + OPENED_INTAKES_QUERY + " OR " + ONGOING_INTAKES_QUERY
+    // An intake is considered active in the date range if its lifespan overlaps with the range.
+    // This happens if the intake started before the range ended, AND the intake ended after the range started.
+    // A null completionDate means the intake is still ongoing.
+    public static String COMBINED_INTAKES_QUERY = " ( intake.startDate <= :endDate AND (intake.completionDate IS NULL OR intake.completionDate >= :startDate) ) "
     Collection<Client> getClients(String clientIntakeQuery,
                                   String munType, String attorney, String homeCountry,
                                   Date startDate, Date endDate, String municipality, String statusAchieved, String intakeState, String intakeType) {
