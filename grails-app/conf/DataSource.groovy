@@ -12,23 +12,6 @@ hibernate {
 
 //environment specific settings
 environments {
-    // development {
-    //     dataSource {
-    //         dbCreate = "update"
-    //         driverClassName = "com.mysql.cj.jdbc.Driver"
-    //         url = "jdbc:mysql://localhost/ilcdb"
-    //         username = System.getenv("MYSQL_USER")
-    //         password =  System.getenv("MYSQL_PASSWORD")
-    //         //logSql = true
-    //     }
-    // }
-    // test {
-    //     dataSource {
-    //         dbCreate = "update"
-    //         url = "jdbc:derby:db"
-    //         driverClassName = "org.apache.derby.jdbc.EmbeddedDriver"
-    //     }
-    // }
     production {
         dataSource {
             dbCreate = "update"

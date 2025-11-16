@@ -4,6 +4,7 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 grails.project.target.level = 1.6
 grails.project.source.level = 1.6
+grails.app.context = "/"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 grails.project.dependency.resolver = "maven"
@@ -59,5 +60,12 @@ grails.project.dependency.resolution = {
         compile ":scaffolding:2.1.2"
         compile ":jquery-ui:1.10.4"
         compile ":mail:1.0.8-SNAPSHOT"
+    }
+}
+
+grails.war.resources = { stagingDir ->
+    delete(file: "${stagingDir}/WEB-INF/classes/rebel.xml")
+    copy(todir: "${stagingDir}") {
+        fileset(dir: "src/main/webapp", includes: "**/**")
     }
 }

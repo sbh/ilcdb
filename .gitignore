@@ -3,3 +3,4 @@
 *.iws
 projectFilesBackup
 target
+nginx/certs/

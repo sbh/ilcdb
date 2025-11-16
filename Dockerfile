@@ -17,7 +17,7 @@
     ENV PATH=$GRAILS_HOME/bin:$PATH
 
     # Copy the WAR file into the Tomcat webapps directory
-    COPY target/ilcdb-1.0.war /usr/local/tomcat/webapps/
+    COPY target/ilcdb-1.0.war /usr/local/tomcat/webapps/ROOT.war
 
 
     # Expose the port Tomcat is running on

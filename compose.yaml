@@ -1,43 +1,41 @@
-name: ilcdb
+version: '3.8'
 
 services:
   webapp:
-    build: .
+    build: .  # This assumes your Dockerfile is in the root directory
     container_name: ilcdb-webapp
-    image: sbherndon/ilcdb-webapp:latest
-#    image: ilcdb-webapp:latest
-    ports:
-      - "8080:8080"
-#    depends_on:
-#      db:
-#        condition: service_healthy
+#    image: sbherndon/ilcdb-webapp:latest
+    depends_on:
+      - db
     environment:
-      - MYSQL_HOST=db
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=ilcdb
-      - MYSQL_USER=$MYSQL_USER
-      - MYSQL_USER_PASSWORD=$MYSQL_USER_PASSWORD
+      MYSQL_HOST: db # Tells the Grails app to connect to the 'db' service
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ilcdb
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
 
   db:
     image: mysql:9
     container_name: ilcdb-mysql
-    ports:
-      - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE=ilcdb
-      - MYSQL_USER=$MYSQL_USER
-      - MYSQL_PASSWORD=$MYSQL_USER_PASSWORD
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ilcdb
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 5s
-      retries: 2
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - webapp
 
 volumes:
-  mysql_data:  # This line defines the volume
-
-# secrets:
-#   mysql_user_password: ./secrets/mysql_ilcdb_password.txt
-#   mysql_root_password: ./secrets/mysql_root_password.txt
+  mysql_data:
