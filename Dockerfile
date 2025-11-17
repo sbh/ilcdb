@@ -19,9 +19,15 @@
     # Copy the WAR file into the Tomcat webapps directory
     COPY target/ilcdb-1.0.war /usr/local/tomcat/webapps/ROOT.war
 
+    # Copy custom Tomcat server.xml with SSL configuration
+    COPY tomcat-config/server.xml /usr/local/tomcat/conf/server.xml
 
-    # Expose the port Tomcat is running on
-    EXPOSE 8080
+    # Copy and run the keystore generation script
+    COPY tomcat-config/generate-keystore.sh /tmp/generate-keystore.sh
+    RUN chmod +x /tmp/generate-keystore.sh && /tmp/generate-keystore.sh
+
+    # Expose both HTTP and HTTPS ports
+    EXPOSE 8080 8443
 
     # Start Tomcat
     CMD ["catalina.sh", "run"]

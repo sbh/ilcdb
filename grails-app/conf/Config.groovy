@@ -52,8 +52,7 @@ grails.plugin.springsecurity.failureHandler.exceptionMappings = [ 'org.springfra
 grails.plugin.springsecurity.roleHierarchy = 'ROLE_ADMIN > ROLE_ATTORNEY > ROLE_STAFF > ROLE_VOLUNTEER > ROLE_INTERN'
 
 grails.plugin.springsecurity.portMapper.portMappings = [
-    '80':'8443',
-    '443':'8443'
+    '8080':'8443'
 ]
 
 grails.plugin.springsecurity.ui.register.postResetUrl = '/reset'
