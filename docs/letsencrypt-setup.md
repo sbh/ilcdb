@@ -77,10 +77,12 @@ sudo openssl pkcs12 -export \
   -name tomcat \
   -passout pass:changeit
 
-# Convert PKCS12 to JKS
+# Convert PKCS12 to PKCS12 keystore with .jks extension (for consistency)
+# Note: Modern Java/Tomcat uses PKCS12 format (industry standard)
 sudo keytool -importkeystore \
   -deststorepass changeit \
   -destkeypass changeit \
+  -deststoretype PKCS12 \
   -destkeystore /etc/letsencrypt/live/ilcdb.example.org/keystore.jks \
   -srckeystore /etc/letsencrypt/live/ilcdb.example.org/keystore.p12 \
   -srcstoretype PKCS12 \
@@ -171,10 +173,11 @@ if [ -f /etc/letsencrypt/live/ilcdb.example.org/fullchain.pem ]; then
       -name tomcat \
       -passout pass:changeit
 
-    # Convert to JKS
+    # Convert to PKCS12 keystore with .jks extension
     keytool -importkeystore \
       -deststorepass changeit \
       -destkeypass changeit \
+      -deststoretype PKCS12 \
       -destkeystore /etc/letsencrypt/live/ilcdb.example.org/keystore.jks \
       -srckeystore /etc/letsencrypt/live/ilcdb.example.org/keystore.p12 \
       -srcstoretype PKCS12 \

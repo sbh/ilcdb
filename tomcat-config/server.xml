@@ -26,6 +26,7 @@
       <SSLHostConfig>
         <Certificate certificateKeystoreFile="/usr/local/tomcat/conf/keystore.jks"
                      certificateKeystorePassword="changeit"
+                     certificateKeystoreType="PKCS12"
                      type="RSA" />
       </SSLHostConfig>
     </Connector>

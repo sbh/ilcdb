@@ -38,6 +38,25 @@ class ClientController {
         return clients.collect{client -> makeClientMap(client)}
     }
 
+    def dumpJSON(clients) {
+        long t1 = System.currentTimeMillis()
+        def file = new File("/var/tmp/clients.json")
+        file.delete()
+        def id = 1
+        clients.each {
+            file << JsonOutput.toJson(it.toMap())
+            file << "\n"
+        }
+
+        def t2 = System.currentTimeMillis()
+        println(clients.size()+" loaded in "+(t2-t1)+" ms.")
+
+        Collections.sort(clients, new ClientComparator());
+        println(clients.size()+" sorted in "+(System.currentTimeMillis()-t2)+" ms.")
+
+        t1 = System.currentTimeMillis()
+    }
+
     def list() {
         def clientCount = Client.count()
         def query = """
@@ -48,6 +67,7 @@ class ClientController {
         """
         def clients = Client.executeQuery(query)
         def clientMaps = makeClientMaps(clients)
+        //dumpJSON(clients)
         [clientList: clientMaps, clientCount: clientCount]
     }
 
