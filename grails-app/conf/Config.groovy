@@ -20,7 +20,8 @@ grails.enable.native2ascii = true
 
 environments {
     production {
-        grails.serverURL = "https://localhost:8443"
+        // Use environment variable for server URL, or default to empty (dynamic from request)
+        grails.serverURL = System.getenv("GRAILS_SERVER_URL") ?: ""
     }
 }
 
