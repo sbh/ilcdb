@@ -20,7 +20,9 @@ services:
   db:
     image: mysql:9
     container_name: ilcdb-mysql
-    environment:
+    ports:
+     - "3306:3306"
+   environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ilcdb
       MYSQL_USER: ${MYSQL_USER}
