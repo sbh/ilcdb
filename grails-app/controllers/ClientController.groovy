@@ -484,10 +484,11 @@ class ClientController {
                inner join fetch person.placeOfBirth as placeOfBirth
                inner join fetch client.cases as intake
         """
-    // An intake is considered active in the date range if its lifespan overlaps with the range.
-    // This happens if the intake started before the range ended, AND the intake ended after the range started.
-    // A null completionDate means the intake is still ongoing.
-    public static String COMBINED_INTAKES_QUERY = " ( intake.startDate <= :endDate AND (intake.completionDate IS NULL OR intake.completionDate >= :startDate) ) "
+    // Find intakes that were completed, opened, or ongoing during the date range
+    private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate AND intake.completionDate <= :endDate ) "
+    private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate AND intake.startDate <= :endDate )"
+    private static String ONGOING_INTAKES_QUERY = " ( intake.completionDate is NULL OR intake.completionDate >= :endDate ) "
+    public static String COMBINED_INTAKES_QUERY = COMPLETED_INTAKES_QUERY + " OR " + OPENED_INTAKES_QUERY + " OR " + ONGOING_INTAKES_QUERY
     Collection<Client> getClients(String clientIntakeQuery,
                                   String munType, String attorney, String homeCountry,
                                   Date startDate, Date endDate, String municipality, String statusAchieved, String intakeState, String intakeType) {

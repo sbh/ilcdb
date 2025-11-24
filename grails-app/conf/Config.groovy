@@ -56,6 +56,10 @@ grails.plugin.springsecurity.portMapper.portMappings = [
     '8080':'8443'
 ]
 
+grails.plugin.springsecurity.secureChannel.definition = [
+    '/**': 'REQUIRES_SECURE_CHANNEL'
+]
+
 grails.plugin.springsecurity.ui.register.postResetUrl = '/reset'
 grails.plugin.springsecurity.rejectIfNoRule = false
 grails.plugin.springsecurity.fii.rejectPublicInvocations = true

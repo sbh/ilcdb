@@ -1,5 +1,5 @@
     # Use the official Tomcat base image
-    FROM tomcat:9-jdk8
+    FROM --platform=$TARGETPLATFORM tomcat:9-jdk8
 
     RUN apt-get update && apt-get install -y less vim default-mysql-client unzip
 
