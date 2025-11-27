@@ -414,7 +414,7 @@ class ClientController {
         if (!params._action_report) {
             return [:]
         }
-        
+
         // Manually construct dates to avoid i18n issues with params.date()
         def startDay = params.int('startDate_day')
         def startMonth = params.int('startDate_month') - 1 // Calendar is 0-based for months
@@ -433,8 +433,72 @@ class ClientController {
         def intakeType = params.intakeType ?: "any"
         def statusAchieved = params.statusAchieved ?: "any"
         def homeCountry = params.homeCountry
-        
+
         return _report(startDate, endDate, municipality, munType, attorney, displayIntakesCheckBox, intakeState, intakeType, statusAchieved, homeCountry)
+    }
+
+    /**
+     * REST API endpoint for report comparison testing
+     * Returns JSON with client IDs and intake details for easy comparison between branches
+     *
+     * Example: http://localhost:8080/client/reportApi?startDate=2023-01-01&endDate=2023-12-31
+     * Optional params: municipality, munType, attorney, homeCountry, statusAchieved, intakeState, intakeType
+     */
+    def reportApi() {
+        // Parse dates from simple format: yyyy-MM-dd
+        def dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd")
+        Date startDate = params.startDate ? dateFormat.parse(params.startDate) : null
+        Date endDate = params.endDate ? dateFormat.parse(params.endDate) : null
+
+        if (!startDate || !endDate) {
+            render(contentType: "application/json") {
+                error = "Missing required parameters: startDate and endDate (format: yyyy-MM-dd)"
+                example = "/client/reportApi?startDate=2023-01-01&endDate=2023-12-31"
+            }
+            return
+        }
+
+        def municipality = params.municipality
+        def munType = params.munType ?: "Any"
+        def attorney = params.attorney ?: "Any"
+        def intakeState = params.intakeState ?: "any"
+        def intakeType = params.intakeType ?: "any"
+        def statusAchieved = params.statusAchieved ?: "any"
+        def homeCountry = params.homeCountry
+
+        // Run the report
+        def reportData = _report(startDate, endDate, municipality, munType, attorney, null, intakeState, intakeType, statusAchieved, homeCountry)
+
+        // Extract just the client IDs and intake details for comparison
+        def clients = reportData.clientList ?: []
+        def result = [
+            metadata: [
+                startDate: params.startDate,
+                endDate: params.endDate,
+                municipality: municipality,
+                munType: munType,
+                attorney: attorney,
+                statusAchieved: statusAchieved,
+                intakeState: intakeState,
+                intakeType: intakeType,
+                homeCountry: homeCountry,
+                totalClients: clients.size(),
+                saIntakesCount: reportData.saIntakesCount ?: 0,
+                srIntakesCount: reportData.srIntakesCount ?: 0
+            ],
+            clients: clients.collect { client ->
+                [
+                    id: client.id,
+                    name: client.person,
+                    attorney: client.attorney,
+                    city: client.shortAddress,
+                    homeCountry: client.homeCountry,
+                    intakeCount: client.intakes?.size() ?: 0
+                ]
+            }.sort { it.id }
+        ]
+
+        render(contentType: "application/json", text: groovy.json.JsonOutput.toJson(result))
     }
 
     @Cacheable(value = 'reportCache', key = "(#startDate?.format('yyyy-MM-dd') ?: '') + (#endDate?.format('yyyy-MM-dd') ?: '') + (#municipality ?: '') + (#munType ?: '') + (#attorney ?: '') + (#displayIntakesCheckBox ?: '') + (#intakeState ?: '') + (#intakeType ?: '') + (#statusAchieved ?: '') + (#homeCountry ?: '')")
@@ -487,7 +551,7 @@ class ClientController {
     // Find intakes that were completed, opened, or ongoing during the date range
     private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate AND intake.completionDate <= :endDate ) "
     private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate AND intake.startDate <= :endDate )"
-    private static String ONGOING_INTAKES_QUERY = " ( intake.completionDate is NULL OR intake.completionDate >= :endDate ) "
+    private static String ONGOING_INTAKES_QUERY = " ( intake.startDate <= :endDate AND (intake.completionDate is NULL OR intake.completionDate >= :endDate) ) "
     public static String COMBINED_INTAKES_QUERY = COMPLETED_INTAKES_QUERY + " OR " + OPENED_INTAKES_QUERY + " OR " + ONGOING_INTAKES_QUERY
     Collection<Client> getClients(String clientIntakeQuery,
                                   String munType, String attorney, String homeCountry,

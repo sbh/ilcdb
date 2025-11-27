@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   webapp:
     build: .  # This assumes your Dockerfile is in the root directory
