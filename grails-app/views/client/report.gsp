@@ -215,7 +215,7 @@ window.onload = reporting.windowLoaded
                         </tr>
 
                         <tr class="prop">
-                            <td valign="top"<label for="attorney">>Attorney</label></td>
+                            <td valign="top"<label for="attorney">Attorney</label></td>
                             <td name="attorney" valign="top">
                                 <g:select id="attorney" name="attorney" from="${attorneys}" value="${attorney}" />
                             </td>

@@ -8,10 +8,7 @@
     <true/>
     <key>ProgramArguments</key>
     <array>
-        <string>/opt/homebrew/bin/podman</string>
-        <string>machine</string>
-        <string>start</string>
-        <string>podman-vm</string>
+        <string>/usr/local/bin/podman-start-ilcdb.sh</string>
     </array>
     <key>UserName</key>
     <string>root</string>

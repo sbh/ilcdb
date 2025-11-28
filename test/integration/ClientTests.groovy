@@ -26,54 +26,54 @@ class ClientTests extends GroovyTestCase {
 		try{
 			println "Running client save test";
 			def random = new Random();
-			
-		
+
+			// Create or find Country objects
+			def mexicoCountry = Country.findByName("MEXICO") ?: new Country(name: "MEXICO").save(failOnError: true)
+			def usCountry = Country.findByName("UNITED STATES") ?: new Country(name: "UNITED STATES").save(failOnError: true)
+
+			// Create or find AMI
+			def defaultAmi = AMI.findByLabel("UNSPECIFIED") ?: new AMI(label: "UNSPECIFIED", level: 0).save(failOnError: true)
+
 			def firstName = generateRandomString( random.nextFloat() * 9 + 1 as int);
 			def lastName = generateRandomString( random.nextFloat() * 15 + 1 as int);
 			def gender = (random.nextFloat() > 0.5) ? "male" : "female";
-			
+
 			def dateOfBirth = new Date(1, 1, 1900);
-			
-			def placeOfBirth = new BirthPlace( ["city":"Oaxaca", "state":"Oaxaca", "country":"MEXICO" ]);
-			
-			def address = new Address(["street":"1234 Fake Street", "city":"Boulder", "county":"Boulder", "state":"Colorado", "country":"UNITED STATES", "postalCode":"80306" ]);
-			
-			def person = new Person(["firstName":firstName, "lastName":lastName, "phoneNumber":"555-555-5555",
-				 "dateOfBirth":dateOfBirth, "race":"Latino", "gender":gender, "englishProficiency":"native",
-				 "emailAddress":"123@123.com", "":"" ])
-			def client = new Client( ["householdIncomeLevel":50, "numberInHousehold":50, "firstVisit":new Date(), "fileLocation":"none"] );
-			
-			
-			if( address.hasErrors() || address.validate() )
+
+			def placeOfBirth = new BirthPlace(city: "Oaxaca", state: "Oaxaca", country: mexicoCountry);
+
+			def address = new Address(street: "1234 Fake Street", city: "Boulder", county: "Boulder", state: "Colorado", country: usCountry, postalCode: "80306");
+
+			def person = new Person(firstName: firstName, lastName: lastName, phoneNumber: "555-555-5555",
+				dateOfBirth: dateOfBirth, race: "Latino", gender: gender, englishProficiency: "native",
+				emailAddress: "123@123.com")
+			def client = new Client(householdIncomeLevel: 50, numberInHousehold: 50, firstVisit: new Date(), fileLocation: "none", ami: defaultAmi);
+
+			// Set relationships before validation
+			person.address = address;
+			address.person = person;
+			person.placeOfBirth = placeOfBirth;
+			client.client = person;
+
+			// Validate all objects
+			if( address.hasErrors() || !address.validate() )
 			{
-				address.errors.allErrors.each{println "Error Validating Address: " +  it + "\n";};	
+				address.errors.allErrors.each{println "Error Validating Address: " +  it + "\n";};
 				assertTrue false;
 			}
-			else
-			{
-				person.address = address;	
-				address.person = person;
-			}
-			
+
 			if( placeOfBirth.hasErrors() || !placeOfBirth.validate() )
 			{
 				placeOfBirth.errors.allErrors.each{println "Error Validating PoB: " + it + "\n";};
 				assertTrue false;
 			}
-			else
-			{
-				person.placeOfBirth = placeOfBirth;	
-			}
-			
+
 			if(person.hasErrors() || !person.validate())
 			{
-				person.errors.allErrors.each{println "Error Validating Person: " + it + "\n"};	
+				person.errors.allErrors.each{println "Error Validating Person: " + it + "\n"};
 				assertTrue false;
 			}
-			else
-			{
-				client.client = person;
-			}
+
 			if(client.hasErrors() || !client.validate())
 			{
 				client.errors.allErrors.each{println "Error Validating Client: " + it + "\n"};

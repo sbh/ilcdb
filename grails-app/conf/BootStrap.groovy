@@ -4,9 +4,11 @@ class BootStrap
     def dataSource
     
     def init = { servletContext ->
-        Address.get(-1)
-        BirthPlace.get(-1)
-        
+        // Skip role/user initialization in test environment - tests create their own data
+        if (grails.util.Environment.current == grails.util.Environment.TEST) {
+            return
+        }
+
         for (Role.RoleType roleType : Role.RoleType.values())
         {
             def role = Role.findByAuthority(String.valueOf(roleType))

@@ -1,22 +1,21 @@
-name: ilcdb
-
 services:
   webapp:
-    build: .
+    build: .  # This assumes your Dockerfile is in the root directory
     container_name: ilcdb-webapp
-    image: sbherndon/ilcdb-webapp:latest
-#    image: ilcdb-webapp:latest
+#    image: sbherndon/ilcdb-webapp:latest
     ports:
       - "8080:8080"
-#    depends_on:
-#      db:
-#        condition: service_healthy
+      - "8443:8443"
+    depends_on:
+      - db
     environment:
-      - MYSQL_HOST=db
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=ilcdb
-      - MYSQL_USER=$MYSQL_USER
-      - MYSQL_USER_PASSWORD=$MYSQL_USER_PASSWORD
+      MYSQL_HOST: db # Tells the Grails app to connect to the 'db' service
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ilcdb
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
+      # Set server URL for redirects (leave empty for dynamic hostname detection)
+      GRAILS_SERVER_URL: ${GRAILS_SERVER_URL:-}
 
   db:
     image: mysql:9
@@ -24,20 +23,12 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE=ilcdb
-      - MYSQL_USER=$MYSQL_USER
-      - MYSQL_PASSWORD=$MYSQL_USER_PASSWORD
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ilcdb
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 5s
-      retries: 2
 
 volumes:
-  mysql_data:  # This line defines the volume
-
-# secrets:
-#   mysql_user_password: ./secrets/mysql_ilcdb_password.txt
-#   mysql_root_password: ./secrets/mysql_root_password.txt
+  mysql_data:

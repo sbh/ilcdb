@@ -1,8 +1,10 @@
+import grails.plugin.cache.Cacheable
 import grails.plugin.springsecurity.annotation.Secured
 import groovy.json.JsonOutput
 import net.skytrail.util.USStates
 import org.joda.time.Interval
 import java.util.List
+import groovyx.gpars.GParsPool
 
 @Secured(['IS_AUTHENTICATED_FULLY'])
 class ClientController {
@@ -36,18 +38,12 @@ class ClientController {
         return clients.collect{client -> makeClientMap(client)}
     }
 
-    def list() {
+    def dumpJSON(clients) {
         long t1 = System.currentTimeMillis()
-        List<Client> clients = new ArrayList()
-
-        clients.addAll(Client.findAll( "from Client as c order by upper(c.client.lastName), upper(c.client.firstName)" ))
-
         def file = new File("/var/tmp/clients.json")
         file.delete()
         def id = 1
         clients.each {
-            //file << """{"index":{"_index":"clients-2018-01-27","_type":"client","_id":${id++}}}"""
-            //file << "\n"
             file << JsonOutput.toJson(it.toMap())
             file << "\n"
         }
@@ -59,21 +55,30 @@ class ClientController {
         println(clients.size()+" sorted in "+(System.currentTimeMillis()-t2)+" ms.")
 
         t1 = System.currentTimeMillis()
+    }
+
+    def list() {
+        def clientCount = Client.count()
+        def query = """
+            SELECT c
+            FROM Client c
+            JOIN c.client p
+            ORDER BY LOWER(p.lastName), LOWER(p.firstName)
+        """
+        def clients = Client.executeQuery(query)
         def clientMaps = makeClientMaps(clients)
-
-        println(clients.size()+" resolved "+(System.currentTimeMillis()-t1)+" ms.")
-
-        [ clientList:  clientMaps ]
+        //dumpJSON(clients)
+        [clientList: clientMaps, clientCount: clientCount]
     }
 
     private class ClientComparator implements Comparator<Client> {
         int compare(Client c1, Client c2) {
-            int val = c1.client.getSortableLastName().compareTo(c2.client.getSortableLastName())
+            int val = c1.client.getSortableLastName().compareToIgnoreCase(c2.client.getSortableLastName())
             if (val == 0) {
-                val = c1.client.getSortableFirstName().compareTo(c2.client.getSortableFirstName())
+                val = c1.client.getSortableFirstName().compareToIgnoreCase(c2.client.getSortableFirstName())
                 if (val != 0)
                     return val;
-                return c1.client.lastName.toUpperCase().compareTo(c2.client.lastName.toUpperCase())
+                return c1.client.lastName.compareToIgnoreCase(c2.client.lastName)
             }
             return val
         }
@@ -139,10 +144,6 @@ class ClientController {
                 redirect(action:"search", fragment:params.id)
             }
             else {
-                println("errors***")
-                client.errors.allErrors.each { println it }
-                println("***errors")
-
                 render(view:'edit',model:[client:client])
             }
         }
@@ -216,14 +217,6 @@ class ClientController {
             }
             else {
                 //Restore object graph to report errors in the view
-                if (!client.validate())
-                    client.errors.allErrors.each { println "client error: "+it }
-                if (!address.validate())
-                    address.errors.allErrors.each { println "address error: "+it }
-                if (!person.validate())
-                    person.errors.allErrors.each { println "person error: "+it }
-                if (!placeOfBirth.validate())
-                    placeOfBirth.errors.allErrors.each { println "placeOfBirth error: "+it }
                 person.address = address
                 client.client = person
                 render(view:'create', model:[client:client])
@@ -416,48 +409,135 @@ class ClientController {
         return [ searchResults:sortedResults, params:params ]
     }
 
-    //@Secured(['ROLE_ADMIN', "authentication.name == 'laurel'"])
     def report() {
-        //println("**** report params: "+params)
-        def returnValue = [ : ];
-
-        if(params.startDate && params.endDate) {
-            // adjust the endDate to be the end of the day.
-            params.endDate = new Date(params.endDate.getTime() + 1000L*24L*60L*60L - 1L)
-
-            String qry = CLIENTS_QUERY + "WHERE ( " + COMBINED_INTAKES_QUERY + " )"
-
-            def unfilteredClients = getClients(qry, params)
-
-            println("${unfilteredClients.size()} clients found in requested time interval.")
-
-            def interval = new Interval(params.startDate.getTime(), params.endDate.getTime())
-            def clients = clientService.filterStatus(unfilteredClients, params.statusAchieved, params.intakeState, params.intakeType, interval)
-            def sortedClients = new ArrayList(clients)
-            Collections.sort(sortedClients, new ClientComparator());
-
-            def intakeTypeCounts = clientService.intakeTypeCounts(unfilteredClients, interval)
-
-            returnValue["startDate"] = params.startDate
-            returnValue["endDate"] = params.endDate
-            returnValue["municipality"] = params.municipality;
-            returnValue["munType"] = params.munType
-            returnValue["attorney"] = params.attorney
-            returnValue["displayIntakesCheckBox"] = params.displayIntakesCheckBox == "on" || params.displayIntakesCheckBox == "true"? "true" : "false"
-            returnValue["intakeState"] = params.intakeState
-            returnValue["intakeType"] = params.intakeType
-            returnValue["statusAchieved"] = (params.statusAchieved == null || params.statusAchieved.trim().isEmpty()) ? "any" : params.statusAchieved
-            returnValue["homeCountry"] = params.homeCountry
-
-            returnValue["report"] = true;
-            returnValue["clientList"] = makeClientMaps(sortedClients);
-            returnValue["saIntakesCount"] = intakeTypeCounts[0]
-            returnValue["srIntakesCount"] = intakeTypeCounts[1]
+        // Don't generate a report if the user is just navigating to the page
+        if (!params._action_report) {
+            return [:]
         }
 
-        //println("**** report returnValue: " + returnValue)
+        // Manually construct dates to avoid i18n issues with params.date()
+        def startDay = params.int('startDate_day')
+        def startMonth = params.int('startDate_month') - 1 // Calendar is 0-based for months
+        def startYear = params.int('startDate_year')
+        Date startDate = (startDay && startMonth != null && startYear) ? new GregorianCalendar(startYear, startMonth, startDay).time : null
 
-        return returnValue;
+        def endDay = params.int('endDate_day')
+        def endMonth = params.int('endDate_month') - 1 // Calendar is 0-based for months
+        def endYear = params.int('endDate_year')
+        Date endDate = (endDay && endMonth != null && endYear) ? new GregorianCalendar(endYear, endMonth, endDay).time : null
+        def municipality = params.municipality
+        def munType = params.munType ?: "Any"
+        def attorney = params.attorney ?: "Any"
+        def displayIntakesCheckBox = params.displayIntakesCheckBox
+        def intakeState = params.intakeState ?: "any"
+        def intakeType = params.intakeType ?: "any"
+        def statusAchieved = params.statusAchieved ?: "any"
+        def homeCountry = params.homeCountry
+
+        return _report(startDate, endDate, municipality, munType, attorney, displayIntakesCheckBox, intakeState, intakeType, statusAchieved, homeCountry)
+    }
+
+    @Cacheable(value = 'reportCache', key = "(#startDate?.format('yyyy-MM-dd') ?: '') + (#endDate?.format('yyyy-MM-dd') ?: '') + (#municipality ?: '') + (#munType ?: '') + (#attorney ?: '') + (#displayIntakesCheckBox ?: '') + (#intakeState ?: '') + (#intakeType ?: '') + (#statusAchieved ?: '') + (#homeCountry ?: '')")
+    private def _report(Date startDate, Date endDate, String municipality, String munType, String attorney,
+                        String displayIntakesCheckBox, String intakeState, String intakeType, String statusAchieved, String homeCountry) {
+        def returnValue = [:]
+        if (startDate && endDate) {
+            endDate = new Date(endDate.getTime() + 1000L * 24L * 60L * 60L - 1L)
+            
+            def unfilteredClients = getClients(CLIENTS_QUERY + "WHERE ( " + COMBINED_INTAKES_QUERY + " )",
+                    munType, attorney, homeCountry, startDate, endDate, municipality, statusAchieved, intakeState, intakeType)
+            def interval = new Interval(startDate.getTime(), endDate.getTime())
+            def clients
+            GParsPool.withPool {
+                clients = unfilteredClients.collate(100).parallel.map { chunk ->
+                    clientService.filterStatus(chunk, statusAchieved, intakeState, intakeType, interval)
+                }.collection.flatten()
+            }
+            def sortedClients = new ArrayList(clients)
+            Collections.sort(sortedClients, new ClientComparator())
+            def intakeTypeCounts = clientService.intakeTypeCounts(unfilteredClients, interval)
+            returnValue = [
+                    startDate            : startDate,
+                    endDate              : endDate,
+                    municipality         : municipality,
+                    munType              : munType,
+                    attorney             : attorney,
+                    displayIntakesCheckBox: displayIntakesCheckBox == "on" || displayIntakesCheckBox == "true" ? "true" : "false",
+                    intakeState          : intakeState,
+                    intakeType           : intakeType,
+                    statusAchieved       : statusAchieved,
+                    homeCountry          : homeCountry,
+                    report               : true,
+                    clientList           : makeClientMaps(sortedClients),
+                    saIntakesCount       : intakeTypeCounts[0],
+                    srIntakesCount       : intakeTypeCounts[1]
+            ]
+        }
+        return returnValue
+    }
+
+    /**
+     * REST API endpoint for report comparison testing
+     * Returns JSON with client IDs and intake details for easy comparison between branches
+     *
+     * Example: http://localhost:8080/client/reportApi?startDate=2023-01-01&endDate=2023-12-31
+     * Optional params: municipality, munType, attorney, homeCountry, statusAchieved, intakeState, intakeType
+     */
+    def reportApi() {
+        // Parse dates from simple format: yyyy-MM-dd
+        def dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd")
+        Date startDate = params.startDate ? dateFormat.parse(params.startDate) : null
+        Date endDate = params.endDate ? dateFormat.parse(params.endDate) : null
+
+        if (!startDate || !endDate) {
+            render(contentType: "application/json") {
+                error = "Missing required parameters: startDate and endDate (format: yyyy-MM-dd)"
+                example = "/client/reportApi?startDate=2023-01-01&endDate=2023-12-31"
+            }
+            return
+        }
+
+        def municipality = params.municipality
+        def munType = params.munType ?: "Any"
+        def attorney = params.attorney ?: "Any"
+        def intakeState = params.intakeState ?: "any"
+        def intakeType = params.intakeType ?: "any"
+        def statusAchieved = params.statusAchieved ?: "any"
+        def homeCountry = params.homeCountry
+
+        // Run the report
+        def reportData = _report(startDate, endDate, municipality, munType, attorney, null, intakeState, intakeType, statusAchieved, homeCountry)
+
+        // Extract just the client IDs and intake details for comparison
+        def clients = reportData.clientList ?: []
+        def result = [
+            metadata: [
+                startDate: params.startDate,
+                endDate: params.endDate,
+                municipality: municipality,
+                munType: munType,
+                attorney: attorney,
+                statusAchieved: statusAchieved,
+                intakeState: intakeState,
+                intakeType: intakeType,
+                homeCountry: homeCountry,
+                totalClients: clients.size(),
+                saIntakesCount: reportData.saIntakesCount ?: 0,
+                srIntakesCount: reportData.srIntakesCount ?: 0
+            ],
+            clients: clients.collect { client ->
+                [
+                    id: client.id,
+                    name: client.person,
+                    attorney: client.attorney,
+                    city: client.shortAddress,
+                    homeCountry: client.homeCountry,
+                    intakeCount: client.intakes?.size() ?: 0
+                ]
+            }.sort { it.id }
+        ]
+
+        render(contentType: "application/json", text: groovy.json.JsonOutput.toJson(result))
     }
 
     private static String CLIENTS_QUERY = """
@@ -468,12 +548,15 @@ class ClientController {
                inner join fetch person.placeOfBirth as placeOfBirth
                inner join fetch client.cases as intake
         """
+    // Find intakes that were completed, opened, or ongoing during the date range
     private static String COMPLETED_INTAKES_QUERY = " ( intake.completionDate >= :startDate AND intake.completionDate <= :endDate ) "
     private static String OPENED_INTAKES_QUERY = " ( intake.startDate >= :startDate AND intake.startDate <= :endDate )"
-    private static String ONGOING_INTAKES_QUERY = " ( intake.completionDate is NULL OR intake.completionDate >= :endDate ) "
+    private static String ONGOING_INTAKES_QUERY = " ( intake.startDate <= :endDate AND (intake.completionDate is NULL OR intake.completionDate >= :endDate) ) "
     public static String COMBINED_INTAKES_QUERY = COMPLETED_INTAKES_QUERY + " OR " + OPENED_INTAKES_QUERY + " OR " + ONGOING_INTAKES_QUERY
-    Collection<Client> getClients(String clientIntakeQuery, def params) {
-        def queries = [getMunicipalitySubQuery(params.munType), getAttorneySubQuery(params.attorney), getHomeCountrySubQuery(params.homeCountry)]
+    Collection<Client> getClients(String clientIntakeQuery,
+                                  String munType, String attorney, String homeCountry,
+                                  Date startDate, Date endDate, String municipality, String statusAchieved, String intakeState, String intakeType) {
+        def queries = [getMunicipalitySubQuery(munType, municipality), getAttorneySubQuery(attorney), getHomeCountrySubQuery(homeCountry)]
 
         String query = clientIntakeQuery
         queries.each{ aQuery ->
@@ -486,44 +569,52 @@ class ClientController {
             }
         }
 
-        doit( query, params )
+        doit( query, munType, startDate, endDate, municipality, homeCountry, attorney )
     }
 
-    Collection<Client> doit( String query, def params) {
-        println("params2: " + params)
-        def namedParams = [startDate:params.startDate, endDate:params.endDate]
-        if (query.toLowerCase().contains(":mun")) namedParams += [mun:params.municipality]
-        if (query.toLowerCase().contains(":homeCountry")) namedParams += [homeCountry:params.homeCountry]
-        if (query.toLowerCase().contains(":attorney")) namedParams += [attorney:params.attorney]
+    Collection<Client> doit( String query, String munType, Date startDate, Date endDate, String municipality, String homeCountry, String attorney) {
+        def namedParams = [startDate:startDate, endDate:endDate]
 
-        if ("State".equals(params.munType))
-            namedParams += [munAlt:usStates.getAlternates(params.municipality)]
+        if (attorney && attorney != "Any") {
+            namedParams += [attorney:attorney]
+        }
+        if (homeCountry && homeCountry != "-1") {
+            namedParams += [homeCountryName:Country.get(homeCountry).name]
+        }
+        if (munType && "Any" != munType && municipality?.trim()) {
+            namedParams += [mun:municipality]
+            if ("State".equals(munType)) {
+                namedParams += [munAlt:usStates.getAlternates(municipality)]
+            }
+        }
 
-        println "------> executing query: $query, namedParams: $namedParams"
         def clients = Client.executeQuery( query, namedParams )
-        println "\t results count: ${clients.size()}"
         clients
     }
 
     String getAttorneySubQuery(String attorney) {
-        if ("Any".equals(attorney))
+        if (!attorney || "Any".equals(attorney)) {
             return ""
-        return "intake.attorney = '" + attorney + "'"
+        }
+        return "intake.attorney = :attorney"
     }
 
-    String getMunicipalitySubQuery(String municipalityType) {
+    String getMunicipalitySubQuery(String municipalityType, String municipality) {
+        if (!municipalityType || "Any".equals(municipalityType) || !municipality?.trim()) {
+            return ""
+        }
         if ("State".equals(municipalityType))
             return "(upper(address.state) = upper(:mun) or upper(address.state) = upper(:munAlt))"
-        else if ("Any".equals(municipalityType))
-            return ""
         else
             return "upper(address.${municipalityType.toLowerCase()}) = upper(:mun)"
     }
 
     String getHomeCountrySubQuery(String homeCountry) {
-        if (homeCountry == "-1")
+        if (!homeCountry || homeCountry == "-1") {
             return ""
-        else
-            return "(upper(placeOfBirth.country.name) = '${Country.get(homeCountry)}')"
+        }
+        else {
+            return "(upper(placeOfBirth.country.name) = :homeCountryName)"
+        }
     }
 }

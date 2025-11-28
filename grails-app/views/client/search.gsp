@@ -82,15 +82,6 @@ window.onload=toggleDatePickers;
 
                             <tr class="prop">
                                 <td valign="top">
-                                    <label for="count">Results per page:</label>
-                                </td>
-                                <td valign="top">
-                                    <g:select id="count" name="max" from="${['all',10,20,30,40,50]}" value="${params?.max}" />
-                                </td>
-                            </tr>
-
-                            <tr class="prop">
-                                <td valign="top">
                                     <span class="button"><g:actionSubmit class="save" value="Search" /></span>
                                 </td>
                             </tr>
@@ -135,11 +126,6 @@ window.onload=toggleDatePickers;
                 </table>
             </div>
 
-            <g:if test="${searchResults?.size() > 0}">
-            <div class="paginateButtons">
-                <g:paginate params="${params}" total="${params?.count}" />
-            </div>
-            </g:if>
         </div>
     </body>
 </html>
