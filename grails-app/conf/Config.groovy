@@ -107,7 +107,7 @@ grails.cache.config = {
         name 'reportCache'
         maxElementsInMemory 1000
         eternal false
-        timeToLiveSeconds 3600 // 1 hour
+        timeToLiveSeconds 600 // 10 minutes
         overflowToDisk false
     }
 }
