@@ -437,6 +437,45 @@ class ClientController {
         return _report(startDate, endDate, municipality, munType, attorney, displayIntakesCheckBox, intakeState, intakeType, statusAchieved, homeCountry)
     }
 
+    @Cacheable(value = 'reportCache', key = "(#startDate?.format('yyyy-MM-dd') ?: '') + (#endDate?.format('yyyy-MM-dd') ?: '') + (#municipality ?: '') + (#munType ?: '') + (#attorney ?: '') + (#displayIntakesCheckBox ?: '') + (#intakeState ?: '') + (#intakeType ?: '') + (#statusAchieved ?: '') + (#homeCountry ?: '')")
+    private def _report(Date startDate, Date endDate, String municipality, String munType, String attorney,
+                        String displayIntakesCheckBox, String intakeState, String intakeType, String statusAchieved, String homeCountry) {
+        def returnValue = [:]
+        if (startDate && endDate) {
+            endDate = new Date(endDate.getTime() + 1000L * 24L * 60L * 60L - 1L)
+            
+            def unfilteredClients = getClients(CLIENTS_QUERY + "WHERE ( " + COMBINED_INTAKES_QUERY + " )",
+                    munType, attorney, homeCountry, startDate, endDate, municipality, statusAchieved, intakeState, intakeType)
+            def interval = new Interval(startDate.getTime(), endDate.getTime())
+            def clients
+            GParsPool.withPool {
+                clients = unfilteredClients.collate(100).parallel.map { chunk ->
+                    clientService.filterStatus(chunk, statusAchieved, intakeState, intakeType, interval)
+                }.collection.flatten()
+            }
+            def sortedClients = new ArrayList(clients)
+            Collections.sort(sortedClients, new ClientComparator())
+            def intakeTypeCounts = clientService.intakeTypeCounts(unfilteredClients, interval)
+            returnValue = [
+                    startDate            : startDate,
+                    endDate              : endDate,
+                    municipality         : municipality,
+                    munType              : munType,
+                    attorney             : attorney,
+                    displayIntakesCheckBox: displayIntakesCheckBox == "on" || displayIntakesCheckBox == "true" ? "true" : "false",
+                    intakeState          : intakeState,
+                    intakeType           : intakeType,
+                    statusAchieved       : statusAchieved,
+                    homeCountry          : homeCountry,
+                    report               : true,
+                    clientList           : makeClientMaps(sortedClients),
+                    saIntakesCount       : intakeTypeCounts[0],
+                    srIntakesCount       : intakeTypeCounts[1]
+            ]
+        }
+        return returnValue
+    }
+
     /**
      * REST API endpoint for report comparison testing
      * Returns JSON with client IDs and intake details for easy comparison between branches
@@ -499,45 +538,6 @@ class ClientController {
         ]
 
         render(contentType: "application/json", text: groovy.json.JsonOutput.toJson(result))
-    }
-
-    @Cacheable(value = 'reportCache', key = "(#startDate?.format('yyyy-MM-dd') ?: '') + (#endDate?.format('yyyy-MM-dd') ?: '') + (#municipality ?: '') + (#munType ?: '') + (#attorney ?: '') + (#displayIntakesCheckBox ?: '') + (#intakeState ?: '') + (#intakeType ?: '') + (#statusAchieved ?: '') + (#homeCountry ?: '')")
-    private def _report(Date startDate, Date endDate, String municipality, String munType, String attorney,
-                        String displayIntakesCheckBox, String intakeState, String intakeType, String statusAchieved, String homeCountry) {
-        def returnValue = [:]
-        if (startDate && endDate) {
-            endDate = new Date(endDate.getTime() + 1000L * 24L * 60L * 60L - 1L)
-            
-            def unfilteredClients = getClients(CLIENTS_QUERY + "WHERE ( " + COMBINED_INTAKES_QUERY + " )",
-                    munType, attorney, homeCountry, startDate, endDate, municipality, statusAchieved, intakeState, intakeType)
-            def interval = new Interval(startDate.getTime(), endDate.getTime())
-            def clients
-            GParsPool.withPool {
-                clients = unfilteredClients.collate(100).parallel.map { chunk ->
-                    clientService.filterStatus(chunk, statusAchieved, intakeState, intakeType, interval)
-                }.collection.flatten()
-            }
-            def sortedClients = new ArrayList(clients)
-            Collections.sort(sortedClients, new ClientComparator())
-            def intakeTypeCounts = clientService.intakeTypeCounts(unfilteredClients, interval)
-            returnValue = [
-                    startDate            : startDate,
-                    endDate              : endDate,
-                    municipality         : municipality,
-                    munType              : munType,
-                    attorney             : attorney,
-                    displayIntakesCheckBox: displayIntakesCheckBox == "on" || displayIntakesCheckBox == "true" ? "true" : "false",
-                    intakeState          : intakeState,
-                    intakeType           : intakeType,
-                    statusAchieved       : statusAchieved,
-                    homeCountry          : homeCountry,
-                    report               : true,
-                    clientList           : makeClientMaps(sortedClients),
-                    saIntakesCount       : intakeTypeCounts[0],
-                    srIntakesCount       : intakeTypeCounts[1]
-            ]
-        }
-        return returnValue
     }
 
     private static String CLIENTS_QUERY = """
