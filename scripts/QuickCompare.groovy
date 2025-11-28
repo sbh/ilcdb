@@ -38,7 +38,7 @@ CLIENTS_QUERY = """
 
 COMPLETED_INTAKES = " ( intake.completionDate >= :startDate AND intake.completionDate <= :endDate ) "
 OPENED_INTAKES = " ( intake.startDate >= :startDate AND intake.startDate <= :endDate )"
-ONGOING_INTAKES = " ( intake.completionDate is NULL OR intake.completionDate >= :endDate ) "
+ONGOING_INTAKES = " ( intake.startDate <= :endDate AND (intake.completionDate is NULL OR intake.completionDate >= :endDate) ) "
 COMBINED_INTAKES = COMPLETED_INTAKES + " OR " + OPENED_INTAKES + " OR " + ONGOING_INTAKES
 
 query = CLIENTS_QUERY + "WHERE ( " + COMBINED_INTAKES + " )"
