@@ -30,7 +30,10 @@
                                     <label for="startDate">Start Date:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:clientCase,field:'startDate','errors')}">
-                                    <g:datePicker name="startDate" precision="day" years="${2005..2050}" value="${clientCase?.startDate}" />
+                                  <g:datePicker name="startDate"
+                                                precision="day"
+                                                years="${2005..2050}"
+                                                value="${clientCase?.startDate}" />
                                 </td>
                             </tr> 
                         
@@ -39,7 +42,11 @@
                                     <label for="attorney">Representative:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:clientCase,field:'attorney','errors')}">
-                                    <g:select id="attorney" name="attorney" from="${clientCase.constraints.attorney.inList}" value="${clientCase.attorney}" />
+                                  <g:select id="attorney"
+                                            name="attorney"
+                                            from="${clientCase.constraints.attorney.inList}"
+                                            noSelection="${['null':'-Choose-']}"
+                                            value="${clientCase.attorney}" />
                                </td>
                             </tr> 
                         
@@ -48,7 +55,12 @@
                                     <label for="intakeType">Intake Type:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:clientCase,field:'intakeType','errors')}">
-                                    <g:select onchange="changeCaseTypeRowDisplay('onchange')" id="intakeType" name="intakeType" from="${clientCase.constraints.intakeType.inList}" value="${clientCase.intakeType}" />
+                                  <g:select onchange="changeCaseTypeRowDisplay('onchange')"
+                                            id="intakeType"
+                                            name="intakeType"
+                                            from="${clientCase.constraints.intakeType.inList}"
+                                            noSelection="${['null':'-Choose-']}"
+                                            value="${clientCase.intakeType}" />
                                 </td>
                             </tr> 
                         
@@ -64,10 +76,12 @@
                             <tr name="caseTypeRow" id="caseTypeRow" class="prop">
                                 <td valign="top" class="name"><label for="caseType">Case Type:</label></td>
                                 <td valign="top" class="value ${hasErrors(bean:clientCase,field:'caseType','errors')}">
-                                    <g:select id="caseType" name="caseType" from="${CaseType.list(sort:'type')}"
-                                              optionKey="id" optionValue="type"  noSelection="${['null':'-Choose-']}"
-                                              value="${clientCase.caseType?.id}"
-                                    />
+                                  <g:select id="caseType"
+                                            name="caseType"
+                                            from="${CaseType.list(sort:'type')}"
+                                            optionKey="id" optionValue="type"
+                                            noSelection="${['null':'-Choose-']}"
+                                            value="${clientCase.caseType?.id}" />
                                 </td>
                             </tr>
 

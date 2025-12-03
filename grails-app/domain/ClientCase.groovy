@@ -21,6 +21,7 @@ class ClientCase implements Comparable<ClientCase>
     Date completionDate
     String attorney
     SortedSet notes
+    
     CaseType caseType
     CaseResult caseResult
     String intensity = "1"
@@ -38,7 +39,7 @@ class ClientCase implements Comparable<ClientCase>
         completionDate(nullable:true)
         caseNumber(nullable:true)
         coltafNumber(nullable:true)
-        attorney(nullable:true)
+        attorney(nullable:false)
         intakeType(nullable:true)
         caseType(nullable:true, validator: { val, obj -> if (obj.intakeType.equals(STAFF_REPRESENTATION) && obj.caseType == null) return "notNull" })
         caseResult(nullable:true)
