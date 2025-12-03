@@ -48,7 +48,7 @@
                                 <g:select id="attorney" name="attorney"
                                     from="${clientCase.constraints.attorney.inList}"
                                     value="${clientCase.attorney}"
-                                    noSelection="${['':'-Choose-']}" />
+                                    noSelection="['null':'-Choose-']" />
                             </td>
                         </tr>
 
