@@ -596,7 +596,7 @@ class ClientController {
         if (!attorney || "Any".equals(attorney)) {
             return ""
         }
-        return "intake.attorney = :attorney"
+        return "intake.attorney.firstName = :attorney"
     }
 
     String getMunicipalitySubQuery(String municipalityType, String municipality) {

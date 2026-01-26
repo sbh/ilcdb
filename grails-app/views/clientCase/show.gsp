@@ -23,7 +23,12 @@
                             <td valign="top" class="name">Intake Type:</td>
                             <td valign="top" class="value">${fieldValue(bean:clientCase, field:'intakeType')}</td>
                         </tr>
-                    
+
+                        <tr class="prop">
+                            <td valign="top" class="name">Representative:</td>
+                            <td valign="top" class="value">${clientCase?.attorney}</td>
+                        </tr>
+
                         <tr class="prop">
                             <td valign="top" class="name">Case Type:</td>
                             <td valign="top" class="value">${fieldValue(bean:clientCase, field:'caseType')}</td>

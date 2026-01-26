@@ -1,7 +1,7 @@
 <html>
 <%
   def municipalityTypes = ["City", "County", "State", "Any"];
-  def attorneys = ["Any"] + ClientCase.constraints.attorney.inList
+  def attorneys = ["Any"] + Attorney.list().collect { it.firstName }
   def intakeTypes = ["Any"] + ClientCase.constraints.intakeType.inList
  %>
 <head>

@@ -165,6 +165,12 @@ class ClientReportIntegrationTests extends GroovyTestCase {
         ).save(failOnError: true)
 
         // Create intake (case)  - use valid attorney and add caseType
+        def attorney = Attorney.findByFirstName("Maria") ?: new Attorney(
+            firstName: "Maria",
+            lastName: "Test",
+            email: "maria@test.com"
+        ).save(failOnError: true)
+
         def caseType = CaseType.find{} ?: new CaseType(
             formName: "I-485",
             description: "Test case type",
@@ -176,7 +182,7 @@ class ClientReportIntegrationTests extends GroovyTestCase {
             startDate: intakeStart,
             completionDate: intakeComplete,
             intakeType: ClientCase.STAFF_REPRESENTATION,
-            attorney: "Maria",
+            attorney: attorney,
             caseType: caseType
         ).save(failOnError: true)
 
