@@ -44,9 +44,11 @@
                                 <td valign="top" class="value ${hasErrors(bean:clientCase,field:'attorney','errors')}">
                                   <g:select id="attorney"
                                             name="attorney"
-                                            from="${clientCase.constraints.attorney.inList}"
+                                            from="${Attorney.list()}"
+                                            optionKey="id"
+                                            optionValue="firstName"
                                             noSelection="${['null':'-Choose-']}"
-                                            value="${clientCase.attorney}" />
+                                            value="${clientCase.attorney?.id}" />
                                </td>
                             </tr> 
                         

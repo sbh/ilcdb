@@ -8,8 +8,6 @@ class ClientCase implements Comparable<ClientCase>
     private static final DateTimeFormatter briefDateFormat = DateTimeFormat.forPattern("MMM-dd-yyyy");
 
 
-    //Can we make this configurable?
-    public static final List ATTORNEYS = ["Belen", "Laurel", "Maria"]
     static belongsTo = [ client:Client ]
     static hasMany = [ notes : Note ]
 
@@ -19,7 +17,7 @@ class ClientCase implements Comparable<ClientCase>
     String intakeType
     Date startDate
     Date completionDate
-    String attorney
+    Attorney attorney
     SortedSet notes
     
     CaseType caseType
@@ -33,7 +31,6 @@ class ClientCase implements Comparable<ClientCase>
 
     static constraints =
     {
-        attorney(inList: ATTORNEYS)
         intakeType(inList:[STAFF_ADVISE, STAFF_REPRESENTATION])
         startDate(nullable:true)
         completionDate(nullable:true)

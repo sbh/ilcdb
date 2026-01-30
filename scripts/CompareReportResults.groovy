@@ -75,7 +75,7 @@ def generateReport(String outputFile = "/tmp/report_results.csv") {
 
     // Add attorney filter if needed
     if (ATTORNEY && ATTORNEY != "Any") {
-        query += " and intake.attorney = :attorney"
+        query += " and intake.attorney.firstName = :attorney"
     }
 
     // Add home country filter if needed
@@ -128,7 +128,7 @@ def generateReport(String outputFile = "/tmp/report_results.csv") {
                 csv << "${intake.intakeType},"
                 csv << "${intake.startDate ? dateFormat.format(intake.startDate) : 'null'},"
                 csv << "${intake.completionDate ? dateFormat.format(intake.completionDate) : 'null'},"
-                csv << "\"${intake.attorney ?: ''}\","
+                csv << "\"${intake.attorney?.toString() ?: ''}\","
                 csv << "\"${client.client?.address?.city ?: ''}\","
                 csv << "\"${client.client?.address?.state ?: ''}\","
                 csv << "\"${client.client?.placeOfBirth?.country?.name ?: ''}\""
