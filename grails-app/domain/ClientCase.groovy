@@ -36,7 +36,11 @@ class ClientCase implements Comparable<ClientCase>
         completionDate(nullable:true)
         caseNumber(nullable:true)
         coltafNumber(nullable:true)
-        attorney(nullable:false)
+        attorney(nullable:true, validator: { val, obj ->
+            if (obj.id == null || 'attorney' in obj.getDirtyPropertyNames())
+                return (val && val.isActive) ?: 'activeAttorneyRequired'
+            return true
+        })
         intakeType(nullable:true)
         caseType(nullable:true, validator: { val, obj -> if (obj.intakeType.equals(STAFF_REPRESENTATION) && obj.caseType == null) return "notNull" })
         caseResult(nullable:true)

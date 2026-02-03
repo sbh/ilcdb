@@ -42,13 +42,7 @@
                                     <label for="attorney">Representative:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:clientCase,field:'attorney','errors')}">
-                                  <g:select id="attorney"
-                                            name="attorney"
-                                            from="${Attorney.list()}"
-                                            optionKey="id"
-                                            optionValue="firstName"
-                                            noSelection="${['null':'-Choose-']}"
-                                            value="${clientCase.attorney?.id}" />
+                                  <g:render template="attorneySelect" model="${[clientCase:clientCase]}" />
                                </td>
                             </tr> 
                         

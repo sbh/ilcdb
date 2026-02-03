@@ -1,5 +1,5 @@
 class Attorney {
-    public static final Long UNASSIGNED_ATTORNEY_ID = 0L
+    public static final String UNASSIGNED = "Unassigend"
 
     String firstName
     String lastName
