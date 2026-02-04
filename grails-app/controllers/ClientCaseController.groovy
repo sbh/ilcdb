@@ -102,7 +102,7 @@ class ClientCaseController
 
             clientCase.properties = params
             def client = clientCase.client
-            
+
             // if an intake gets changed from staff represent to staff advise,
             // need to clean up the extra fields that we don't need
             if (clientCase.intakeType.equals(ClientCase.STAFF_ADVISE))
@@ -165,7 +165,7 @@ class ClientCaseController
         def clientCase = new ClientCase(params)
         clientCase.client = client
         client.fileLocation = params['fileLocation']
-        
+
         // if an intake gets changed from staff represent to staff advise,
         // need to clean up the extra fields that we don't need
         if(clientCase.intakeType.equals(ClientCase.STAFF_ADVISE))

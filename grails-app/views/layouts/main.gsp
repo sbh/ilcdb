@@ -2,7 +2,10 @@
     <head>
         <title><g:layoutTitle default="Immigrant Legal Center" /></title>
         <link rel="stylesheet" href="${createLinkTo(dir:'css',file:'main.css')}" />
+        <asset:stylesheet href="themes/ui-lightness/jquery-ui-1.10.4.custom.min.css" />
         <link rel="shortcut icon" href="${createLinkTo(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
+        <asset:javascript src="jquery/jquery-1.11.1.min.js" />
+        <asset:javascript src="js/jquery-ui-1.10.4.custom.min.js" />
         <g:layoutHead />
         <g:javascript library="application" />
     </head>
