@@ -29,15 +29,6 @@
                             </td>
                         </tr>
 
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="intensity">Intensity:</label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean:clientCase,field:'intensity','errors')}">
-                                <g:select id="intensity" name="intensity" from="${clientCase.constraints.intensity.inList}" value="${clientCase.intensity}" />
-                            </td>
-                        </tr>
-
                         <tr name="caseTypeRow" id="caseTypeRow" class="prop">
                             <td valign="top" class="name"><label for="caseType">Case Type:</label></td>
                             <td valign="top" class="value ${hasErrors(bean:clientCase,field:'caseType','errors')}">

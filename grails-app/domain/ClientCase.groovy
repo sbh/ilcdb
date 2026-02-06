@@ -22,7 +22,6 @@ class ClientCase implements Comparable<ClientCase>
     
     CaseType caseType
     CaseResult caseResult
-    String intensity = "1"
 
     static mapping =
     {
@@ -44,7 +43,6 @@ class ClientCase implements Comparable<ClientCase>
         intakeType(nullable:true)
         caseType(nullable:true, validator: { val, obj -> if (obj.intakeType.equals(STAFF_REPRESENTATION) && obj.caseType == null) return "notNull" })
         caseResult(nullable:true)
-        intensity(inList:["-Choose-", "1", "2", "3", "4", "5", "n/a"])
     }
 
     static transients = [ "startDateString", "completionDateString", "open", "valid", "fileLocation" ]
@@ -59,8 +57,7 @@ class ClientCase implements Comparable<ClientCase>
          attorney      : attorney,
          notes         : notes.collect { it.toMap() },
          caseType      : caseType?.toMap(),
-         caseResult    : caseResult?.toMap(),
-         intensity     : intensity]
+         caseResult    : caseResult?.toMap()]
     }
 
     int compareTo(ClientCase otherIntake)
@@ -86,11 +83,6 @@ class ClientCase implements Comparable<ClientCase>
         if (completionDate == null)
             return "Ongoing";
         return briefDateFormat.print(completionDate.getTime())
-    }
-
-    public String getIntensity()
-    {
-        return intensity
     }
 
     public boolean isOpen()
@@ -123,7 +115,7 @@ class ClientCase implements Comparable<ClientCase>
 
     String toDebugString()
     {
-        return "intake type: "+intakeType+", caseResult: "+caseResult+", coltafNumber: "+coltafNumber+", intensity: "+intensity
+        return "intake type: "+intakeType+", caseResult: "+caseResult+", coltafNumber: "+coltafNumber
     }
 
     String toString()

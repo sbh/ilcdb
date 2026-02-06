@@ -2,11 +2,21 @@ class BootStrap
 {
     def springSecurityService
     def dataSource
-    
+
     def init = { servletContext ->
         // Skip role/user initialization in test environment - tests create their own data
         if (grails.util.Environment.current == grails.util.Environment.TEST) {
             return
+        }
+
+        // Migration: drop removed intensity column from client_case
+        def sql = new groovy.sql.Sql(dataSource)
+        try {
+            sql.execute("ALTER TABLE client_case DROP COLUMN intensity")
+        } catch (e) {
+            // Column already dropped or doesn't exist
+        } finally {
+            sql.close()
         }
 
         for (Role.RoleType roleType : Role.RoleType.values())

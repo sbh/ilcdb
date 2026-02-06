@@ -24,29 +24,19 @@ function changeCaseTypeRowDisplay(loadOrChange)
   var intakeForm = document.forms["intakeForm"]
   var intakeType = intakeForm["intakeType"].value
   var caseTypeRow = document.getElementById("caseTypeRow")
-  var resultRow  = document.getElementById("resultRow")
-  var intensitySelect = document.getElementById("intensity")
-  var displayValue = ''
+  var resultRow = document.getElementById("resultRow")
 
-  if (intakeType == 'Staff Representation')
-  {
-    if ('onchange' == loadOrChange)
-    {
+  if (loadOrChange == 'onchange') {
+    if (intakeType == 'Staff Representation') {
       clearCompletionDate(intakeForm)
-      intensitySelect.selectedIndex=0 // The value '-Choose-'
-    }
-  }
-  else
-  {
-    if ('onchange' == loadOrChange)
-    {
+    } else {
       setCompletionDate(intakeForm)
-      intensitySelect.selectedIndex=1 // The value '1'
     }
-    displayValue='none'
   }
-  caseTypeRow.style.display=displayValue
-  resultRow.style.display=displayValue
+
+  var displayValue = intakeType == 'Staff Representation' ? '' : 'none'
+  caseTypeRow.style.display = displayValue
+  resultRow.style.display = displayValue
 }
 
 function clearCompletionDate(intakeForm)
