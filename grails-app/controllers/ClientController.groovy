@@ -189,12 +189,6 @@ class ClientController {
             if(person.validate())
                 client.client = person
 
-            def clientCase = new ClientCase()
-            Date now = new Date()
-            clientCase.startDate = now
-            clientCase.completionDate = now
-            clientCase.intakeType = ClientCase.STAFF_ADVISE
-            client.addToCases(clientCase)
             client.clearErrors()
 
             //println("\nclient.validate(): "+client.validate()+
@@ -212,12 +206,12 @@ class ClientController {
                 client.save()
 
                 flash.message = "Client ${client.id} created"
-                // redirect to the newly created intake so that it can be edited if so desired
-                redirect(controller:"clientCase", action:"edit", id:clientCase.id)
+                redirect(action:"edit", id:client.id)
             }
             else {
                 //Restore object graph to report errors in the view
                 person.address = address
+                person.placeOfBirth = placeOfBirth
                 client.client = person
                 render(view:'create', model:[client:client])
             }

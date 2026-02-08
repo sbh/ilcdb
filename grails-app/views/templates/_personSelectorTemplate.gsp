@@ -159,8 +159,13 @@ function toggleInputMethod(n) {
 	    <td valign="top" class="name">
 		<label for="${name}.address">Address:</label>
 	    </td>
-	    <td valign="top" class="value">
+	    <td valign="top" class="value ${hasErrors(bean:person,field:'address','errors')}">
 		<g:addressGenerator name="${name}.address" value="${person?.address}" />
+		<g:hasErrors bean="${person}" field="address">
+		<div class="errors">
+		    <g:renderErrors bean="${person}" field="address" />
+		</div>
+		</g:hasErrors>
 	    </td>
 	</tr> 
     
@@ -170,6 +175,11 @@ function toggleInputMethod(n) {
         </td>
         <td valign="top" class="value ${hasErrors(bean:person,field:'dateOfBirth','errors')}">
             <g:datePicker name="${name}.dateOfBirth" value="${person.dateOfBirth}" precision="day"/>
+            <g:hasErrors bean="${person}" field="dateOfBirth">
+            <div class="errors">
+                <g:renderErrors bean="${person}" field="dateOfBirth" />
+            </div>
+            </g:hasErrors>
         </td>
     </tr> 
         
@@ -179,6 +189,11 @@ function toggleInputMethod(n) {
         </td>
         <td valign="top" class="value ${hasErrors(bean:person,field:'placeOfBirth','errors')}">
             <g:birthPlaceGenerator name="${name}.placeOfBirth" value="${person.placeOfBirth}" />
+            <g:hasErrors bean="${person}" field="placeOfBirth">
+            <div class="errors">
+                <g:renderErrors bean="${person}" field="placeOfBirth" />
+            </div>
+            </g:hasErrors>
         </td>
     </tr> 
                         

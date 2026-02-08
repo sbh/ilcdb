@@ -36,8 +36,10 @@ class ClientCase implements Comparable<ClientCase>
         caseNumber(nullable:true)
         coltafNumber(nullable:true)
         attorney(nullable:true, validator: { val, obj ->
-            if (obj.id == null || 'attorney' in obj.getDirtyPropertyNames())
-                return (val && val.isActive) ?: 'activeAttorneyRequired'
+            if (obj.id == null || 'attorney' in obj.getDirtyPropertyNames()) {
+                // Require attorney to be set and either active OR Unassigned
+                return (val && (val.isActive || val.firstName == 'Unassigned')) ?: 'activeAttorneyRequired'
+            }
             return true
         })
         intakeType(nullable:true)
