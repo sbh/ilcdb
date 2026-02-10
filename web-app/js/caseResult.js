@@ -2,7 +2,13 @@ jQuery(document).ready(function() {
     jQuery('.datePicker').datepicker({
         dateFormat: 'mm/dd/yy',
         minDate: new Date(2005, 0, 1),
-        maxDate: new Date(2050, 11, 31)
+        maxDate: new Date(2050, 11, 31),
+        showOn: 'both',
+        buttonText: 'Select date',
+        buttonImage: '',
+        showButtonPanel: true
+    }).each(function() {
+        jQuery(this).next('.ui-datepicker-trigger').html('<span class="ui-icon ui-icon-calendar" style="display:inline-block;vertical-align:middle;cursor:pointer;"></span>');
     });
 });
 
