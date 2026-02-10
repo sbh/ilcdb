@@ -118,7 +118,7 @@
                           <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'appointments','errors')}">
                           <ul>
                             <g:each var="a" in="${client?.appointments?}">
-                              <li><g:link controller="appointments" action="edit" id="${a.id}">${a?.encodeAsHTML()}</g:link></li>
+                              <li><g:link controller="appointment" action="edit" id="${a.id}">${a?.encodeAsHTML()}</g:link></li>
                             </g:each>
                           </ul>
                           <g:link controller="appointment" params="['client.id':client?.id]" action="create">Add Appointment</g:link>
