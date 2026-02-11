@@ -132,7 +132,7 @@
                         <td valign="top" colspan="3" class="value ">
                           <ul>
                             <g:each var="sponsorRelation" in="${client.sponsorRelations}">
-                              <li><g:link controller="sponsor" action="edit" id="${sponsorRelation.sponsor.id}">${sponsorRelation.sponsor}</g:link></li><
+                              <li><g:link controller="sponsor" action="edit" id="${sponsorRelation.sponsor.id}">${sponsorRelation.sponsor}</g:link></li>
                             </g:each>
                           </ul>
                           <g:link controller="clientSponsorRelation" params="['client.id':client?.id]" action="create">Add Sponsor</g:link>

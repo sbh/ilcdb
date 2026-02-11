@@ -59,7 +59,7 @@
                             <label for="emailAddress">Email Address:</label>
                         </td>
                         <td valign="top" class="value ${fieldValue(bean:person,field:'emailAddress','errors')}">
-                            <g:select id="emailAddress" name="emailAddress" value="${person?.emailAddress}" />
+                            <input type="text" id="emailAddress" name="emailAddress" value="${fieldValue(bean:person,field:'emailAddress')}"/>
                             <g:hasErrors bean="${person}" field="emailAddress">
                             <div class="errors">
                             <g:renderErrors bean="${person}" field="emailAddress" as="list" />

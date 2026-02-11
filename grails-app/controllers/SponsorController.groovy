@@ -4,7 +4,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
 class SponsorController {
 
-    def index() { redirect(action:"search", params:params) }
+    def index() { redirect(action:"list", params:params) }
 
     // the delete, save and update actions only accept POST requests
     static def allowedMethods = [delete:'POST', save:'POST', update:'POST']
@@ -19,7 +19,7 @@ class SponsorController {
 
         if(!sponsor) {
             flash.message = "Sponsor not found with id ${params.id}"
-            redirect(action:"search")
+            redirect(action:"list")
         }
         else { return [ sponsor : sponsor ] }
     }
@@ -29,11 +29,11 @@ class SponsorController {
         if(sponsor) {
             sponsor.delete()
             flash.message = "Sponsor ${params.id} deleted"
-            redirect(action:"search")
+            redirect(action:"list")
         }
         else {
             flash.message = "Sponsor not found with id ${params.id}"
-            redirect(action:"search")
+            redirect(action:"list")
         }
     }
 
@@ -42,7 +42,7 @@ class SponsorController {
 
         if(!sponsor) {
             flash.message = "Sponsor not found with id ${params.id}"
-            redirect(action:"search")
+            redirect(action:"list")
         }
         else {
             return [ sponsor : sponsor ]
@@ -79,9 +79,14 @@ class SponsorController {
             def sponsor = new Sponsor(params)
             def person = new Person(params.sponsor)
             def address = new Address(params.sponsor.address)
+            def birthPlace = new BirthPlace(params.sponsor.placeOfBirth)
 
             if(!address.hasErrors() && address.validate()) {
                 person.address = address
+            }
+
+            if(!birthPlace.hasErrors() && birthPlace.validate()) {
+                person.placeOfBirth = birthPlace
             }
 
             if(!person.hasErrors() && person.validate()) {
@@ -89,9 +94,10 @@ class SponsorController {
             }
 
             if(!sponsor.hasErrors() && address.validate() &&
-            person.validate() && sponsor.validate()) {
+            birthPlace.validate() && person.validate() && sponsor.validate()) {
 
                 address.save()
+                birthPlace.save()
                 person.save()
                 sponsor.save()
 
@@ -100,6 +106,7 @@ class SponsorController {
             }
             else {
                 person.address = address
+                person.placeOfBirth = birthPlace
                 sponsor.sponsor = person
                 render(view:'create',model:[sponsor:sponsor])
             }
