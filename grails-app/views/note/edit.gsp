@@ -2,10 +2,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
+        <g:javascript src="caseResult.js" />
         <title>Edit Note</title>
     </head>
     <body>
-        <div class="body" style="width: 80%">
+        <div class="body" style="width: 80%;">
             <h1>Edit Note</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
@@ -27,31 +28,15 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="client">Client: ${Client.get(clientid)}</label>
                                 </td>
-                            </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="createDate">Create Date:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:note,field:'createDate','errors')}">
-                                    <g:datePicker name="createDate" value="${note?.createDate}" ></g:datePicker>
-                                </td>
-                            </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="text">Text:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:note,field:'text','errors')}">
-                                    <g:textArea name="text" rows="5" cols="100">${fieldValue(bean:note,field:'text').decodeHTML()}</g:textArea>
-                                </td>
-                            </tr> 
-                        
+                            </tr>
+
+                            <g:render template="noteFields" model="${[note:note]}" />
+
                         </tbody>
                     </table>
                 </div>
