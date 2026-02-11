@@ -32,13 +32,14 @@ class User
     
     String getRoleDisplayName()
     {
-        return getRoleAux().displayName
+        Role role = getRoleAux()
+        return role?.displayName
     }
-    
+
     Role getRoleAux()
     {
         Set<Role> roles = getAuthorities()
-        return roles.iterator().next()
+        return roles ? roles.iterator().next() : null
     }
 
     def beforeInsert()
