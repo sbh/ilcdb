@@ -22,44 +22,32 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="sponsor">Sponsor:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:sponsor,field:'sponsor','errors')}">
-                                    <g:select optionKey="id" from="${Person.list()}" name="sponsor.id" value="${sponsor?.sponsor?.id}" />
+                                <td valign="top" class="value">
+                                    <g:personGenerator name="sponsor" value="${sponsor?.sponsor}" />
                                 </td>
-                            </tr> 
+                            </tr>
 
-			    <tr class="prop">
-				<td valign="top" class="name">
-				    <label for="clients">Clients:</label>
-				</td>
-				<td valign="top" class="value">
-				    <ul>
-					<g:each var="clientRelation" in="${sponsor.clientRelations}">
-					<li><g:link controller="client" action="show" id="${clientRelation.client.id}">${clientRelation.client}</g:link></li>
-					</g:each>
-				    </ul>
-				    <g:link controller="clientSponsorRelation" params="['client.id':client?.id]" action="create">Add Client</g:link>
-				</td>
-                        
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="income">Income:</label>
+                                    <label for="clients">Clients:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:sponsor,field:'income','errors')}">
-                                    <g:select id="income" name="income" from="${sponsor.constraints.income.inList}" value="${sponsor.income}" />
-				    <g:hasErrors bean="${sponsor}" field="income">
-				    <div class="errors">
-					<g:renderErrors bean="${sponsor}" field="income" />
-				    </div>
-				    </g:hasErrors>
+                                <td valign="top" class="value">
+                                    <ul>
+                                        <g:each var="clientRelation" in="${sponsor.clientRelations}">
+                                            <li><g:link controller="client" action="show" id="${clientRelation.client.id}">${clientRelation.client}</g:link></li>
+                                        </g:each>
+                                    </ul>
+                                    <g:link controller="clientSponsorRelation" params="['client.id':client?.id]" action="create">Add Client</g:link>
+                                </td>
+                            </tr>
 
-                                </td>
-                            </tr> 
-                        
+                            <g:render template="sponsorFields" model="${[sponsor:sponsor]}" />
+
                         </tbody>
                     </table>
                 </div>

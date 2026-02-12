@@ -52,10 +52,18 @@ class SponsorController {
     def update() {
         def sponsor = Sponsor.get( params.id )
         if(sponsor) {
+            def addressCountry = Country.get(params.sponsor.address.country)
+            def birthCountry = Country.get(params.sponsor.placeOfBirth.country)
+
             sponsor.properties = params
-            if(!sponsor.hasErrors() && sponsor.save()) {
+
+            sponsor.sponsor.address.country = addressCountry
+            sponsor.sponsor.placeOfBirth.country = birthCountry
+
+            sponsor.clearErrors()
+            if(sponsor.validate() && sponsor.save()) {
                 flash.message = "Sponsor ${params.id} updated"
-                redirect(action:"show", id:sponsor.id)
+                redirect(action:"edit", id:sponsor.id)
             }
             else {
                 render(view:'edit', model:[sponsor:sponsor])

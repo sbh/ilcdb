@@ -2,6 +2,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
+        <g:javascript src="caseResult.js" />
         <title>Create Status Achieved</title>
     </head>
     <body>
@@ -17,27 +18,9 @@
             </g:hasErrors>
             <g:form action="save" method="post" >
                 <div class="dialog">
-            <table>
+                    <table>
                         <tbody>
-
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="createDate">Date Status Was Achieved:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:statusAchieved,field:'date','errors')}">
-                                    <g:datePicker name="date" precision="day" value="${statusAchieved?.date}" />
-                                </td>
-                            </tr>
-
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="text">Status Achieved:</label>
-                                </td>
-                                <td valign="top"><!-- class="value ${hasErrors(bean:statusAchieved,field:'type','errors')}"> -->
-                                    <g:select name="type" from="${StatusAchieved.Type.list()}"
-                                              noSelection="['':'-Choose Status Achieved-']"/>
-                                </td>
-                            </tr>
+                            <g:render template="statusAchievedFields" model="${[statusAchieved:statusAchieved]}" />
                         </tbody>
                     </table>
                 </div>

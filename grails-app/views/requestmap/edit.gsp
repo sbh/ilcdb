@@ -27,35 +27,7 @@
 					<table>
 					<tbody>
 
-						<tr class="prop">
-							<td valign="top" class="name">
-								<label for="url">URL:</label>
-							</td>
-							<td valign="top" class="value ${hasErrors(bean:requestmap,field:'url','errors')}">
-								<input type="text" id="url" name="url" value="${requestmap?.url?.encodeAsHTML()}"/>
-							</td>
-						</tr>
-
-						<tr class="prop">
-							<td valign="top" class="name">
-								<label for="configAttribute">Roles (comma-delimited):</label>
-							</td>
-					
-<%
-def names = []
-org.springframework.util.StringUtils.commaDelimitedListToStringArray(requestmap.configAttribute).each { role ->
-	if (role.startsWith('ROLE_')) {
-		names << role.substring(5).toLowerCase().encodeAsHTML()
-	}
-	else {
-		names << role.encodeAsHTML()
-	}
-}
-%>
-							<td valign="top" class="value ${hasErrors(bean:requestmap,field:'configAttribute','errors')}">
-								<input type="text" name='configAttribute'  value="${names.join(',')}"/>
-							</td>
-						</tr>
+						<g:render template="requestmapFields" model="${[requestmap:requestmap]}" />
 
 					</tbody>
 					</table>
