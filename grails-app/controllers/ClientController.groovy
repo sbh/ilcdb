@@ -409,16 +409,9 @@ class ClientController {
             return [:]
         }
 
-        // Manually construct dates to avoid i18n issues with params.date()
-        def startDay = params.int('startDate_day')
-        def startMonth = params.int('startDate_month') - 1 // Calendar is 0-based for months
-        def startYear = params.int('startDate_year')
-        Date startDate = (startDay && startMonth != null && startYear) ? new GregorianCalendar(startYear, startMonth, startDay).time : null
-
-        def endDay = params.int('endDate_day')
-        def endMonth = params.int('endDate_month') - 1 // Calendar is 0-based for months
-        def endYear = params.int('endDate_year')
-        Date endDate = (endDay && endMonth != null && endYear) ? new GregorianCalendar(endYear, endMonth, endDay).time : null
+        def dateFormat = new java.text.SimpleDateFormat('MM/dd/yyyy')
+        Date startDate = params.startDate ? dateFormat.parse(params.startDate) : null
+        Date endDate = params.endDate ? dateFormat.parse(params.endDate) : null
         def municipality = params.municipality
         def munType = params.munType ?: "Any"
         def attorney = params.attorney ?: "Any"
