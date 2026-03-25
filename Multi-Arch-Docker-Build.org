@@ -1,0 +1,97 @@
+#+TITLE: Building a Multi-Arch Docker Image
+#+AUTHOR: sbherndon
+#+PROPERTY: header-args:shell :dir . :results output
+
+* Overview
+
+This document describes the process for building a multi-architecture Docker
+image for the ilcdb webapp and pushing it to Docker Hub. The image supports
+both =linux/amd64= (x86 servers) and =linux/arm64= (Apple Silicon, Raspberry Pi,
+ARM-based servers like Unraid).
+
+Because Podman cannot build a true multi-arch image in a single pass, the
+approach is:
+
+1. Build separate images for each architecture
+2. Push the individual arch-specific images to the registry
+3. Create a manifest list that references both images
+4. Push the manifest list under the final tag
+
+Pulling the image on any supported platform will automatically select the
+correct architecture.
+
+* Prerequisites
+
+** QEMU (for cross-architecture builds)
+
+Building =linux/amd64= on an Apple Silicon Mac requires QEMU for emulation.
+Note that cross-arch builds will be significantly slower than native builds.
+
+#+BEGIN_SRC shell
+brew install qemu
+#+END_SRC
+
+** Log in to Docker Hub
+
+#+BEGIN_SRC shell
+podman login docker.io
+#+END_SRC
+
+* Build Process
+
+** Step 1: Remove existing tags and manifests
+
+Any existing image tags or manifest lists with the target name must be removed
+before creating a new manifest list, otherwise Podman will error with "image
+name already associated with image".
+
+#+BEGIN_SRC shell
+podman rmi docker.io/sbherndon/ilcdb-webapp:latest 2>/dev/null
+podman rmi docker.io/sbherndon/ilcdb-webapp:v1 2>/dev/null
+podman manifest rm docker.io/sbherndon/ilcdb-webapp:latest 2>/dev/null
+podman manifest rm docker.io/sbherndon/ilcdb-webapp:v1 2>/dev/null
+#+END_SRC
+
+** Step 2: Build for each architecture
+
+Each architecture is built separately and tagged with an arch-specific suffix.
+
+#+BEGIN_SRC shell
+podman build --platform linux/amd64 -t docker.io/sbherndon/ilcdb-webapp:latest-amd64 .
+podman build --platform linux/arm64 -t docker.io/sbherndon/ilcdb-webapp:latest-arm64 .
+#+END_SRC
+
+** Step 3: Push the individual arch images
+
+The arch-specific images must be pushed to the registry before they can be
+added to a manifest list.
+
+#+BEGIN_SRC shell
+podman push docker.io/sbherndon/ilcdb-webapp:latest-amd64
+podman push docker.io/sbherndon/ilcdb-webapp:latest-arm64
+#+END_SRC
+
+** Step 4: Create and push the manifest list
+
+Create a manifest list, add both arch images to it, then push it as the final
+=:latest= tag. The manifest list is what Docker Hub shows as the multi-arch image.
+
+#+BEGIN_SRC shell
+podman manifest create docker.io/sbherndon/ilcdb-webapp:latest
+podman manifest add docker.io/sbherndon/ilcdb-webapp:latest docker.io/sbherndon/ilcdb-webapp:latest-amd64
+podman manifest add docker.io/sbherndon/ilcdb-webapp:latest docker.io/sbherndon/ilcdb-webapp:latest-arm64
+podman manifest push docker.io/sbherndon/ilcdb-webapp:latest
+#+END_SRC
+
+* Versioned Tags
+
+To also push a versioned tag (e.g. =:v1=), repeat the manifest create/add/push
+steps with the version tag. The same arch-specific images can be reused without
+rebuilding.
+
+#+BEGIN_SRC shell
+podman manifest create docker.io/sbherndon/ilcdb-webapp:v1
+podman manifest add docker.io/sbherndon/ilcdb-webapp:v1 docker.io/sbherndon/ilcdb-webapp:latest-amd64
+podman manifest add docker.io/sbherndon/ilcdb-webapp:v1 docker.io/sbherndon/ilcdb-webapp:latest-arm64
+podman manifest push docker.io/sbherndon/ilcdb-webapp:v1
+#+END_SRC

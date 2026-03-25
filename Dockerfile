@@ -1,10 +1,13 @@
     # Use the official Tomcat base image
     FROM --platform=$TARGETPLATFORM tomcat:9-jdk8
 
-    RUN apt-get update && apt-get install -y less vim default-mysql-client unzip
-
     # Remove the default web apps
     RUN rm -rf /usr/local/tomcat/webapps/*
+
+    # Install dependencies and troubleshooting tools
+    RUN apt-get update && apt-get install -y \
+        unzip wget less vim default-mysql-client mysql-shell telnet \
+        iproute2 net-tools tcpdump iputils-ping dnsutils
 
     # Install Grails 2.5
     ENV GRAILS_VERSION=2.5.6

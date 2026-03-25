@@ -32,8 +32,13 @@
                             <td valign="top" class="name">
                                 <label for="client">Client:</label>
                             </td>
-                            <td valign="top" class="value">
+                            <td valign="top" class="value ${hasErrors(bean:client,field:'client','errors')}">
                                 <g:personSelectorGenerator name="client" value="${client?.client}" />
+                                <g:hasErrors bean="${client}" field="client">
+                                    <div class="errors">
+                                        <g:renderErrors bean="${client}" field="client" />
+                                    </div>
+                                </g:hasErrors>
                             </td>
                         </tr> 
                         

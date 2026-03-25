@@ -44,7 +44,6 @@
                                             <th>Start Date</th>
                                             <th>Completion Date</th>
                                             <th>Intake Type</th>
-                                            <th>Intensity</th>
                                             <th>Case Type</th>
                                             <th>Representative</th>
                                             <th>Result</th>
@@ -56,7 +55,6 @@
                                               <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.startDateString}</g:link></td>
                                               <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.completionDateString}</g:link></td>
                                               <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.intakeType}</g:link></td>
-                                              <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.intensity}</g:link></td>
                                               <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.caseType?.type}</g:link></td>
                                               <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.attorney}</g:link></td>
                                               <td><g:link controller="clientCase" action="edit" id="${intake.id}">${intake?.caseResult?.result}</g:link></td>
@@ -120,7 +118,7 @@
                           <td valign="top" colspan="3" class="value ${hasErrors(bean:client,field:'appointments','errors')}">
                           <ul>
                             <g:each var="a" in="${client?.appointments?}">
-                              <li><g:link controller="appointments" action="edit" id="${a.id}">${a?.encodeAsHTML()}</g:link></li>
+                              <li><g:link controller="appointment" action="edit" id="${a.id}">${a?.encodeAsHTML()}</g:link></li>
                             </g:each>
                           </ul>
                           <g:link controller="appointment" params="['client.id':client?.id]" action="create">Add Appointment</g:link>
@@ -134,7 +132,7 @@
                         <td valign="top" colspan="3" class="value ">
                           <ul>
                             <g:each var="sponsorRelation" in="${client.sponsorRelations}">
-                              <li><g:link controller="sponsor" action="edit" id="${sponsorRelation.sponsor.id}">${sponsorRelation.sponsor}</g:link></li><
+                              <li><g:link controller="sponsor" action="edit" id="${sponsorRelation.sponsor.id}">${sponsorRelation.sponsor}</g:link></li>
                             </g:each>
                           </ul>
                           <g:link controller="clientSponsorRelation" params="['client.id':client?.id]" action="create">Add Sponsor</g:link>

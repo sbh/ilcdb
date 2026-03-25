@@ -43,6 +43,7 @@ log4j = {
 // The following properties have been added by the Upgrade process...
 grails.views.default.codec="html" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
+grails.databinding.dateFormats = ['MM/dd/yyyy']
 
 // Added by the Spring Security Core plugin:
 grails.plugin.springsecurity.userLookup.userDomainClassName = 'User'
@@ -52,13 +53,15 @@ grails.plugin.springsecurity.password.algorithm = 'bcrypt'
 grails.plugin.springsecurity.failureHandler.exceptionMappings = [ 'org.springframework.security.authentication.CredentialsExpiredException': '/user/passwordExpired' ]
 grails.plugin.springsecurity.roleHierarchy = 'ROLE_ADMIN > ROLE_ATTORNEY > ROLE_STAFF > ROLE_VOLUNTEER > ROLE_INTERN'
 
+/**/
 grails.plugin.springsecurity.portMapper.portMappings = [
     '8080':'8443'
 ]
 
 grails.plugin.springsecurity.secureChannel.definition = [
     '/**': 'REQUIRES_SECURE_CHANNEL'
-]
+ ]
+/**/
 
 grails.plugin.springsecurity.ui.register.postResetUrl = '/reset'
 grails.plugin.springsecurity.rejectIfNoRule = false
@@ -89,18 +92,6 @@ grails {
     }
  }
 
-jqueryDateTimePicker {
-    format {
-        java {
-            datetime = "dd-MM-yyyy HH:mm"
-            date = "dd-MM-yyyy"
-        }
-        picker {
-            date = "'dd-mm-yy'"
-            time = "'H-mm'"
-        }
-    }
-}
 
 grails.cache.config = {
     cache {

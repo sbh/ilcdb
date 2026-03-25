@@ -189,12 +189,6 @@ class ClientController {
             if(person.validate())
                 client.client = person
 
-            def clientCase = new ClientCase()
-            Date now = new Date()
-            clientCase.startDate = now
-            clientCase.completionDate = now
-            clientCase.intakeType = ClientCase.STAFF_ADVISE
-            client.addToCases(clientCase)
             client.clearErrors()
 
             //println("\nclient.validate(): "+client.validate()+
@@ -212,12 +206,12 @@ class ClientController {
                 client.save()
 
                 flash.message = "Client ${client.id} created"
-                // redirect to the newly created intake so that it can be edited if so desired
-                redirect(controller:"clientCase", action:"edit", id:clientCase.id)
+                redirect(action:"edit", id:client.id)
             }
             else {
                 //Restore object graph to report errors in the view
                 person.address = address
+                person.placeOfBirth = placeOfBirth
                 client.client = person
                 render(view:'create', model:[client:client])
             }
@@ -415,16 +409,9 @@ class ClientController {
             return [:]
         }
 
-        // Manually construct dates to avoid i18n issues with params.date()
-        def startDay = params.int('startDate_day')
-        def startMonth = params.int('startDate_month') - 1 // Calendar is 0-based for months
-        def startYear = params.int('startDate_year')
-        Date startDate = (startDay && startMonth != null && startYear) ? new GregorianCalendar(startYear, startMonth, startDay).time : null
-
-        def endDay = params.int('endDate_day')
-        def endMonth = params.int('endDate_month') - 1 // Calendar is 0-based for months
-        def endYear = params.int('endDate_year')
-        Date endDate = (endDay && endMonth != null && endYear) ? new GregorianCalendar(endYear, endMonth, endDay).time : null
+        def dateFormat = new java.text.SimpleDateFormat('MM/dd/yyyy')
+        Date startDate = params.startDate ? dateFormat.parse(params.startDate) : null
+        Date endDate = params.endDate ? dateFormat.parse(params.endDate) : null
         def municipality = params.municipality
         def munType = params.munType ?: "Any"
         def attorney = params.attorney ?: "Any"
@@ -596,7 +583,7 @@ class ClientController {
         if (!attorney || "Any".equals(attorney)) {
             return ""
         }
-        return "intake.attorney = :attorney"
+        return "intake.attorney.firstName = :attorney"
     }
 
     String getMunicipalitySubQuery(String municipalityType, String municipality) {

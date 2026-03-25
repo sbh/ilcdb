@@ -2,10 +2,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
+        <g:javascript src="caseResult.js" />
         <title>Edit Status Achieved</title>
-   </head>
+    </head>
     <body>
-        <div class="body" style="width: 80%">
+        <div class="body" style="width: 80%;">
             <h1>Edit Status Achieved</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
@@ -20,7 +21,7 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="client">Client:</label>
@@ -28,26 +29,10 @@
                                 <td valign="top" class="value ${hasErrors(bean:statusAchieved,field:'client','errors')}">
                                     <g:select optionKey="id" from="${Client.list()}" name="client.id" value="${statusAchieved?.client?.id}" />
                                 </td>
-                            </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="createDate">Status Achieved Date:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:statusAchieved,field:'date','errors')}">
-                                    <g:datePicker name="date" precision="day" value="${statusAchieved?.date}" />
-                                </td>
-                            </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="text">Type:</label>
-                                </td>
-                                <td valign="top"><!-- class="value ${hasErrors(bean:statusAchieved,field:'type','errors')}"> -->
-                                    <g:select name="type" from="${StatusAchieved.Type.values()}"
-                                          value="${statusAchieved?.type}"/>
-                                </td>
                             </tr>
+
+                            <g:render template="statusAchievedFields" model="${[statusAchieved:statusAchieved]}" />
+
                         </tbody>
                     </table>
                 </div>

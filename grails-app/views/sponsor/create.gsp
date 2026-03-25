@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
-        <title>Create Sponsor</title>         
+        <title>Create Sponsor</title>
     </head>
     <body>
         <div class="body">
@@ -21,30 +21,18 @@
                 <div class="dialog">
                     <table>
                         <tbody>
-                        
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="sponsor">Sponsor:</label>
                                 </td>
                                 <td valign="top" class="value">
-				    <g:personSelectorGenerator name="sponsor" value="${sponsor?.sponsor}" />
+                                    <g:personSelectorGenerator name="sponsor" value="${sponsor?.sponsor}" />
                                 </td>
-                            </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="income">Income:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:sponsor,field:'income','errors')}">
-                                    <g:select id="income" name="income" from="${sponsor.constraints.income.inList}" value="${sponsor.income}" />
-				    <g:hasErrors bean="${sponsor}" field="client">
-				    <div class="errors">
-					<g:renderErrors bean="${sponsor}" field="client" as="list" />
-				    </div>
-				    </g:hasErrors>
-                                </td>
-                            </tr> 
-                        
+                            </tr>
+
+                            <g:render template="sponsorFields" model="${[sponsor:sponsor]}" />
+
                         </tbody>
                     </table>
                 </div>

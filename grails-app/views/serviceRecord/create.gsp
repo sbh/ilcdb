@@ -1,10 +1,10 @@
 
-
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
-        <title>Create Service Record</title>         
+        <g:javascript src="caseResult.js" />
+        <title>Create Service Record</title>
     </head>
     <body>
         <div class="body" style="width: 80%;">
@@ -19,35 +19,9 @@
             </g:hasErrors>
             <g:form action="save" method="post" >
                 <div class="dialog">
-            <table>
+                    <table>
                         <tbody>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="client">Service Record:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:serviceRecord,field:'client','errors')}">
-                                    <g:select optionKey="id" from="${Client.list()}" name="client.id" value="${serviceRecord?.client?.id}" />
-                                </td>
-                            </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="createDate">Date of Service:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:serviceRecord,field:'serviceDate','errors')}">
-                                    <g:datePicker name="serviceDate" precision="day" value="${serviceRecord?.serviceDate}" />
-                                </td>
-                            </tr> 
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="text">Hours:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:serviceRecord,field:'text','errors')}">
-                                    <input type="text" id="serviceHours" name="serviceHours" value="${serviceRecord?.serviceHours}" />
-                                </td>
-                            </tr> 
+                            <g:render template="serviceRecordFields" model="${[serviceRecord:serviceRecord]}" />
                         </tbody>
                     </table>
                 </div>

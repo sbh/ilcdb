@@ -28,11 +28,9 @@
                     <g:each in="${sponsorList}" status="i" var="sponsor">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td>${fieldValue(bean:sponsor, field:'sponsor')}</td>
-                        
-                            <td>${fieldValue(bean:sponsor, field:'income')}</td>
-                        
-			    <td><g:link action="show" id="${sponsor.id}">Show</g:link></td>
+                            <td><g:link action="edit" id="${sponsor.id}">${fieldValue(bean:sponsor, field:'sponsor')}</g:link></td>
+
+                            <td><g:link action="edit" id="${sponsor.id}">${fieldValue(bean:sponsor, field:'income')}</g:link></td>
                         </tr>
                     </g:each>
                     </tbody>
@@ -40,6 +38,9 @@
             </div>
             <div class="paginateButtons">
                 <g:paginate total="${Sponsor.count()}" />
+            </div>
+            <div class="buttons">
+                <span class="button"><g:link class="create" action="create">New Sponsor</g:link></span>
             </div>
         </div>
     </body>

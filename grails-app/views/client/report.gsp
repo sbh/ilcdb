@@ -1,13 +1,14 @@
 <html>
 <%
   def municipalityTypes = ["City", "County", "State", "Any"];
-  def attorneys = ["Any"] + ClientCase.constraints.attorney.inList
+  def attorneys = ["Any"] + Attorney.list().collect { it.firstName }
   def intakeTypes = ["Any"] + ClientCase.constraints.intakeType.inList
  %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="layout" content="main" />
 <title>Reporting</title>
+<g:javascript src="caseResult.js" />
 
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
@@ -98,14 +99,10 @@ var reporting =
         var endDateRow = document.getElementById("endDateRow")
         if ("opened-why" == value) { // 250628 - not sure why the end date wouldn't matter in the opened intake state case
             endDateRow.style.display = "none"
-            var endDate_day = document.getElementById("endDate_day")
-            var endDate_month = document.getElementById("endDate_month")
-            var endDate_year = document.getElementById("endDate_year")
             var now = new Date()
-            endDate_day.value = now.getDate()
-            endDate_month.value = now.getMonth()+1
-            endDate_year.value = now.getFullYear()
-            console.log(now.getFullYear()+" : "+now.getMonth()+" : "+now.getDay()+" :: "+now.getDate())
+            var mm = String(now.getMonth()+1).padStart(2,'0')
+            var dd = String(now.getDate()).padStart(2,'0')
+            document.getElementById("endDate").value = mm+'/'+dd+'/'+now.getFullYear()
         }
         else
             endDateRow.style.display = ""
@@ -187,15 +184,12 @@ window.onload = reporting.windowLoaded
 
                         <tr class="prop" id="startDateRow">
                             <td valign="top"><label for="startDate">Start Date</label></td>
-                            <td valign="top"><g:datePicker name="startDate"
-                                    value="${startDate ? startDate : new Date()}" precision="day" />
-                            </td>
+                            <td valign="top"><input type="text" id="startDate" name="startDate" class="datePicker" value="${startDate ? startDate.format('MM/dd/yyyy') : new Date().format('MM/dd/yyyy')}" /></td>
                         </tr>
 
                         <tr class="prop" id="endDateRow">
                             <td valign="top"><label for="endDate">End Date</label></td>
-                            <td valign="top"><g:datePicker name="endDate" id="endDate"
-                                    value="${endDate ? endDate : new Date()}" precision="day" /></td>
+                            <td valign="top"><input type="text" id="endDate" name="endDate" class="datePicker" value="${endDate ? endDate.format('MM/dd/yyyy') : new Date().format('MM/dd/yyyy')}" /></td>
                         </tr>
 
                         <tr class="prop">

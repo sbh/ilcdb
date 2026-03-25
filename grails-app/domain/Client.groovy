@@ -145,10 +145,14 @@ class Client implements Comparable<Client> {
 
         if (openList.size() > 0) {
             for (ClientCase clientCase : openList) {
-                if (clientCase.attorney == null || "-Choose-".equals(clientCase.attorney))
+                try {
+                    if (clientCase.attorney == null)
+                        attorneys += "? (open)"+", "
+                    else
+                        attorneys += clientCase.attorney.toString()+" (open), "
+                } catch (org.hibernate.ObjectNotFoundException e) {
                     attorneys += "? (open)"+", "
-                else
-                    attorneys += clientCase.attorney+" (open), "
+                }
             }
         }
         else
@@ -159,7 +163,11 @@ class Client implements Comparable<Client> {
                     if (newestCase == null || clientCase.completionDate > newestCase.completionDate)
                         newestCase = clientCase
                 }
-                attorneys = (newestCase.attorney == null) ? "?" : newestCase.attorney
+                try {
+                    attorneys = (newestCase.attorney == null) ? "?" : newestCase.attorney.toString()
+                } catch (org.hibernate.ObjectNotFoundException e) {
+                    attorneys = "?"
+                }
             }
             else
                 attorneys = "?"

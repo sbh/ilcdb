@@ -140,9 +140,10 @@ class UserController
             if (!userInstance.hasErrors() && userInstance.save(flush: true))
             {
                 def role = Role.findByAuthority(params.role)
-                if (!role.equals(userInstance.roleAux))
+                if (role && !role.equals(userInstance.roleAux))
                 {
-                    UserRole.remove(userInstance, userInstance.roleAux)
+                    if (userInstance.roleAux)
+                        UserRole.remove(userInstance, userInstance.roleAux)
                     UserRole.create(userInstance, role, true)
                 }
 
@@ -168,10 +169,11 @@ class UserController
         {
             try
             {
-                UserRole.remove(userInstance, userInstance.roleAux)
+                if (userInstance.roleAux)
+                    UserRole.remove(userInstance, userInstance.roleAux)
                 userInstance.delete(flush: true)
                 flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-                redirect(action: "search")
+                redirect(action: "list")
             }
             catch (org.springframework.dao.DataIntegrityViolationException e)
             {
@@ -182,7 +184,7 @@ class UserController
         else
         {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
-            redirect(action: "search")
+            redirect(action: "list")
         }
     }
 }

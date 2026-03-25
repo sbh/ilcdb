@@ -8,8 +8,6 @@ class ClientCase implements Comparable<ClientCase>
     private static final DateTimeFormatter briefDateFormat = DateTimeFormat.forPattern("MMM-dd-yyyy");
 
 
-    //Can we make this configurable?
-    public static final List ATTORNEYS = ["Belen", "Laurel", "Maria"]
     static belongsTo = [ client:Client ]
     static hasMany = [ notes : Note ]
 
@@ -19,12 +17,11 @@ class ClientCase implements Comparable<ClientCase>
     String intakeType
     Date startDate
     Date completionDate
-    String attorney
+    Attorney attorney
     SortedSet notes
     
     CaseType caseType
     CaseResult caseResult
-    String intensity = "1"
 
     static mapping =
     {
@@ -33,17 +30,21 @@ class ClientCase implements Comparable<ClientCase>
 
     static constraints =
     {
-        attorney(inList: ATTORNEYS)
         intakeType(inList:[STAFF_ADVISE, STAFF_REPRESENTATION])
         startDate(nullable:true)
         completionDate(nullable:true)
         caseNumber(nullable:true)
         coltafNumber(nullable:true)
-        attorney(nullable:false)
+        attorney(nullable:true, validator: { val, obj ->
+            if (obj.id == null || 'attorney' in obj.getDirtyPropertyNames()) {
+                // Require attorney to be set and either active OR Unassigned
+                return (val && (val.isActive || val.firstName == 'Unassigned')) ?: 'activeAttorneyRequired'
+            }
+            return true
+        })
         intakeType(nullable:true)
         caseType(nullable:true, validator: { val, obj -> if (obj.intakeType.equals(STAFF_REPRESENTATION) && obj.caseType == null) return "notNull" })
         caseResult(nullable:true)
-        intensity(inList:["-Choose-", "1", "2", "3", "4", "5", "n/a"])
     }
 
     static transients = [ "startDateString", "completionDateString", "open", "valid", "fileLocation" ]
@@ -58,8 +59,7 @@ class ClientCase implements Comparable<ClientCase>
          attorney      : attorney,
          notes         : notes.collect { it.toMap() },
          caseType      : caseType?.toMap(),
-         caseResult    : caseResult?.toMap(),
-         intensity     : intensity]
+         caseResult    : caseResult?.toMap()]
     }
 
     int compareTo(ClientCase otherIntake)
@@ -85,11 +85,6 @@ class ClientCase implements Comparable<ClientCase>
         if (completionDate == null)
             return "Ongoing";
         return briefDateFormat.print(completionDate.getTime())
-    }
-
-    public String getIntensity()
-    {
-        return intensity
     }
 
     public boolean isOpen()
@@ -122,7 +117,7 @@ class ClientCase implements Comparable<ClientCase>
 
     String toDebugString()
     {
-        return "intake type: "+intakeType+", caseResult: "+caseResult+", coltafNumber: "+coltafNumber+", intensity: "+intensity
+        return "intake type: "+intakeType+", caseResult: "+caseResult+", coltafNumber: "+coltafNumber
     }
 
     String toString()

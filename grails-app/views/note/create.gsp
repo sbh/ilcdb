@@ -4,7 +4,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
-        <title>Create Note</title>         
+        <g:javascript src="caseResult.js" />
+        <title>Create Note</title>
     </head>
     <body>
         <div class="body" style="width: 80%;">
@@ -31,28 +32,12 @@
                             		<label>${ClientCase.get(clientcaseid)} </label>
                             	</td>
                             </g:if>
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="createDate">Create Date:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:note,field:'createDate','errors')}">
-                                    <g:datePicker name="createDate" value="${note?.createDate}" ></g:datePicker>
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="text">Text:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean:note,field:'text','errors')}">
-                                    <g:textArea name="text" rows="5" height="60" toolbar="Standard" fileBrowser="default">${fieldValue(bean:note,field:'text').decodeHTML()}</g:textArea>
-                                </td>
-                            </tr> 
+                            <g:render template="noteFields" model="${[note:note]}" />
                         </tbody>
                     </table>
                 </div>
                 <div class="buttons">
-                	<g:hiddenField name="clientid" value="${clientid}"/> 
+                	<g:hiddenField name="clientid" value="${clientid}"/>
                 	<g:if test="${noteType == 'clientCase' }" >
 	                	<g:hiddenField name="clientcaseid" value="${clientcaseid}"/>
                 	</g:if>

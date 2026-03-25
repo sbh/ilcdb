@@ -1,15 +1,32 @@
 services:
+  tailscale:
+    image: tailscale/tailscale
+    container_name: ilcdb-tailscale
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_AUTH_KEY}
+      - TS_HOSTNAME=${TS_HOSTNAME:-ilcdb}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/ts-serve.json
+      - TS_ACCEPT_DNS=false
+      - TS_EXTRA_ARGS=--advertise-tags=tag:ilcdb-server
+    volumes:
+      - tailscale-state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+      - ./tailscale-config:/config
+    cap_add:
+      - NET_ADMIN
+#    restart: unless-stopped
+
   webapp:
     build: .  # This assumes your Dockerfile is in the root directory
     container_name: ilcdb-webapp
 #    image: sbherndon/ilcdb-webapp:latest
-    ports:
-      - "8080:8080"
-      - "8443:8443"
+    network_mode: "service:tailscale"
     depends_on:
+      - tailscale
       - db
     environment:
-      MYSQL_HOST: db # Tells the Grails app to connect to the 'db' service
+      MYSQL_HOST: db
       MYSQL_PORT: 3306
       MYSQL_DATABASE: ilcdb
       MYSQL_USER: ${MYSQL_USER}
@@ -26,9 +43,12 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ilcdb
       MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
       MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
+#       - /mnt/user/appdata/ilcdb/mysql_data:/var/lib/mysql  # bind mount for Docker on unraid
 
 volumes:
   mysql_data:
+  tailscale-state:
