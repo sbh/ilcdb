@@ -53,13 +53,15 @@ grails.plugin.springsecurity.password.algorithm = 'bcrypt'
 grails.plugin.springsecurity.failureHandler.exceptionMappings = [ 'org.springframework.security.authentication.CredentialsExpiredException': '/user/passwordExpired' ]
 grails.plugin.springsecurity.roleHierarchy = 'ROLE_ADMIN > ROLE_ATTORNEY > ROLE_STAFF > ROLE_VOLUNTEER > ROLE_INTERN'
 
+/**/
 grails.plugin.springsecurity.portMapper.portMappings = [
     '8080':'8443'
 ]
 
 grails.plugin.springsecurity.secureChannel.definition = [
     '/**': 'REQUIRES_SECURE_CHANNEL'
-]
+ ]
+/**/
 
 grails.plugin.springsecurity.ui.register.postResetUrl = '/reset'
 grails.plugin.springsecurity.rejectIfNoRule = false

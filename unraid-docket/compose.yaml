@@ -18,9 +18,9 @@ services:
 #    restart: unless-stopped
 
   webapp:
-    build: .  # This assumes your Dockerfile is in the root directory
+    #build: .  # This assumes your Dockerfile is in the root directory
     container_name: ilcdb-webapp
-#    image: sbherndon/ilcdb-webapp:latest
+    image: sbherndon/ilcdb-webapp:latest
     network_mode: "service:tailscale"
     depends_on:
       - tailscale
@@ -43,12 +43,13 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ilcdb
       MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
       MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql
-#       - /mnt/user/appdata/ilcdb/mysql_data:/var/lib/mysql  # bind mount for Docker on unraid
+#      - mysql_data:/var/lib/mysql
+      - /mnt/user/appdata/ilcdb/mysql_data:/var/lib/mysql  # bind mount      
 
 volumes:
-  mysql_data:
+#  mysql_data:
   tailscale-state:
+
