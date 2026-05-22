@@ -102,15 +102,24 @@ class SponsorController {
             }
 
             if(!sponsor.hasErrors() && address.validate() &&
-            birthPlace.validate() && person.validate() && sponsor.validate()) {
-
-                address.save()
-                birthPlace.save()
-                person.save()
-                sponsor.save()
-
-                flash.message = "Sponsor ${sponsor.id} created"
-                redirect(action:"show", id:sponsor.id)
+               birthPlace.validate() && person.validate() && sponsor.validate()) {
+                Sponsor.withTransaction { status ->
+                    if (!person.save(flush: true)) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[sponsor:sponsor])
+                        return
+                    }
+                    address.save()
+                    birthPlace.save()
+//                    sponsor.sponsor = person
+                    if (!sponsor.save()) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[sponsor:sponsor])
+                        return
+                    }
+                    flash.message = "Sponsor ${sponsor.id} created"
+                    redirect(action:"show", id:sponsor.id)
+                }
             }
             else {
                 person.address = address
