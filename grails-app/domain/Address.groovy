@@ -11,8 +11,6 @@ class Address
     {
         cache true
     }
-    
-    static belongsTo = [ person:Person ]
 
     static constraints =
     {

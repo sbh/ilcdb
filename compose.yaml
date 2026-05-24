@@ -16,6 +16,10 @@ services:
     cap_add:
       - NET_ADMIN
 #    restart: unless-stopped
+    # Local debugging ports (webapp shares tailscale's network)
+    ports:
+      - "8080:8080"
+      - "8443:8443"
 
   webapp:
     build: .  # This assumes your Dockerfile is in the root directory

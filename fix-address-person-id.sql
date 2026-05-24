@@ -21,6 +21,7 @@ where a.person_id is null;
 
 -- Diagnostic: count remaining orphans
 select count(*) from address where person_id is null;
+select count(*) from person where place_of_birth_id is null;
 
 -- Diagnostic: people without addresses (should be 0 for actual clients)
 select p.id, p.first_name, p.last_name

@@ -180,31 +180,15 @@ class ClientController {
             params.client.placeOfBirth.country = birthCountry
             def placeOfBirth = new BirthPlace(params.client.placeOfBirth)
 
-            if (address.validate()) {
-                person.address = address
-            }
-
-            if (placeOfBirth.validate()) {
-                person.placeOfBirth = placeOfBirth
-            }
-
-            if(person.validate())
-                client.client = person
-
             client.clearErrors()
-
-            //println("\nclient.validate(): "+client.validate()+
-            //        ", address.validate(): "+address.validate()+", person.validate()"+person.validate()+
-            //        ", placeOfBirth.validate(): "+placeOfBirth.validate())
 
             //Ensure the entire graph is valid before saving anything
             if (client.validate() &&
                 address.validate() && person.validate() &&
                 placeOfBirth.validate()) {
                 Client.withTransaction { status ->
-                    // 1. Save placeOfBirth and address first so they get IDs.
-                    //    Their person_id will be null initially, but we'll
-                    //    update it after person is saved.
+                    // Save placeOfBirth and address first so they have IDs
+                    // before person references them.
                     if (!placeOfBirth.save(flush: true)) {
                         status.setRollbackOnly()
                         render(view:'create', model:[client:client])
@@ -216,20 +200,13 @@ class ClientController {
                         return
                     }
 
-                    // 2. Now person can reference them by ID
+                    // Now person can reference them by ID
                     person.placeOfBirth = placeOfBirth
                     person.address = address
-                    person.save(flush: true)
-
-                    // 3. Update address.person_id via native SQL since
-                    //    Hibernate's cascade inserts it with null (person
-                    //    doesn't have an ID yet at cascade time).
-                    Address.withSession { session ->
-                        session.createSQLQuery(
-                            "update address set person_id = :pid where id = :aid")
-                            .setLong('pid', person.id)
-                            .setLong('aid', address.id)
-                            .executeUpdate()
+                    if (!person.save(flush: true)) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[client:client])
+                        return
                     }
 
                     client.client = person
