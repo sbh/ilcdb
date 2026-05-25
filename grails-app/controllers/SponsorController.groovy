@@ -102,15 +102,39 @@ class SponsorController {
             }
 
             if(!sponsor.hasErrors() && address.validate() &&
-            birthPlace.validate() && person.validate() && sponsor.validate()) {
+               birthPlace.validate() && person.validate() && sponsor.validate()) {
+                Sponsor.withTransaction { status ->
+                    // Save birthPlace and address first so they have IDs
+                    // before person references them.
+                    if (!birthPlace.save(flush: true)) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[sponsor:sponsor])
+                        return
+                    }
+                    if (!address.save(flush: true)) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[sponsor:sponsor])
+                        return
+                    }
 
-                address.save()
-                birthPlace.save()
-                person.save()
-                sponsor.save()
+                    // Now person can reference them by ID
+                    person.placeOfBirth = birthPlace
+                    person.address = address
+                    if (!person.save(flush: true)) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[sponsor:sponsor])
+                        return
+                    }
 
-                flash.message = "Sponsor ${sponsor.id} created"
-                redirect(action:"show", id:sponsor.id)
+                    sponsor.sponsor = person
+                    if (!sponsor.save()) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[sponsor:sponsor])
+                        return
+                    }
+                    flash.message = "Sponsor ${sponsor.id} created"
+                    redirect(action:"show", id:sponsor.id)
+                }
             }
             else {
                 person.address = address

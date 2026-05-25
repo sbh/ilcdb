@@ -180,33 +180,44 @@ class ClientController {
             params.client.placeOfBirth.country = birthCountry
             def placeOfBirth = new BirthPlace(params.client.placeOfBirth)
 
-            if (address.validate())
-                person.address = address
-
-            if (placeOfBirth.validate())
-                person.placeOfBirth = placeOfBirth
-
-            if(person.validate())
-                client.client = person
-
             client.clearErrors()
-
-            //println("\nclient.validate(): "+client.validate()+
-            //        ", address.validate(): "+address.validate()+", person.validate()"+person.validate()+
-            //        ", placeOfBirth.validate(): "+placeOfBirth.validate())
 
             //Ensure the entire graph is valid before saving anything
             if (client.validate() &&
-            address.validate() && person.validate() &&
-            placeOfBirth.validate()) {
-                address.save()
-                placeOfBirth.save()
-                person.save()
-                client.client = person
-                client.save()
+                address.validate() && person.validate() &&
+                placeOfBirth.validate()) {
+                Client.withTransaction { status ->
+                    // Save placeOfBirth and address first so they have IDs
+                    // before person references them.
+                    if (!placeOfBirth.save(flush: true)) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[client:client])
+                        return
+                    }
+                    if (!address.save(flush: true)) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[client:client])
+                        return
+                    }
 
-                flash.message = "Client ${client.id} created"
-                redirect(action:"edit", id:client.id)
+                    // Now person can reference them by ID
+                    person.placeOfBirth = placeOfBirth
+                    person.address = address
+                    if (!person.save(flush: true)) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[client:client])
+                        return
+                    }
+
+                    client.client = person
+                    if (!client.save()) {
+                        status.setRollbackOnly()
+                        render(view:'create', model:[client:client])
+                        return
+                    }
+                    flash.message = "Client ${client.id} created"
+                    redirect(action:"edit", id:client.id)
+                }
             }
             else {
                 //Restore object graph to report errors in the view

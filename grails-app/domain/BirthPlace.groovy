@@ -7,7 +7,7 @@ class BirthPlace
     static mapping = {
         cache true
     }
-    
+
     static constraints = 
     {
         city(blank:false)
