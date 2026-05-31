@@ -28,7 +28,12 @@ class AppointmentController {
     def delete() {
         def appointment = Appointment.get( params.id )
         if(appointment) {
+            def parentClient = appointment.client
             appointment.delete()
+            if (parentClient) {
+                parentClient.lastUpdated = new Date()
+                parentClient.save()
+            }
             flash.message = "Appointment ${params.id} deleted"
             redirect(action:"list")
         }
@@ -56,6 +61,11 @@ class AppointmentController {
             appointment.properties = params
             if(!appointment.hasErrors() && appointment.save()) {
                 flash.message = "Appointment ${params.id} updated"
+                def parentClient = appointment.client
+                if (parentClient) {
+                    parentClient.lastUpdated = new Date()
+                    parentClient.save()
+                }
                 redirect(action:"show", id:appointment.id)
             }
             else {
@@ -78,6 +88,11 @@ class AppointmentController {
         def appointment = new Appointment(params)
         if(!appointment.hasErrors() && appointment.save()) {
             flash.message = "Appointment ${appointment.id} created"
+            def parentClient = appointment.client
+            if (parentClient) {
+                parentClient.lastUpdated = new Date()
+                parentClient.save()
+            }
             redirect(action:"show", id:appointment.id)
         }
         else {

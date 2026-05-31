@@ -27,7 +27,12 @@ class ServiceRecordController
     def delete() {
         def serviceRecord = ServiceRecord.get( params.id )
         if(serviceRecord) {
+            def parentClient = serviceRecord.client
             serviceRecord.delete()
+            if (parentClient) {
+                parentClient.lastUpdated = new Date()
+                parentClient.save()
+            }
             flash.message = "Service Record ${params.id} deleted"
             redirect(action:"list")
         }
@@ -55,6 +60,11 @@ class ServiceRecordController
             serviceRecord.properties = params
             if(!serviceRecord.hasErrors() && serviceRecord.save()) {
                 flash.message = "Service Record ${params.id} updated"
+                def parentClient = serviceRecord.client
+                if (parentClient) {
+                    parentClient.lastUpdated = new Date()
+                    parentClient.save()
+                }
                 redirect(action:"show", id:serviceRecord.id)
             }
             else {
@@ -77,6 +87,11 @@ class ServiceRecordController
         def serviceRecord = new ServiceRecord(params)
         if(!serviceRecord.hasErrors() && serviceRecord.save()) {
             flash.message = "Service Record ${serviceRecord.id} created"
+            def parentClient = serviceRecord.client
+            if (parentClient) {
+                parentClient.lastUpdated = new Date()
+                parentClient.save()
+            }
             redirect(action:"show", id:serviceRecord.id)
         }
         else {

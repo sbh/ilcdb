@@ -8,6 +8,7 @@ class Client implements Comparable<Client> {
 
     Person client
     Date firstVisit
+    Date lastUpdated
     AMI ami = new AMI("label":"UNSPECIFIED", "level":0)
     Integer householdIncomeLevel
     Integer numberInHousehold
@@ -28,6 +29,7 @@ class Client implements Comparable<Client> {
 
     static constraints = {
         firstVisit(nullable:true)
+        lastUpdated(nullable:true)
         householdIncomeLevel(nullable:true)
         numberInHousehold(nullable:true)
         fileLocation(nullable:true)

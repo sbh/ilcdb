@@ -41,7 +41,12 @@ class NoteController
         def note = Note.get( params.id )
         if(note)
         {
+            def parentClient = note.client ?: note.intake?.client
             note.delete()
+            if (parentClient) {
+                parentClient.lastUpdated = new Date()
+                parentClient.save()
+            }
             flash.message = "Note ${params.id} deleted"
         }
         else
@@ -82,6 +87,11 @@ class NoteController
             if(!note.hasErrors() && note.save())
             {
                 flash.message = "Note ${params.id} updated"
+                def parentClient = note.client ?: note.intake?.client
+                if (parentClient) {
+                    parentClient.lastUpdated = new Date()
+                    parentClient.save()
+                }
                 if(params.noteType == "clientCase")
                     redirect(controller:'clientCase', action:"edit", id:params.clientcaseid)
                 else
@@ -121,6 +131,11 @@ class NoteController
         if(!note.hasErrors() && note.save())
         {
             flash.message = "Note ${note.id} created"
+            def parentClient = note.client ?: note.intake?.client
+            if (parentClient) {
+                parentClient.lastUpdated = new Date()
+                parentClient.save()
+            }
             if(params.noteType == "clientCase")
                 redirect(controller:'clientCase', action:"edit", id:params.clientcaseid)
             else

@@ -49,7 +49,10 @@ class ClientCaseController
         def clientCase = ClientCase.get( params.id )
         if(clientCase)
         {
+            def client = clientCase.client
             clientCase.delete()
+            client.lastUpdated = new Date()
+            client.save()
             flash.message = "ClientCase ${params.id} deleted"
             redirect(controller:"client", action:"edit", id:clientCase?.client?.id)
         }
@@ -128,6 +131,7 @@ class ClientCaseController
             
             if (!clientCase.hasErrors() && clientCase.save())
             {
+                client.lastUpdated = new Date()
                 client.save()
                 flash.message = "ClientCase ${params.id} updated"
                 redirect(controller:"client", action:"edit", id:clientCase?.client?.id)
@@ -189,6 +193,7 @@ class ClientCaseController
 
         if(!clientCase.hasErrors() && clientCase.save())
         {
+            client.lastUpdated = new Date()
             client.save()
             flash.message = "ClientCase ${clientCase.id} created"
             redirect(controller:"client", action:"edit", id:client.id)
