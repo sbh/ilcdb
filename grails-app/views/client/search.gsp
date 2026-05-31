@@ -23,6 +23,18 @@ function toggleDatePickers()
 }
 window.onload=toggleDatePickers;
 </script>
+<script>
+jQuery(document).ready(function() {
+    jQuery('#lastUpdatedStart').datepicker({
+        dateFormat: 'mm/dd/yy',
+        minDate: new Date(2005, 0, 1),
+        maxDate: new Date(2050, 11, 31),
+        showOn: 'both',
+        buttonText: '',
+        showButtonPanel: true
+    }).next('.ui-datepicker-trigger').html('<span class="ui-icon ui-icon-calendar" style="display:inline-block;vertical-align:middle;cursor:pointer;margin-left:4px;"></span>');
+});
+</script>
 
     </head>
     <body>
@@ -78,6 +90,18 @@ window.onload=toggleDatePickers;
                                 <td valign="top" id="caseCompletionDatePicker" name="caseCompletionDatePicker">
                                     Ending Date: <g:datePicker name="caseCompletionDate" id="caseCompletionDate" default="none" precision="month" value="${params?.completionDate}" years="${2005..2075}" noSelection="['':'']" />
                                 </td>
+                            </tr>
+
+                            <tr class="prop">
+                                <td valign="top">
+                                    <label for="lastUpdatedStart">Show clients new or updated since:</label>
+                                </td>
+                                <td valign="top">
+                                    <input type="text" id="lastUpdatedStart" name="lastUpdatedStart"
+                                        class="datePicker"
+                                        value="${params?.lastUpdatedStart ?: ''}" />
+                                </td>
+                                <td valign="top">(Leave blank for no date restriction)</td>
                             </tr>
 
                             <tr class="prop">

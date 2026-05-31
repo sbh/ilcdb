@@ -272,8 +272,9 @@ class ClientController {
         def searchResults = new HashSet()
 
         if (params.q == null || params.q.size() == 0) {
-            if (params.dateRestricted)
+            if (params.dateRestricted || params.lastUpdatedStart?.trim()) {
                 searchResults.addAll(Client.list())
+            }
         }
         else {
             String paramsString = params.q.toLowerCase().trim()
@@ -389,6 +390,20 @@ class ClientController {
             }
             catch (Exception ex) {
                 ex.printStackTrace();
+            }
+        }
+
+        // Filter by new/updated since date (firstVisit OR lastUpdated)
+        if (params.lastUpdatedStart?.trim()) {
+            try {
+                Date sinceDate = Date.parse("MM/dd/yyyy", params.lastUpdatedStart)
+                searchResults = searchResults.findAll { client ->
+                    boolean match = (client.firstVisit && client.firstVisit >= sinceDate) ||
+                                    (client.lastUpdated && client.lastUpdated >= sinceDate)
+                   return match
+                }
+            } catch (Exception e) {
+                log.error "Invalid lastUpdatedStart date format: ${params.lastUpdatedStart}"
             }
         }
 
